@@ -1,5 +1,5 @@
  function loadData() {
-  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/1r2Q6r72KsmFoBVUGU4kPHcDMaNYHCweFr49dHQDsUFo/edit?usp=sharing";
+  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
 
   fetch(spreadsheetUrl)
   .then(response => response.text())
