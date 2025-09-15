@@ -62,7 +62,7 @@
   tr.appendChild(institusi);
 
   const mataPelajaran = document.createElement("td");
-  mataPelajaran.textContent = row.Mata_Pelajaran;
+  mataPelajaran.textContent = row['Mata_Pelajaran']; // Perubahan di sini
   tr.appendChild(mataPelajaran);
 
   const tanggal = document.createElement("td");
@@ -70,7 +70,7 @@
   tr.appendChild(tanggal);
 
   const materiDiskusi = document.createElement("td");
-  materiDiskusi.textContent = row.Materi_Diskusi;
+  materiDiskusi.textContent = row['Materi Diskusi']; // Perubahan di sini
   tr.appendChild(materiDiskusi);
   
   let peserta = "";
@@ -98,7 +98,7 @@
   const institusiMatch = row.Institusi.toLowerCase().includes(institusiFilter);
 
   // Cek filter mata pelajaran
-  const mapelMatch = row.Mata_Pelajaran.toLowerCase().includes(mapelFilter);
+  const mapelMatch = row['Mata_Pelajaran'].toLowerCase().includes(mapelFilter); // Perubahan di sini
 
   // Cek filter peserta di semua kolom peserta
   let pesertaMatch = false;
