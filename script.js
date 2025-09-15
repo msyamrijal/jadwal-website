@@ -1,13 +1,30 @@
+ let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
+
  function loadData() {
+  const loadingIndicator = document.getElementById('loading-indicator');
+  loadingIndicator.style.display = 'block'; // Tampilkan indikator loading
+
   const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
 
   fetch(spreadsheetUrl)
-  .then(response => response.text())
-  .then(csvData => {
-  const data = parseCSV(csvData);
-  populateTable(data);
+  .then(response => {
+  if (!response.ok) {
+  throw new Error('Gagal mengambil data dari jaringan');
+  }
+  return response.text();
   })
-  .catch(error => console.error("Error fetching data:", error));
+  .then(csvData => {
+  allData = parseCSV(csvData); // Simpan data asli
+  populateTable(allData); // Tampilkan semua data saat pertama kali dimuat
+  setupFilters(); // Siapkan event listener untuk input filter
+  })
+  .catch(error => {
+  console.error("Error fetching data:", error);
+  document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="6" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
+  })
+  .finally(() => {
+  loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
+  });
  }
 
  function parseCSV(csvData) {
@@ -31,6 +48,7 @@
 
  function populateTable(data) {
   const tableBody = document.querySelector("#jadwal-table tbody");
+  tableBody.innerHTML = ''; // Kosongkan tabel sebelum mengisi data baru
 
   data.forEach(row => {
   const tr = document.createElement("tr");
@@ -68,6 +86,44 @@
 
   tableBody.appendChild(tr);
   });
+ }
+
+ function applyFilters() {
+  const institusiFilter = document.getElementById('filter-institusi').value.toLowerCase();
+  const mapelFilter = document.getElementById('filter-mapel').value.toLowerCase();
+  const pesertaFilter = document.getElementById('filter-peserta').value.toLowerCase();
+
+  const filteredData = allData.filter(row => {
+  // Cek filter institusi
+  const institusiMatch = row.Institusi.toLowerCase().includes(institusiFilter);
+
+  // Cek filter mata pelajaran
+  const mapelMatch = row.Mata_Pelajaran.toLowerCase().includes(mapelFilter);
+
+  // Cek filter peserta di semua kolom peserta
+  let pesertaMatch = false;
+  if (!pesertaFilter) {
+  pesertaMatch = true; // Jika filter peserta kosong, anggap cocok
+  } else {
+  for (let i = 1; i <= 10; i++) {
+  const pesertaKey = `Peserta ${i}`;
+  if (row[pesertaKey] && row[pesertaKey].toLowerCase().includes(pesertaFilter)) {
+  pesertaMatch = true;
+  break; // Jika sudah ketemu, hentikan pencarian di kolom peserta lain
+  }
+  }
+  }
+
+  return institusiMatch && mapelMatch && pesertaMatch;
+  });
+
+  populateTable(filteredData);
+ }
+
+ function setupFilters() {
+  document.getElementById('filter-institusi').addEventListener('input', applyFilters);
+  document.getElementById('filter-mapel').addEventListener('input', applyFilters);
+  document.getElementById('filter-peserta').addEventListener('input', applyFilters);
  }
 
  document.addEventListener("DOMContentLoaded", loadData);

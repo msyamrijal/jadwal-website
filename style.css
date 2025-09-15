@@ -14,6 +14,21 @@
 
  main {
   padding: 20px;
+  padding-bottom: 80px; /* Memberi ruang agar tidak tertutup footer */
+ }
+
+ .filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+ }
+
+ .filter-container input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex-grow: 1;
  }
 
  #jadwal-table {
