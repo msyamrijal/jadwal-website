@@ -14,13 +14,31 @@
   return response.text();
   })
   .then(csvData => {
-  allData = parseCSV(csvData); // Simpan data asli
-  populateTable(allData); // Tampilkan semua data saat pertama kali dimuat
+  const parsedData = parseCSV(csvData); // Simpan data asli
+
+  // Filter untuk hanya menampilkan tanggal hari ini dan masa depan
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
+
+  allData = parsedData.filter(row => {
+  if (!row.Tanggal || row.Tanggal.trim() === '') return false; // Abaikan baris tanpa tanggal
+  try {
+  // Asumsi format tanggal di spreadsheet adalah DD/MM/YYYY
+  const [day, month, year] = row.Tanggal.split('/');
+  const eventDate = new Date(year, month - 1, day); // Bulan di JS dimulai dari 0 (Januari=0)
+  return eventDate >= today;
+  } catch (e) {
+  console.warn(`Format tanggal tidak valid: "${row.Tanggal}". Baris ini dilewati.`);
+  return false;
+  }
+  });
+
+  populateTable(allData); // Tampilkan data yang sudah difilter
   setupFilters(); // Siapkan event listener untuk input filter
   })
   .catch(error => {
   console.error("Error fetching data:", error);
-  document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="6" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
+  document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="5" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
   })
   .finally(() => {
   loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
@@ -52,10 +70,6 @@
 
   data.forEach(row => {
   const tr = document.createElement("tr");
-
-  const id = document.createElement("td");
-  id.textContent = row.ID;
-  tr.appendChild(id);
 
   const institusi = document.createElement("td");
   institusi.textContent = row.Institusi;
