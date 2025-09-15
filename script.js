@@ -1,5 +1,5 @@
  function loadData() {
-  const spreadsheetUrl = "PASTE_URL_SPREADSHEET_ANDA_DI_SINI";
+  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/1r2Q6r72KsmFoBVUGU4kPHcDMaNYHCweFr49dHQDsUFo/edit?usp=sharing";
 
   fetch(spreadsheetUrl)
   .then(response => response.text())
