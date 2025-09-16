@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     loadRekapData();
     setupRekapSearch();
+
+    // Daftarkan Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(() => console.log('Service Worker berhasil didaftarkan.'))
+            .catch(error => console.error('Pendaftaran Service Worker gagal:', error));
+    }
 });
 
 function loadRekapData() {

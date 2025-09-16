@@ -203,4 +203,13 @@
   document.getElementById('filter-peserta').addEventListener('input', applyFilters);
  }
 
- document.addEventListener("DOMContentLoaded", loadData);
+ document.addEventListener("DOMContentLoaded", () => {
+  loadData();
+
+  // Daftarkan Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('Service Worker berhasil didaftarkan.'))
+      .catch(error => console.error('Pendaftaran Service Worker gagal:', error));
+  }
+ });
