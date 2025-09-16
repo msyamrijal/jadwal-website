@@ -42,6 +42,7 @@
 
   populateTable(allData); // Tampilkan data yang sudah difilter dan diurutkan
   populateInstitutionFilter(allData); // Buat opsi dropdown institusi
+  populateSubjectFilter(allData); // Buat opsi dropdown mata pelajaran
   setupFilters(); // Siapkan event listener untuk input filter
   })
   .catch(error => {
@@ -140,9 +141,33 @@
   });
  }
 
+ function populateSubjectFilter(data) {
+  const subjectFilter = document.getElementById('filter-mapel');
+  subjectFilter.innerHTML = ''; // Kosongkan opsi yang ada
+
+  // Buat opsi default "Semua"
+  const defaultOption = document.createElement('option');
+  defaultOption.value = "";
+  defaultOption.textContent = "Semua Mata Pelajaran";
+  subjectFilter.appendChild(defaultOption);
+
+  // Ambil mata pelajaran unik dan urutkan
+  const subjects = [...new Set(data.map(row => row['Mata_Pelajaran']))].sort();
+
+  // Buat opsi untuk setiap mata pelajaran unik
+  subjects.forEach(subj => {
+    if (subj) { // Pastikan tidak ada nilai kosong
+      const option = document.createElement('option');
+      option.value = subj;
+      option.textContent = subj;
+      subjectFilter.appendChild(option);
+    }
+  });
+ }
+
  function applyFilters() {
   const institusiFilter = document.getElementById('filter-institusi').value;
-  const mapelFilter = document.getElementById('filter-mapel').value.toLowerCase();
+  const mapelFilter = document.getElementById('filter-mapel').value;
   const pesertaFilter = document.getElementById('filter-peserta').value.toLowerCase();
 
   const filteredData = allData.filter(row => {
@@ -150,7 +175,7 @@
   const institusiMatch = !institusiFilter || row.Institusi === institusiFilter;
 
   // Cek filter mata pelajaran
-  const mapelMatch = row['Mata_Pelajaran'].toLowerCase().includes(mapelFilter); // Perubahan di sini
+  const mapelMatch = !mapelFilter || row['Mata_Pelajaran'] === mapelFilter;
 
   // Cek filter peserta di semua kolom peserta
   let pesertaMatch = false;
@@ -174,7 +199,7 @@
 
  function setupFilters() {
   document.getElementById('filter-institusi').addEventListener('change', applyFilters);
-  document.getElementById('filter-mapel').addEventListener('input', applyFilters);
+  document.getElementById('filter-mapel').addEventListener('change', applyFilters);
   document.getElementById('filter-peserta').addEventListener('input', applyFilters);
  }
 
