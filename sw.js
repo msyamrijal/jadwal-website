@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v3'; // Versi cache dinaikkan!
+const CACHE_NAME = 'jadwal-presentasi-v2'; // Versi cache dinaikkan!
 const urlsToCache = [
   '/',
   'index.html',
@@ -6,7 +6,6 @@ const urlsToCache = [
   'style.css',
   'script.js',
   'rekap.js',
-  'app.js', // File baru ditambahkan
   // File-file ikon standar dari RealFaviconGenerator
   'site.webmanifest',
   'apple-touch-icon.png',
