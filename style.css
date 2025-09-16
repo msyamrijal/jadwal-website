@@ -38,6 +38,20 @@
   font-weight: 400;
  }
 
+ .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+ }
+
+ header nav a {
+  color: #fff; text-decoration: none; border: 1px solid #fff; padding: 5px 15px; border-radius: 5px; transition: all 0.3s;
+ }
+ header nav a:hover { background-color: #fff; color: var(--primary-color); }
+
  main {
   max-width: 1200px;
   margin: 30px auto;
@@ -155,3 +169,43 @@
   border-bottom: none;
   }
  }
+
+ /* --- Style untuk Halaman Rekap --- */
+ .rekap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+ }
+
+ .rekap-card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  overflow: hidden;
+ }
+
+ .rekap-card h2 {
+  margin-top: 0;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 10px;
+  font-size: 1.4rem;
+ }
+
+ .rekap-card ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+ }
+
+ .rekap-card li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--light-gray);
+ }
+
+ .rekap-card li:last-child { border-bottom: none; }
+
+ .rekap-card .mapel { font-weight: 600; display: block; }
+
+ .rekap-card .tanggal { font-size: 0.9em; color: #7f8c8d; }
