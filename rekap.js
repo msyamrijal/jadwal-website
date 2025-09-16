@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     loadRekapData();
+    setupRekapSearch();
 });
 
 function loadRekapData() {
@@ -107,4 +108,19 @@ function parseCSV(csvData) {
         }
     }
     return data;
+}
+
+function setupRekapSearch() {
+    const searchInput = document.getElementById('rekap-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const allCards = document.querySelectorAll('.rekap-card');
+
+        allCards.forEach(card => {
+            const participantName = card.querySelector('h2').textContent.toLowerCase();
+            card.style.display = participantName.includes(searchTerm) ? '' : 'none';
+        });
+    });
 }

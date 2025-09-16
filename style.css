@@ -170,6 +170,27 @@
   }
  }
 
+ /* --- Style untuk Pencarian Rekap --- */
+ .rekap-search-container {
+  margin-bottom: 20px;
+ }
+
+ .rekap-search-container input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow);
+ }
+
+ .rekap-search-container input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+ }
+
  /* --- Style untuk Halaman Rekap --- */
  .rekap-grid {
   display: grid;
