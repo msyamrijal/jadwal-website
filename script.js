@@ -14,26 +14,36 @@
   return response.text();
   })
   .then(csvData => {
-  const parsedData = parseCSV(csvData); // Simpan data asli
+  const parsedData = parseCSV(csvData);
 
-  // Filter untuk hanya menampilkan tanggal hari ini dan masa depan
+  // Fungsi bantuan untuk mengubah string tanggal (DD/MM/YYYY atau DD-MM-YYYY) menjadi objek Date
+  const parseDateFromString = (dateString) => {
+  if (!dateString || dateString.trim() === '') return null;
+  // Ganti '-' dengan '/' dan pecah menjadi bagian-bagian
+  const parts = dateString.trim().replace(/-/g, '/').split('/');
+  if (parts.length === 3) {
+  const [day, month, year] = parts;
+  // Buat objek Date. Bulan di JS dimulai dari 0.
+  const date = new Date(year, month - 1, day);
+  // Pastikan tanggal yang dibuat valid
+  if (!isNaN(date.getTime())) {
+  return date;
+  }
+  }
+  console.warn(`Format tanggal tidak valid: "${dateString}".`);
+  return null;
+  };
+
+  // 1. Filter data untuk tanggal mendatang & tambahkan objek Date untuk pengurutan
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
 
-  allData = parsedData.filter(row => {
-  if (!row.Tanggal || row.Tanggal.trim() === '') return false; // Abaikan baris tanpa tanggal
-  try {
-  // Asumsi format tanggal di spreadsheet adalah DD/MM/YYYY
-  const [day, month, year] = row.Tanggal.split('/');
-  const eventDate = new Date(year, month - 1, day); // Bulan di JS dimulai dari 0 (Januari=0)
-  return eventDate >= today;
-  } catch (e) {
-  console.warn(`Format tanggal tidak valid: "${row.Tanggal}". Baris ini dilewati.`);
-  return false;
-  }
-  });
+  allData = parsedData
+  .map(row => ({ ...row, dateObject: parseDateFromString(row.Tanggal) }))
+  .filter(row => row.dateObject && row.dateObject >= today)
+  .sort((a, b) => a.dateObject - b.dateObject); // 2. Urutkan dari tanggal terdekat
 
-  populateTable(allData); // Tampilkan data yang sudah difilter
+  populateTable(allData); // Tampilkan data yang sudah difilter dan diurutkan
   setupFilters(); // Siapkan event listener untuk input filter
   })
   .catch(error => {
