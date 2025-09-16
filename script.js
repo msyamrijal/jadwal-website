@@ -41,6 +41,7 @@
   .sort((a, b) => a.dateObject - b.dateObject); // 2. Urutkan dari tanggal terdekat
 
   populateTable(allData); // Tampilkan data yang sudah difilter dan diurutkan
+  populateInstitutionFilter(allData); // Buat opsi dropdown institusi
   setupFilters(); // Siapkan event listener untuk input filter
   })
   .catch(error => {
@@ -115,14 +116,38 @@
   });
  }
 
+ function populateInstitutionFilter(data) {
+  const institutionFilter = document.getElementById('filter-institusi');
+  institutionFilter.innerHTML = ''; // Kosongkan opsi yang ada
+
+  // Buat opsi default "Semua"
+  const defaultOption = document.createElement('option');
+  defaultOption.value = "";
+  defaultOption.textContent = "Semua Institusi";
+  institutionFilter.appendChild(defaultOption);
+
+  // Ambil institusi unik dan urutkan
+  const institutions = [...new Set(data.map(row => row.Institusi))].sort();
+
+  // Buat opsi untuk setiap institusi unik
+  institutions.forEach(inst => {
+    if (inst) { // Pastikan tidak ada nilai kosong
+      const option = document.createElement('option');
+      option.value = inst;
+      option.textContent = inst;
+      institutionFilter.appendChild(option);
+    }
+  });
+ }
+
  function applyFilters() {
-  const institusiFilter = document.getElementById('filter-institusi').value.toLowerCase();
+  const institusiFilter = document.getElementById('filter-institusi').value;
   const mapelFilter = document.getElementById('filter-mapel').value.toLowerCase();
   const pesertaFilter = document.getElementById('filter-peserta').value.toLowerCase();
 
   const filteredData = allData.filter(row => {
-  // Cek filter institusi
-  const institusiMatch = row.Institusi.toLowerCase().includes(institusiFilter);
+  // Cek filter institusi (pencocokan persis, atau tampilkan semua jika filter kosong)
+  const institusiMatch = !institusiFilter || row.Institusi === institusiFilter;
 
   // Cek filter mata pelajaran
   const mapelMatch = row['Mata_Pelajaran'].toLowerCase().includes(mapelFilter); // Perubahan di sini
@@ -148,7 +173,7 @@
  }
 
  function setupFilters() {
-  document.getElementById('filter-institusi').addEventListener('input', applyFilters);
+  document.getElementById('filter-institusi').addEventListener('change', applyFilters);
   document.getElementById('filter-mapel').addEventListener('input', applyFilters);
   document.getElementById('filter-peserta').addEventListener('input', applyFilters);
  }

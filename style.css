@@ -54,7 +54,7 @@
   box-shadow: var(--shadow);
  }
 
- .filter-container input {
+ .filter-container input, .filter-container select {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -63,7 +63,7 @@
   transition: border-color 0.3s, box-shadow 0.3s;
  }
 
- .filter-container input:focus {
+ .filter-container input:focus, .filter-container select:focus {
   outline: none;
   border-color: var(--secondary-color);
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
