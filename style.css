@@ -27,14 +27,15 @@
  header {
   background-color: var(--primary-color);
   color: #fff;
-  padding: 1.5em 0;
+  padding: 0.8em 0;
   text-align: center;
   box-shadow: var(--shadow);
  }
 
  header h1 {
   margin: 0;
-  font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 400;
  }
 
  main {
