@@ -271,38 +271,3 @@
     };
   }
  }
-
- document.addEventListener("DOMContentLoaded", () => {
-  loadData();
-
-  const installButton = document.getElementById('install-button');
-  if (installButton) {
-    installButton.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        // Tampilkan prompt instalasi
-        deferredPrompt.prompt();
-        // Tunggu respons pengguna
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`Respons pengguna: ${outcome}`);
-        // Kita hanya bisa menggunakan prompt sekali, jadi reset variabelnya
-        deferredPrompt = null;
-        // Sembunyikan tombol setelah digunakan
-        installButton.hidden = true;
-      }
-    });
-  }
-
-  // Daftarkan Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(() => console.log('Service Worker berhasil didaftarkan.'))
-      .catch(error => console.error('Pendaftaran Service Worker gagal:', error));
-  }
- });
-
- window.addEventListener('appinstalled', () => {
-  // Kosongkan deferredPrompt dan sembunyikan tombol jika aplikasi berhasil diinstal
-  deferredPrompt = null;
-  const installButton = document.getElementById('install-button');
-  if (installButton) installButton.hidden = true;
- });
