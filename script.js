@@ -52,6 +52,7 @@
   .sort((a, b) => a.dateObject - b.dateObject); // 2. Urutkan dari tanggal terdekat
 
   populateTable(allData); // Tampilkan data yang sudah difilter dan diurutkan
+  renderCalendar(allData); // Tampilkan kalender
   populateInstitutionFilter(allData); // Buat opsi dropdown institusi
   populateSubjectFilter(allData); // Buat opsi dropdown mata pelajaran
   setupFilters(); // Siapkan event listener untuk input filter
@@ -208,10 +209,67 @@
   populateTable(filteredData);
  }
 
+ function renderCalendar(data) {
+  const calendarEl = document.getElementById('calendar-container');
+  if (!calendarEl) return;
+
+  const calendarEvents = data.map(row => ({
+    title: `${row.Institusi} - ${row['Mata_Pelajaran']}`,
+    start: row.dateObject,
+    extendedProps: {
+      ...row
+    }
+  }));
+
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,listWeek'
+    },
+    events: calendarEvents,
+    eventClick: function(info) {
+      const props = info.event.extendedProps;
+      
+      // Kumpulkan nama peserta
+      let peserta = "";
+      for(let i = 1; i <= 10; i++){
+        if(props["Peserta " + i]){
+          peserta += props["Peserta " + i] + ", ";
+        }
+      }
+      peserta = peserta.slice(0, -2);
+
+      // Isi modal
+      document.getElementById('modal-title').textContent = info.event.title;
+      document.getElementById('modal-institusi').textContent = props.Institusi;
+      document.getElementById('modal-tanggal').textContent = props.dateObject.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      document.getElementById('modal-materi').textContent = props['Materi Diskusi'];
+      document.getElementById('modal-peserta').textContent = peserta;
+
+      // Tampilkan modal
+      document.getElementById('event-modal').hidden = false;
+    }
+  });
+
+  calendar.render();
+ }
+
  function setupFilters() {
   document.getElementById('filter-institusi').addEventListener('change', applyFilters);
   document.getElementById('filter-mapel').addEventListener('change', applyFilters);
   document.getElementById('filter-peserta').addEventListener('input', applyFilters);
+
+  // Logika untuk menutup modal
+  const modal = document.getElementById('event-modal');
+  const closeBtn = document.querySelector('.modal-close');
+  if (modal && closeBtn) {
+    closeBtn.onclick = () => { modal.hidden = true; };
+    window.onclick = (event) => {
+      if (event.target == modal) modal.hidden = true;
+    };
+  }
  }
 
  document.addEventListener("DOMContentLoaded", () => {

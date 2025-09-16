@@ -12,6 +12,8 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#2c3e50">
+  <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
   <link rel="stylesheet" href="style.css">
  </head>
  <body>
@@ -26,6 +28,8 @@
   </header>
 
   <main>
+  <div id="calendar-container"></div>
+
   <div class="filter-container">
   <select id="filter-institusi"></select>
   <select id="filter-mapel"></select>
@@ -48,6 +52,18 @@
   </tbody>
   </table>
   </main>
+
+  <div id="event-modal" class="modal" hidden>
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2 id="modal-title"></h2>
+      <p><strong>Institusi:</strong> <span id="modal-institusi"></span></p>
+      <p><strong>Tanggal:</strong> <span id="modal-tanggal"></span></p>
+      <p><strong>Materi:</strong> <span id="modal-materi"></span></p>
+      <p><strong>Peserta:</strong> <span id="modal-peserta"></span></p>
+    </div>
+  </div>
+
   <script src="script.js"></script>
  </body>
  </html>
