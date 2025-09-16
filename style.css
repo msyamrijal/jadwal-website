@@ -40,8 +40,7 @@
  main {
   max-width: 1200px;
   margin: 30px auto;
-  padding: 20px;
-  padding-bottom: 100px; /* Memberi ruang agar tidak tertutup footer */
+  padding: 20px; 
  }
 
  .filter-container {
@@ -99,16 +98,6 @@
 
  #jadwal-table tbody tr:hover {
   background-color: #e8f4fd;
- }
-
- footer {
-  text-align: center;
-  padding: 1em 0;
-  background-color: var(--primary-color);
-  color: #fff;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
  }
 
  #loading-indicator {
