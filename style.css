@@ -1,3 +1,9 @@
+ *,
+ *::before,
+ *::after {
+  box-sizing: border-box;
+ }
+ 
  :root {
   --primary-color: #2c3e50;
   --secondary-color: #3498db;
@@ -139,6 +145,9 @@
   padding-left: 50%; /* Beri ruang untuk label */
   position: relative;
   border-bottom: 1px solid var(--light-gray);
+  /* Memaksa teks untuk pindah baris jika terlalu panjang */
+  overflow-wrap: break-word;
+  word-break: break-word;
   }
 
   #jadwal-table td::before {
