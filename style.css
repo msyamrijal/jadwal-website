@@ -1,20 +1,41 @@
+ :root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --light-gray: #ecf0f1;
+  --dark-gray: #bdc3c7;
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-color: #34495e;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+ }
+ 
  body {
-  font-family: sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
  }
 
  header {
-  background-color: #333;
+  background-color: var(--primary-color);
   color: #fff;
-  padding: 1em 0;
+  padding: 1.5em 0;
   text-align: center;
+  box-shadow: var(--shadow);
+ }
+
+ header h1 {
+  margin: 0;
+  font-weight: 600;
  }
 
  main {
+  max-width: 1200px;
+  margin: 30px auto;
   padding: 20px;
-  padding-bottom: 80px; /* Memberi ruang agar tidak tertutup footer */
+  padding-bottom: 100px; /* Memberi ruang agar tidak tertutup footer */
  }
 
  .filter-container {
@@ -22,43 +43,116 @@
   gap: 10px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
  }
 
  .filter-container input {
-  padding: 8px;
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   flex-grow: 1;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+ }
+
+ .filter-container input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
  }
 
  #jadwal-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  box-shadow: var(--shadow);
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden; /* Agar border-radius terlihat di tabel */
  }
 
  #jadwal-table th,
  #jadwal-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  padding: 15px;
   text-align: left;
+  border-bottom: 1px solid var(--light-gray);
  }
 
  #jadwal-table th {
-  background-color: #333;
+  background-color: var(--primary-color);
   color: #fff;
+  font-weight: 600;
  }
 
  #jadwal-table tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: var(--bg-color);
+ }
+
+ #jadwal-table tbody tr:hover {
+  background-color: #e8f4fd;
  }
 
  footer {
   text-align: center;
   padding: 1em 0;
-  background-color: #333;
+  background-color: var(--primary-color);
   color: #fff;
   position: fixed;
   bottom: 0;
   width: 100%;
+ }
+
+ #loading-indicator {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+  color: var(--secondary-color);
+ }
+
+ /* --- Tampilan Responsif untuk Mobile --- */
+ @media screen and (max-width: 768px) {
+  main {
+  padding: 10px;
+  margin: 15px auto;
+  }
+
+  #jadwal-table thead {
+  display: none; /* Sembunyikan header tabel di mobile */
+  }
+
+  #jadwal-table, #jadwal-table tbody, #jadwal-table tr, #jadwal-table td {
+  display: block;
+  width: 100%;
+  }
+
+  #jadwal-table tr {
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--dark-gray);
+  }
+
+  #jadwal-table td {
+  text-align: right; /* Nilai data di kanan */
+  padding-left: 50%; /* Beri ruang untuk label */
+  position: relative;
+  border-bottom: 1px solid var(--light-gray);
+  }
+
+  #jadwal-table td::before {
+  content: attr(data-label); /* Ambil teks dari atribut data-label */
+  position: absolute;
+  left: 15px;
+  width: 45%;
+  padding-right: 10px;
+  text-align: left; /* Label di kiri */
+  font-weight: 600;
+  color: var(--primary-color);
+  }
+
+  #jadwal-table td:last-child {
+  border-bottom: none;
+  }
  }

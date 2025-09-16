@@ -79,18 +79,23 @@
   const tr = document.createElement("tr");
 
   const institusi = document.createElement("td");
+  institusi.setAttribute('data-label', 'Institusi');
   institusi.textContent = row.Institusi;
   tr.appendChild(institusi);
 
   const mataPelajaran = document.createElement("td");
+  mataPelajaran.setAttribute('data-label', 'Mata Pelajaran');
   mataPelajaran.textContent = row['Mata_Pelajaran']; // Perubahan di sini
   tr.appendChild(mataPelajaran);
 
   const tanggal = document.createElement("td");
-  tanggal.textContent = row.Tanggal;
+  tanggal.setAttribute('data-label', 'Tanggal');
+  // Format tanggal agar lebih mudah dibaca
+  tanggal.textContent = row.dateObject.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   tr.appendChild(tanggal);
 
   const materiDiskusi = document.createElement("td");
+  materiDiskusi.setAttribute('data-label', 'Materi Diskusi');
   materiDiskusi.textContent = row['Materi Diskusi']; // Perubahan di sini
   tr.appendChild(materiDiskusi);
   
@@ -102,6 +107,7 @@
   }
 
   const pesertaTd = document.createElement("td");
+  pesertaTd.setAttribute('data-label', 'Peserta');
   pesertaTd.textContent = peserta.slice(0, -2);
   tr.appendChild(pesertaTd);
 
