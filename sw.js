@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v1';
+const CACHE_NAME = 'jadwal-presentasi-v2'; // Versi cache dinaikkan!
 const urlsToCache = [
   '/',
   'index.html',
@@ -6,11 +6,15 @@ const urlsToCache = [
   'style.css',
   'script.js',
   'rekap.js',
+  // File-file ikon standar dari RealFaviconGenerator
+  'site.webmanifest',
+  'apple-touch-icon.png',
+  'favicon-32x32.png',
+  'favicon-16x16.png',
   'favicon.ico',
-  'manifest.json'
-].concat([ // Tambahkan ikon baru ke cache
-  'icons/icon-180x180.png',
-  'icons/icon.svg']);
+  'android-chrome-192x192.png',
+  'android-chrome-512x512.png'
+];
 
 // Event: Install
 // Saat service worker di-install, buka cache dan simpan semua file dasar aplikasi.
