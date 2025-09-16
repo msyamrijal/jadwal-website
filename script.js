@@ -16,23 +16,20 @@
   .then(csvData => {
   const parsedData = parseCSV(csvData);
 
-  // Fungsi bantuan untuk mengubah string tanggal (DD/MM/YYYY atau DD-MM-YYYY) menjadi objek Date
+  // Fungsi bantuan untuk mengubah string tanggal menjadi objek Date
   const parseDateFromString = (dateString) => {
-  if (!dateString || dateString.trim() === '') return null;
-  // Ganti '-' dengan '/' dan pecah menjadi bagian-bagian
-  const parts = dateString.trim().replace(/-/g, '/').split('/');
-  if (parts.length === 3) {
-  const [day, month, year] = parts;
-  // Buat objek Date. Bulan di JS dimulai dari 0.
-  const date = new Date(year, month - 1, day);
-  // Pastikan tanggal yang dibuat valid
-  if (!isNaN(date.getTime())) {
-  return date;
+    if (!dateString || dateString.trim() === '') return null;
+
+    // Format seperti "9/15/2025 8:00:00" dapat langsung diproses oleh constructor Date.
+    const date = new Date(dateString);
+
+    // Periksa apakah tanggal yang dihasilkan valid.
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
+    return null;
   }
-  }
-  console.warn(`Format tanggal tidak valid: "${dateString}".`);
-  return null;
-  };
 
   // 1. Filter data untuk tanggal mendatang & tambahkan objek Date untuk pengurutan
   const today = new Date();
