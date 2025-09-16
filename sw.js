@@ -8,7 +8,9 @@ const urlsToCache = [
   'rekap.js',
   'favicon.ico',
   'manifest.json'
-];
+].concat([ // Tambahkan ikon baru ke cache
+  'icons/icon-180x180.png',
+  'icons/icon.svg']);
 
 // Event: Install
 // Saat service worker di-install, buka cache dan simpan semua file dasar aplikasi.
