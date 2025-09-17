@@ -1,8 +1,8 @@
-const CACHE_NAME = 'jadwal-presentasi-v6'; // Versi cache dinaikkan
+const CACHE_NAME = 'jadwal-presentasi-v8-refactor'; // Versi baru setelah refactor
 const urlsToCache = [
   '/',
   'index.html',
-  'rekap.html', // PERBAIKAN: File ini seharusnya rekap.html, bukan jadwal.html
+  'jadwal.html', // Menambahkan jadwal.html
   'style.css',
   'script.js',
   'app.js', // File baru
@@ -39,30 +39,31 @@ self.addEventListener('install', event => {
 // Event: Fetch
 // Setiap kali halaman meminta sebuah file (gambar, css, dll.), service worker akan mencegatnya.
 self.addEventListener('fetch', event => {
-  // Untuk data dari Google Sheets, selalu coba ambil dari internet terlebih dahulu.
-  // Jika gagal (offline), baru ambil dari cache.
-  if (event.request.url.includes('docs.google.com')) {
+  // STRATEGI 1: Network-first untuk permintaan navigasi (HTML) dan data Google Sheets.
+  // Ini memastikan pengguna online selalu mendapatkan HTML dan data jadwal terbaru.
+  if (event.request.mode === 'navigate' || event.request.url.includes('docs.google.com')) {
     event.respondWith(
-      caches.open(CACHE_NAME).then(cache => {
-        return fetch(event.request)
-          .then(response => {
-            // Jika berhasil, simpan response ke cache dan kembalikan
+      fetch(event.request)
+        .then(response => {
+          // Jika berhasil, simpan ke cache dan kembalikan responsnya
+          return caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, response.clone());
             return response;
-          })
-          .catch(() => {
-            // Jika fetch gagal, coba cari di cache
-            return cache.match(event.request);
           });
-      })
+        })
+        .catch(() => {
+          // Jika jaringan gagal, coba ambil dari cache sebagai fallback
+          return caches.match(event.request);
+        })
     );
     return;
   }
-
-  // Untuk file lain, coba cari di cache dulu. Jika tidak ada, baru ambil dari internet.
+  // STRATEGI 2: Cache-first untuk aset statis lainnya (CSS, JS, gambar, font).
+  // Aset ini tidak sering berubah dan aman disajikan dari cache untuk kecepatan.
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+        // Jika ada di cache, kembalikan. Jika tidak, ambil dari jaringan.
         return response || fetch(event.request);
       })
   );

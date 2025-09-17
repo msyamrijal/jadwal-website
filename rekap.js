@@ -21,22 +21,14 @@ function loadRekapData() {
   loadingIndicator.style.display = 'block';
   searchInput.disabled = true;
  
-  // URL yang sama dengan script utama
-  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
- 
-  fetch(spreadsheetUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('Gagal mengambil data dari jaringan');
-      return response.text();
-    })
-    .then(csvData => {
-      const parsedData = parseCSV(csvData); // Fungsi parseCSV ada di app.js
-      participantSummary = createParticipantSummary(parsedData);
+  // Gunakan fungsi terpusat dari app.js
+  fetchScheduleData()
+    .then(data => {
+      participantSummary = createParticipantSummary(data);
       allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
       setupRekapSearch(); // Siapkan pencarian setelah data siap
     })
     .catch(error => {
-      console.error("Error fetching data:", error);
       document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap.</p>`;
     })
     .finally(() => {

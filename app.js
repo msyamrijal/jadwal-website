@@ -93,6 +93,35 @@ function parseCSV(csvData) {
 }
 
 /**
+ * Mengambil dan mem-parsing data dari Google Sheets.
+ * Fungsi ini menjadi satu-satunya sumber untuk mendapatkan data jadwal.
+ * @returns {Promise<Array<Object>>} Promise yang akan resolve dengan data yang sudah diparsing.
+ */
+function fetchScheduleData() {
+    // Gunakan URL yang sama untuk semua
+    const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
+
+    return new Promise((resolve, reject) => {
+        fetch(spreadsheetUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data dari jaringan');
+                }
+                return response.text();
+            })
+            .then(csvData => {
+                const parsedData = parseCSV(csvData);
+                resolve(parsedData);
+            })
+            .catch(error => {
+                console.error("Error fetching central data:", error);
+                reject(error);
+            });
+    });
+}
+
+
+/**
  * Melacak proses instalasi service worker baru.
  * @param {ServiceWorker} worker 
  */

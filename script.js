@@ -5,17 +5,9 @@
   const loadingIndicator = document.getElementById('loading-indicator');
   loadingIndicator.style.display = 'block'; // Tampilkan indikator loading
 
-  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
-
-  fetch(spreadsheetUrl)
-  .then(response => {
-  if (!response.ok) {
-  throw new Error('Gagal mengambil data dari jaringan');
-  }
-  return response.text();
-  })
-  .then(csvData => {
-  const parsedData = parseCSV(csvData);
+  // Gunakan fungsi terpusat dari app.js
+  fetchScheduleData()
+  .then(parsedData => {
 
   // Fungsi bantuan untuk mengubah string tanggal menjadi objek Date
   const parseDateFromString = (dateString) => {
@@ -61,8 +53,7 @@
     applyFilters(); // Terapkan filter yang tersimpan saat halaman dimuat
   }
   })
-  .catch(error => {
-  console.error("Error fetching data:", error);
+  .catch(error => { // Error sudah di-handle di fungsi pusat, ini hanya untuk UI
   document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
   })
   .finally(() => {
