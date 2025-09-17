@@ -8,17 +8,17 @@ let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
   try {
     // Pola Cache-then-Network dengan async/await
     // 1. Coba muat dari cache terlebih dahulu
-    const cachedData = await getSchedules();
+    const cachedData = await getRawSchedules();
     if (cachedData && cachedData.length > 0) {
       console.log("Menampilkan data jadwal dari cache.");
       processScheduleData(cachedData);
     }
  
     // 2. Selalu coba ambil data terbaru dari jaringan
-    const freshData = await fetchScheduleData();
+    const freshData = await fetchScheduleData(); // fetchScheduleData dari db.js
     console.log("Data jadwal baru dari jaringan diterima.");
     processScheduleData(freshData); // Perbarui UI dengan data baru
-    await saveSchedules(freshData); // Simpan data baru ke IndexedDB
+    await saveRawSchedules(freshData); // Simpan data mentah baru ke IndexedDB
  
   } catch (error) {
     console.error("Gagal memuat data:", error);
@@ -113,12 +113,12 @@ function processScheduleData(parsedData) {
 
     const detailCell = document.createElement("td");
     detailCell.colSpan = 3; // Agar mengisi seluruh lebar tabel
-    detailCell.innerHTML = "
-      <div class=\"detail-content\">
+    detailCell.innerHTML = `
+      <div class="detail-content">
         <p><strong>Institusi:</strong> ${row.Institusi || 'Tidak ada data'}</p>
         <p><strong>Materi Diskusi:</strong> ${row['Materi Diskusi'] || 'Tidak ada data'}</p>
       </div>
-    ";
+    `;
     detailRow.appendChild(detailCell);
 
     // 3. Tambahkan event listener untuk membuka/menutup detail

@@ -34,7 +34,7 @@ async function loadRekapData() {
     console.log("Data rekap baru dari jaringan diterima.");
     const freshSummary = createParticipantSummary(freshData);
     processRekapData(freshSummary); // Perbarui UI dengan data baru
-    await saveRekap(freshSummary); // Simpan data baru ke IndexedDB
+    await saveRekap(freshSummary); // Simpan data rekap baru ke IndexedDB
  
   } catch (error) {
     console.error("Gagal memuat data rekap:", error);
