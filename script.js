@@ -77,7 +77,7 @@ function processScheduleData(parsedData) {
     if (institusiFilter || mapelFilter || pesertaFilter) {
         tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal yang cocok dengan filter yang dipilih.</td></tr>`;
     } else {
-        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal mendatang yang ditemukan. Semua jadwal mungkin sudah lewat.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal mendatang yang ditemukan. Jadwal yang sudah lewat tidak ditampilkan di halaman ini.</td></tr>`;
     }
     return;
   }
@@ -234,23 +234,25 @@ function setupFilters() {
   const subjectFilter = document.getElementById('filter-mapel');
   const participantFilter = document.getElementById('filter-peserta');
 
-  institutionFilter.addEventListener('change', () => {
+  const updateAndApplyFilters = () => {
     const selectedInstitution = institutionFilter.value;
+    const selectedSubject = subjectFilter.value;
 
-    // Tentukan data yang relevan berdasarkan institusi yang dipilih
-    const relevantData = selectedInstitution
+    // Perbarui filter Mata Pelajaran berdasarkan Institusi yang dipilih
+    const relevantDataForSubjects = selectedInstitution 
       ? allData.filter(row => row.Institusi === selectedInstitution)
-      : allData; // Jika tidak ada institusi dipilih, gunakan semua data
+      : allData;
+    populateSubjectFilter(relevantDataForSubjects);
+    // Pastikan nilai filter mapel yang sebelumnya dipilih tetap ada jika memungkinkan
+    subjectFilter.value = selectedSubject;
 
-    // Perbarui opsi filter mata pelajaran dengan data yang relevan
-    populateSubjectFilter(relevantData);
-
-    // Terapkan kembali semua filter untuk memperbarui tabel
+    // Terapkan semua filter
     applyFilters();
-  });
+  };
 
+  institutionFilter.addEventListener('change', updateAndApplyFilters);
   subjectFilter.addEventListener('change', applyFilters);
-  
+
   const searchResultsContainer = document.getElementById('jadwal-search-results');
 
   participantFilter.addEventListener('input', (e) => {

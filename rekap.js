@@ -1,4 +1,4 @@
-let participantSummary = {};
+let scheduleSummary = {};
 let allParticipantNames = [];
 let currentCalendarDate = new Date();
  
@@ -26,7 +26,7 @@ async function loadRekapData() {
     const cachedData = await getRekap();
     if (cachedData && Object.keys(cachedData).length > 0) {
       console.log("Menampilkan data rekap dari cache.");
-      processRekapData(cachedData);
+      processRekapData(cachedData, true); // Tandai sebagai data dari cache
     }
  
     // 2. Selalu coba ambil data terbaru dari jaringan
@@ -39,7 +39,7 @@ async function loadRekapData() {
   } catch (error) {
     console.error("Gagal memuat data rekap:", error);
     // Hanya tampilkan error jika tidak ada data sama sekali (bahkan dari cache)
-    if (Object.keys(participantSummary).length === 0) {
+    if (Object.keys(scheduleSummary).length === 0) {
       // Tampilkan pesan error di initial-prompt agar tidak merusak layout
       const prompt = document.getElementById('initial-prompt');
       prompt.textContent = 'Gagal memuat data rekap. Periksa koneksi internet Anda.';
@@ -58,16 +58,19 @@ async function loadRekapData() {
  * Memproses data rekap (baik dari cache maupun jaringan) dan memperbarui UI.
  * @param {Object} summaryData 
  */
-function processRekapData(summaryData) {
-  participantSummary = summaryData;
-  allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
+function processRekapData(summaryData, fromCache = false) {
+  scheduleSummary = summaryData;
+  allParticipantNames = Object.keys(scheduleSummary).sort((a, b) => a.localeCompare(b));
   setupRekapSearch();
 
   // Sembunyikan prompt karena kita akan memproses data
   document.getElementById('initial-prompt').classList.add('hidden');
 
   const lastParticipant = localStorage.getItem('lastRekapParticipant');
-  if (lastParticipant && participantSummary[lastParticipant]) {
+  // Jika data baru dari jaringan, perbarui tampilan.
+  // Jika data dari cache, hanya tampilkan jika belum ada yang ditampilkan.
+  const detailsVisible = !document.getElementById('participant-details-container').classList.contains('hidden');
+  if (lastParticipant && scheduleSummary[lastParticipant] && (!fromCache || !detailsVisible)) {
     displayParticipantDetails(lastParticipant);
   } else {
     // Jika tidak ada peserta sama sekali di summary (karena semua jadwal sudah lewat)
@@ -140,7 +143,7 @@ function displayParticipantDetails(name) {
   document.getElementById('rekap-search').value = name;
  
   // Isi detail
-  const schedules = participantSummary[name];
+  const schedules = scheduleSummary[name];
   nameHeading.textContent = name;
   document.getElementById('schedule-count').textContent = `(${schedules.length} Sisa)`;
  
@@ -199,6 +202,8 @@ function generateCalendar(year, month, schedules) {
   const lastDay = new Date(year, month + 1, 0);
   const daysInMonth = lastDay.getDate();
   const startingDay = firstDay.getDay(); // 0 = Minggu, 1 = Senin, ...
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
  
   // Buat MAP tanggal jadwal untuk pencarian cepat dan mendapatkan detail
   const scheduleMap = new Map();
@@ -234,15 +239,17 @@ function generateCalendar(year, month, schedules) {
   for (let i = startingDay; i < 7; i++) {
     const currentDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
     const daySchedules = scheduleMap.get(currentDateStr);
-    let classes = '';
+    let divClasses = '';
     let title = '';
-      let dateAttr = `data-date="${currentDateStr}"`; // Selalu tambahkan data-date
+    let dateAttr = `data-date="${currentDateStr}"`; // Selalu tambahkan data-date
     if (daySchedules) {
-        classes = 'has-schedule';
+        divClasses = 'has-schedule';
         title = `title="Jadwal: ${daySchedules.join(', ')}"`;
     }
-      // Pindahkan dateAttr ke parent (td) untuk konsistensi
-      html += `<td ${dateAttr}><div class="${classes}" ${title}>${date}</div></td>`;
+    if (isCurrentMonth && date === today.getDate()) {
+        divClasses += ' today';
+    }
+    html += `<td ${dateAttr}><div class="${divClasses.trim()}" ${title}>${date}</div></td>`;
     date++;
   }
   html += '</tr>';
@@ -253,15 +260,17 @@ function generateCalendar(year, month, schedules) {
     for (let i = 0; i < 7 && date <= daysInMonth; i++) {
       const currentDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
       const daySchedules = scheduleMap.get(currentDateStr);
-      let classes = '';
+      let divClasses = '';
       let title = '';
       let dateAttr = `data-date="${currentDateStr}"`; // Selalu tambahkan data-date
       if (daySchedules) {
-          classes = 'has-schedule';
+          divClasses = 'has-schedule';
           title = `title="Jadwal: ${daySchedules.join(', ')}"`;
       }
-      // Pindahkan dateAttr ke parent (td) untuk konsistensi
-      html += `<td ${dateAttr}><div class="${classes}" ${title}>${date}</div></td>`;
+      if (isCurrentMonth && date === today.getDate()) {
+        divClasses += ' today';
+      }
+      html += `<td ${dateAttr}><div class="${divClasses.trim()}" ${title}>${date}</div></td>`;
       date++;
     }
     html += '</tr>';
