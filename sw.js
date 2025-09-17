@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v9-indexeddb'; // Versi baru dengan IndexedDB
+const CACHE_NAME = 'jadwal-presentasi-v10-offline-first'; // Versi baru dengan strategi offline-first
 const urlsToCache = [
   '/',
   'index.html',
@@ -40,25 +40,36 @@ self.addEventListener('install', event => {
 // Event: Fetch
 // Setiap kali halaman meminta sebuah file (gambar, css, dll.), service worker akan mencegatnya.
 self.addEventListener('fetch', event => {
-  // STRATEGI 1: Network-first untuk permintaan navigasi (HTML) dan data Google Sheets.
-  // Ini memastikan pengguna online selalu mendapatkan HTML dan data jadwal terbaru.
-  if (event.request.mode === 'navigate' || event.request.url.includes('docs.google.com')) {
+  const url = new URL(event.request.url);
+
+  // STRATEGI 1: Stale-While-Revalidate untuk halaman HTML (permintaan navigasi).
+  // Ini membuat aplikasi terasa instan saat dibuka, bahkan saat offline.
+  if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          // Jika berhasil, simpan ke cache dan kembalikan responsnya
-          return caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, response.clone());
-            return response;
+      caches.open(CACHE_NAME).then(cache => {
+        // 1. Sajikan dari cache terlebih dahulu
+        return cache.match(event.request).then(cachedResponse => {
+          // 2. Di latar belakang, ambil versi baru dari jaringan
+          const fetchPromise = fetch(event.request).then(networkResponse => {
+            // Jika berhasil, perbarui cache
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
           });
-        })
-        .catch(() => {
-          // Jika jaringan gagal, coba ambil dari cache sebagai fallback
-          return caches.match(event.request);
-        })
+          // Kembalikan respons dari cache jika ada, atau tunggu dari jaringan jika tidak ada di cache
+          return cachedResponse || fetchPromise;
+        });
+      })
     );
     return;
   }
+
+  // STRATEGI 2: Network-First untuk data Google Sheets.
+  // Selalu coba dapatkan data terbaru, fallback ke cache jika offline.
+  if (url.hostname === 'docs.google.com') {
+    event.respondWith(fetchAndCache(event.request));
+    return;
+  }
+
   // STRATEGI 2: Cache-first untuk aset statis lainnya (CSS, JS, gambar, font).
   // Aset ini tidak sering berubah dan aman disajikan dari cache untuk kecepatan.
   event.respondWith(
@@ -69,6 +80,24 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+
+/**
+ * Fungsi helper untuk strategi Network-First.
+ * Mencoba fetch, jika berhasil perbarui cache, jika gagal ambil dari cache.
+ * @param {Request} request
+ */
+function fetchAndCache(request) {
+  return fetch(request)
+    .then(response => {
+      return caches.open(CACHE_NAME).then(cache => {
+        cache.put(request, response.clone());
+        return response;
+      });
+    })
+    .catch(() => {
+      return caches.match(request);
+    });
+}
 
 // Event: Activate
 // Hapus cache lama jika ada versi baru.
