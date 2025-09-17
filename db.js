@@ -18,21 +18,26 @@ async function fetchScheduleData() {
 }
 
 function parseCSV(text) {
-  const rows = text.split(/\r?\n/).map(row => row.split(','));
-  if (rows.length < 1) return [];
+    const lines = text.split(/\r?\n/);
+    const headers = lines[0].split(',').map(h => h.trim());
+    const result = [];
 
-  const header = rows[0].map(h => h.trim());
-  const data = rows.slice(1).map(row => {
-    let obj = {};
-    row.forEach((val, index) => {
-      if (header[index]) {
-        obj[header[index]] = val.trim();
-      }
-    });
-    return obj;
-  });
-
-  return data;
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i]) continue;
+        const obj = {};
+        const values = lines[i].split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/);
+        headers.forEach((header, index) => {
+            if (values[index]) {
+                let value = values[index].trim();
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    value = value.substring(1, value.length - 1);
+                }
+                obj[header] = value;
+            }
+        });
+        result.push(obj);
+    }
+    return result;
 }
 
 function parseDateFromString(dateStr) {
