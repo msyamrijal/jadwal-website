@@ -86,7 +86,15 @@ function processScheduleData(parsedData) {
   tableBody.innerHTML = ''; // Kosongkan tabel sebelum mengisi data baru
  
   if (data.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal yang cocok dengan filter.</td></tr>`;
+    // Cek apakah ada filter yang aktif.
+    const institusiFilter = document.getElementById('filter-institusi').value;
+    const mapelFilter = document.getElementById('filter-mapel').value;
+    const pesertaFilter = document.getElementById('filter-peserta').value;
+    if (institusiFilter || mapelFilter || pesertaFilter) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal yang cocok dengan filter yang dipilih.</td></tr>`;
+    } else {
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal mendatang yang ditemukan. Semua jadwal mungkin sudah lewat.</td></tr>`;
+    }
     return;
   }
  

@@ -67,6 +67,11 @@ function processRekapData(summaryData) {
   if (lastParticipant && participantSummary[lastParticipant]) {
     displayParticipantDetails(lastParticipant);
   } else {
+    // Jika tidak ada peserta sama sekali di summary (karena semua jadwal sudah lewat)
+    if (allParticipantNames.length === 0) {
+        const initialPrompt = document.getElementById('initial-prompt');
+        initialPrompt.textContent = 'Tidak ada jadwal mendatang yang ditemukan untuk peserta manapun.';
+    }
     document.getElementById('initial-prompt').classList.remove('hidden');
     document.getElementById('rekap-search').focus();
   }
