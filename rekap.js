@@ -89,12 +89,15 @@ function createParticipantSummary(data) {
    * @returns {Date|null}
    */
   const parseDateFromString = (dateString) => {
-    if (!dateString) return null;
-    const parts = dateString.match(/(\d{2})-(\d{2})-(\d{4})\s*(\d{2}):(\d{2})/);
-    if (parts) {
-      return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]);
+    if (!dateString || dateString.trim() === '') return null;
+
+    const date = new Date(dateString);
+
+    if (!isNaN(date.getTime())) {
+      return date;
     }
-    return new Date(dateString); // Fallback
+    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
+    return null;
   };
  
   data.forEach(row => {

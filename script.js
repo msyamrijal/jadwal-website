@@ -44,14 +44,17 @@ function processScheduleData(parsedData) {
    * @returns {Date|null}
    */
   const parseDateFromString = (dateString) => {
-    if (!dateString) return null;
-    // Cek format DD-MM-YYYY HH:mm
-    const parts = dateString.match(/(\d{2})-(\d{2})-(\d{4})\s*(\d{2}):(\d{2})/);
-    if (parts) {
-      // Format: new Date(year, monthIndex, day, hour, minute)
-      return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]);
+    if (!dateString || dateString.trim() === '') return null;
+
+    // Kembali ke metode parsing yang lebih umum dan terbukti berhasil.
+    // Ini dapat menangani format seperti "9/15/2025 8:00:00" dengan benar.
+    const date = new Date(dateString);
+
+    if (!isNaN(date.getTime())) {
+      return date;
     }
-    return new Date(dateString); // Fallback untuk format lain
+    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
+    return null;
   };
 
   const today = new Date();
