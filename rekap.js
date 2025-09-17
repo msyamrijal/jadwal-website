@@ -10,46 +10,45 @@ document.addEventListener("DOMContentLoaded", () => {
   loadRekapData();
 });
  
-function loadRekapData() {
+async function loadRekapData() {
   const loadingIndicator = document.getElementById('loading-indicator');
   const initialPrompt = document.getElementById('initial-prompt');
   const searchInput = document.getElementById('rekap-search');
  
   // Sembunyikan prompt dan nonaktifkan input saat memuat
-  loadingIndicator.style.display = 'block'; // Cukup tampilkan loading
+  loadingIndicator.style.display = 'block';
   searchInput.disabled = true;
+  initialPrompt.classList.add('hidden');
  
-  // Pola Cache-then-Network
-  // 1. Coba muat dari IndexedDB terlebih dahulu
-  getRekap().then(cachedData => {
-    if (cachedData) {
+  try {
+    // Pola Cache-then-Network dengan async/await
+    // 1. Coba muat dari cache terlebih dahulu
+    const cachedData = await getRekap();
+    if (cachedData && Object.keys(cachedData).length > 0) {
       console.log("Menampilkan data rekap dari cache.");
       processRekapData(cachedData);
     }
-
+ 
     // 2. Selalu coba ambil data terbaru dari jaringan
-    fetchScheduleData()
-      .then(freshData => {
-        console.log("Data rekap baru dari jaringan diterima.");
-        const freshSummary = createParticipantSummary(freshData);
-        processRekapData(freshSummary); // Perbarui UI dengan data baru
-        saveRekap(freshSummary); // Simpan data baru ke IndexedDB
-      })
-      .catch(error => {
-        if (!cachedData) { // Hanya tampilkan error jika tidak ada data cache sama sekali
-          document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap. Periksa koneksi internet Anda.</p>`;
-        }
-      })
-      .finally(() => {
-        // Pastikan loading indicator selalu hilang setelah percobaan fetch dari jaringan selesai.
-        loadingIndicator.style.display = 'none';
-        // Aktifkan kembali input setelah semua proses selesai
-        searchInput.disabled = false;
-        // Jika tidak ada data sama sekali dan tidak ada peserta yang ditampilkan, tunjukkan prompt.
-        const detailsVisible = !document.getElementById('participant-details-container').classList.contains('hidden');
-        if (!detailsVisible) initialPrompt.classList.remove('hidden');
-      });
-  });
+    const freshData = await fetchScheduleData();
+    console.log("Data rekap baru dari jaringan diterima.");
+    const freshSummary = createParticipantSummary(freshData);
+    processRekapData(freshSummary); // Perbarui UI dengan data baru
+    await saveRekap(freshSummary); // Simpan data baru ke IndexedDB
+ 
+  } catch (error) {
+    console.error("Gagal memuat data rekap:", error);
+    // Hanya tampilkan error jika tidak ada data sama sekali (bahkan dari cache)
+    if (Object.keys(participantSummary).length === 0) {
+      document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap. Periksa koneksi internet Anda.</p>`;
+    }
+  } finally {
+    // Blok ini DIJAMIN akan selalu berjalan.
+    loadingIndicator.style.display = 'none';
+    searchInput.disabled = false;
+    const detailsVisible = !document.getElementById('participant-details-container').classList.contains('hidden');
+    if (!detailsVisible) initialPrompt.classList.remove('hidden');
+  }
 }
 
 /**

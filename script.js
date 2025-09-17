@@ -1,35 +1,36 @@
  let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
  let allParticipantNames = []; // Variabel untuk menyimpan semua nama peserta unik
 
- function loadData() {
+ async function loadData() {
   const loadingIndicator = document.getElementById('loading-indicator');
   loadingIndicator.style.display = 'block'; // Tampilkan indikator loading
-
-  // Pola Cache-then-Network
-  // 1. Coba muat dari IndexedDB
-  getSchedules().then(cachedData => {
-    if (cachedData) {
+ 
+  try {
+    // Pola Cache-then-Network dengan async/await
+    // 1. Coba muat dari cache terlebih dahulu
+    const cachedData = await getSchedules();
+    if (cachedData && cachedData.length > 0) {
       console.log("Menampilkan data jadwal dari cache.");
       processScheduleData(cachedData);
     }
-
+ 
     // 2. Selalu coba ambil data terbaru dari jaringan
-    fetchScheduleData()
-      .then(freshData => {
-        console.log("Data jadwal baru dari jaringan diterima.");
-        processScheduleData(freshData); // Perbarui UI dengan data baru
-        saveSchedules(freshData); // Simpan data baru ke IndexedDB
-      })
-      .catch(error => {
-        if (!cachedData) { // Hanya tampilkan error jika tidak ada data cache
-          document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
-        }
-      })
-      .finally(() => {
-        loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
-      });
-  });
-}
+    const freshData = await fetchScheduleData();
+    console.log("Data jadwal baru dari jaringan diterima.");
+    processScheduleData(freshData); // Perbarui UI dengan data baru
+    await saveSchedules(freshData); // Simpan data baru ke IndexedDB
+ 
+  } catch (error) {
+    console.error("Gagal memuat data:", error);
+    // Hanya tampilkan error jika tidak ada data sama sekali (bahkan dari cache)
+    if (allData.length === 0) {
+      document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
+    }
+  } finally {
+    // Blok ini DIJAMIN akan selalu berjalan, baik sukses maupun gagal.
+    loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
+  }
+ }
 
 /**
  * Memproses data jadwal (baik dari cache maupun jaringan) dan memperbarui UI.
