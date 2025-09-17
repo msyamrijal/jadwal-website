@@ -17,23 +17,47 @@ async function fetchScheduleData() {
   }
 }
 
-function parseCSV(text) {
-  const rows = text.split(/\r?\n/).map(row => row.split(','));
-  if (rows.length < 1) return [];
+/**
+ * Fungsi parsing CSV yang andal, mampu menangani koma di dalam kolom
+ * yang diapit oleh tanda kutip (e.g., "nilai, dengan, koma").
+ * @param {string} text Teks mentah dari file CSV.
+ * @returns {Array<Object>} Array of objects yang merepresentasikan data.
+ */
+ function parseCSV(text) {
+    const lines = text.split(/\r?\n/);
+    if (lines.length < 2) return [];
 
-  const header = rows[0].map(h => h.trim());
-  const data = rows.slice(1).map(row => {
-    let obj = {};
-    row.forEach((val, index) => {
-      if (header[index]) {
-        obj[header[index]] = val.trim();
-      }
-    });
-    return obj;
-  });
+    // Helper untuk mem-parsing satu baris dengan benar
+    const parseRow = (rowStr) => {
+        const fields = [];
+        // Regex untuk menemukan kolom, baik yang diapit kutip maupun tidak
+        const fieldRegex = /(?:"([^"]*(?:""[^"]*)*)"|([^,]*))(,|$)/g;
+        let currentMatch;
 
-  return data;
-}
+        // Loop melalui semua kecocokan dalam satu baris
+        while ((currentMatch = fieldRegex.exec(rowStr))) {
+            // Ambil nilai dari grup yang cocok: grup 1 untuk quoted, grup 2 untuk unquoted
+            let value = currentMatch[1] !== undefined 
+                ? currentMatch[1].replace(/""/g, '"') // Un-escape double quotes
+                : currentMatch[2];
+            fields.push(value.trim());
+            if (currentMatch[3] === '') break; // Jika akhir baris, berhenti
+        }
+        return fields;
+    };
+
+    const header = parseRow(lines[0]);
+    const data = [];
+
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i]) continue; // Lewati baris kosong
+        const row = parseRow(lines[i]);
+        const obj = {};
+        header.forEach((h, index) => obj[h.trim()] = row[index] || '');
+        data.push(obj);
+    }
+    return data;
+ }
 
 function parseDateFromString(dateStr) {
     if (!dateStr) return null;
