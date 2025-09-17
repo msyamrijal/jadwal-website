@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Panggil fungsi dari app.js untuk setup PWA dan Service Worker
   if (typeof setupPWA === 'function') setupPWA();
   if (typeof registerServiceWorker === 'function') registerServiceWorker();
+  if (typeof setupResetFunctionality === 'function') setupResetFunctionality();
  
   loadRekapData();
 });

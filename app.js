@@ -1,10 +1,3 @@
-// Panggil fungsi setup utama saat dokumen siap
-document.addEventListener('DOMContentLoaded', () => {
-    setupPWA();
-    registerServiceWorker();
-    setupResetFunctionality();
-});
-
 let deferredPrompt; // Variabel untuk menyimpan event install
 
 /**
