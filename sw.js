@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v4'; // Versi cache dinaikkan untuk pembaruan
+const CACHE_NAME = 'jadwal-presentasi-v5'; // Versi cache dinaikkan untuk pembaruan
 const urlsToCache = [
   '/',
   'index.html',
