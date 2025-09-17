@@ -17,7 +17,7 @@
 }
 
 body {
- font-family: 'Montserrat', sans-serif;
+ font-family: 'Inter', sans-serif;
  margin: 0;
  font-weight: 300; /* Menggunakan font yang lebih ringan untuk teks utama */
  padding: 0;
@@ -36,11 +36,9 @@ header {
 }
 
 header h1 {
- font-family: 'Playfair Display', serif; /* Font judul yang elegan */
  margin: 0;
  font-size: 1.7rem; /* Ukuran judul diperkecil lagi */
  font-weight: 700; /* Bold untuk Playfair Display */
- color: var(--accent-color);
 }
 
 .header-content {
@@ -59,7 +57,6 @@ header h1 {
    padding: 8px 18px; /* Padding lebih seimbang */
    border-radius: 6px; /* Sudut lebih lembut */
    transition: all 0.3s;
-   font-family: 'Montserrat', sans-serif;
    font-size: 0.8em; /* Font lebih kecil */
    cursor: pointer;
    margin-right: 15px;
@@ -97,7 +94,6 @@ main {
  border: 1px solid var(--border-color);
  border-radius: 8px;
  flex-grow: 1;
- font-family: 'Montserrat', sans-serif;
  font-size: 0.9rem;
  transition: border-color 0.3s, box-shadow 0.3s;
 }
@@ -235,7 +231,6 @@ main {
  padding: 14px;
  border: 1px solid var(--border-color);
  border-radius: 8px;
- font-family: 'Montserrat', sans-serif;
  transition: border-color 0.3s, box-shadow 0.3s;
  font-size: 0.9rem;
  box-shadow: var(--shadow);
@@ -283,16 +278,14 @@ main {
 }
 
 #participant-name-heading {
- font-family: 'Playfair Display', serif;
  color: var(--primary-color);
  border-bottom: 2px solid var(--accent-color);
  padding-bottom: 10px;
  font-size: 1.5rem; /* Ukuran judul diperkecil lagi */
- font-weight: 600;
+ font-weight: 700;
 }
 
 .schedule-count-badge {
-  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 0.9rem;
   color: #777;
@@ -300,7 +293,6 @@ main {
 }
 
 #participant-details-container h3 {
- font-family: 'Playfair Display', serif;
  font-size: 1.2rem; /* Ukuran sub-judul diperkecil lagi */
  color: var(--primary-color);
 }
@@ -373,7 +365,7 @@ main {
 }
 
 .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.calendar-header h3 { margin: 0; color: var(--primary-color); font-size: 1.3rem; font-family: 'Playfair Display', serif; } /* Ukuran judul kalender diperkecil lagi */
+.calendar-header h3 { margin: 0; color: var(--primary-color); font-size: 1.3rem; font-weight: 700; } /* Ukuran judul kalender diperkecil lagi */
 .calendar-nav { border: none; background: var(--primary-color); color: white; padding: 5px 12px; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; }
 .calendar-nav:hover { background-color: #083344; } /* Sedikit lebih gelap saat hover */
 
