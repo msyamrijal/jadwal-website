@@ -1,8 +1,8 @@
-const CACHE_NAME = 'jadwal-presentasi-v5'; // Versi cache dinaikkan untuk pembaruan
+const CACHE_NAME = 'jadwal-presentasi-v6'; // Versi cache dinaikkan
 const urlsToCache = [
   '/',
   'index.html',
-  'jadwal.html', // Mengganti rekap.html dengan jadwal.html
+  'rekap.html', // PERBAIKAN: File ini seharusnya rekap.html, bukan jadwal.html
   'style.css',
   'script.js',
   'app.js', // File baru

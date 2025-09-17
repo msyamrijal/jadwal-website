@@ -1,3 +1,10 @@
+// Panggil fungsi setup utama saat dokumen siap
+document.addEventListener('DOMContentLoaded', () => {
+    setupPWA();
+    registerServiceWorker();
+    setupResetFunctionality();
+});
+
 let deferredPrompt; // Variabel untuk menyimpan event install
 
 /**
@@ -119,4 +126,85 @@ function showUpdateNotification(worker) {
     updateButton.onclick = () => {
         worker.postMessage({ type: 'SKIP_WAITING' });
     };
+}
+
+/**
+ * Menambahkan fungsionalitas pada tombol reset aplikasi.
+ */
+function setupResetFunctionality() {
+    const resetButton = document.getElementById('reset-app-button');
+    if (!resetButton) return;
+
+    resetButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        showResetConfirmation();
+    });
+}
+
+/**
+ * Menampilkan modal konfirmasi untuk reset.
+ */
+function showResetConfirmation() {
+    // Hapus modal lama jika ada
+    const existingModal = document.querySelector('.modal-overlay');
+    if (existingModal) existingModal.remove();
+
+    const modalHTML = `
+        <div class="modal-content">
+            <h3>Reset Aplikasi?</h3>
+            <p>Tindakan ini akan menghapus semua data yang tersimpan (cache) dan memuat ulang aplikasi ke versi terbaru. Anda yakin?</p>
+            <div class="modal-buttons">
+                <button id="cancel-reset">Batal</button>
+                <button id="confirm-reset">Ya, Hapus</button>
+            </div>
+        </div>
+    `;
+
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay';
+    modalOverlay.innerHTML = modalHTML;
+    document.body.appendChild(modalOverlay);
+
+    document.getElementById('confirm-reset').addEventListener('click', () => {
+        hardResetApplication();
+    });
+
+    document.getElementById('cancel-reset').addEventListener('click', () => {
+        modalOverlay.remove();
+    });
+
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            modalOverlay.remove();
+        }
+    });
+}
+
+/**
+ * Melakukan reset total: unregister service worker, hapus semua cache, dan reload.
+ */
+async function hardResetApplication() {
+    try {
+        console.log('Memulai reset aplikasi...');
+        // 1. Unregister semua service worker
+        if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const registration of registrations) {
+                await registration.unregister();
+                console.log('Service worker berhasil di-unregister.');
+            }
+        }
+
+        // 2. Hapus semua cache
+        const keys = await caches.keys();
+        await Promise.all(keys.map(key => caches.delete(key)));
+        console.log('Semua cache berhasil dihapus.');
+
+        // 3. Muat ulang halaman dari server
+        console.log('Memuat ulang halaman...');
+        window.location.reload(true);
+    } catch (error) {
+        console.error('Gagal melakukan reset:', error);
+        alert('Gagal melakukan reset. Silakan coba bersihkan cache browser secara manual.');
+    }
 }
