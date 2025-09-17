@@ -71,7 +71,7 @@ self.addEventListener('fetch', event => {
   }
 
   // STRATEGI 2: Network-First untuk data Google Sheets.
-  // Selalu coba dapatkan data terbaru, fallback ke cache jika offline.
+  // Selalu coba dapatkan data terbaru, fallback ke cache jika offline. URL diubah ke host yang benar.
   if (url.hostname === 'docs.google.com') {
     event.respondWith(fetchAndCache(event.request));
     return;
@@ -96,12 +96,16 @@ self.addEventListener('fetch', event => {
 function fetchAndCache(request) {
   return fetch(request)
     .then(response => {
-      return caches.open(CACHE_NAME).then(cache => {
-        cache.put(request, response.clone());
-        return response;
-      });
+      // Periksa apakah responsnya valid sebelum di-cache
+      if (response.ok) {
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(request, response.clone());
+        });
+      }
+      return response;
     })
-    .catch(() => {
+    .catch(err => {
+      console.log('Fetch gagal, mencoba mengambil dari cache.', err);
       return caches.match(request);
     });
 }

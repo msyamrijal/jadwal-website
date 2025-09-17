@@ -237,13 +237,13 @@ main {
  box-shadow: var(--shadow);
 }
 
-.rekap-search-container input:focus {
+.rekap-search-container input:focus, #filter-peserta:focus {
  outline: none;
  border-color: var(--accent-color);
  box-shadow: 0 0 0 3px rgba(226, 109, 91, 0.25);
 }
 
-.search-results-list {
+#search-results, #jadwal-search-results {
  position: absolute;
  background-color: var(--card-bg);
  width: 100%;
@@ -256,17 +256,17 @@ main {
  z-index: 10;
 }
 
-.search-result-item {
+#search-results .search-result-item, #jadwal-search-results .search-result-item {
  padding: 12px 20px;
  cursor: pointer;
  transition: background-color 0.2s ease;
 }
 
-.search-result-item:hover {
+#search-results .search-result-item:hover, #jadwal-search-results .search-result-item:hover {
  background-color: #fdf0ed;
 }
 
-.search-result-item:not(:last-child) {
+#search-results .search-result-item:not(:last-child), #jadwal-search-results .search-result-item:not(:last-child) {
  border-bottom: 1px solid var(--border-color);
 }
 
@@ -375,12 +375,12 @@ main {
 .calendar-grid td {
  padding: 12px 5px; border: 1px solid var(--border-color); vertical-align: middle; color: #aaa; /* Warna angka lebih pudar */
 }
-.calendar-grid .other-month { color: #ccc; }
-.calendar-grid .today {
+.calendar-grid td div.today {
  font-weight: bold; background-color: #fdf0ed; color: var(--text-color); /* Pastikan tanggal hari ini tetap jelas */
+ border-radius: 50%;
 }
-.calendar-grid .has-schedule {
- color: var(--accent-color);
+.calendar-grid td div.has-schedule {
+ color: var(--text-light);
  cursor: pointer;
  font-weight: 700; /* Bold font for highlight */
  transition: transform 0.2s;

@@ -36,7 +36,22 @@
  * @param {Array<Object>} parsedData 
  */
 function processScheduleData(parsedData) {
-  const parseDateFromString = (dateString) => dateString ? new Date(dateString) : null;
+  /**
+   * Mengurai string tanggal yang mungkin dalam format DD-MM-YYYY HH:mm atau format lain
+   * yang dapat dikenali oleh new Date(). Ini lebih andal daripada new Date() saja.
+   * @param {string} dateString - Contoh: "25-12-2024 09:30"
+   * @returns {Date|null}
+   */
+  const parseDateFromString = (dateString) => {
+    if (!dateString) return null;
+    // Cek format DD-MM-YYYY HH:mm
+    const parts = dateString.match(/(\d{2})-(\d{2})-(\d{4})\s*(\d{2}):(\d{2})/);
+    if (parts) {
+      // Format: new Date(year, monthIndex, day, hour, minute)
+      return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]);
+    }
+    return new Date(dateString); // Fallback untuk format lain
+  };
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

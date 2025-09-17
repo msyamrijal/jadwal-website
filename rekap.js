@@ -77,11 +77,25 @@ function createParticipantSummary(data) {
   const summary = {};
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
+
+  /**
+   * Mengurai string tanggal yang mungkin dalam format DD-MM-YYYY HH:mm atau format lain
+   * yang dapat dikenali oleh new Date(). Ini lebih andal daripada new Date() saja.
+   * @param {string} dateString - Contoh: "25-12-2024 09:30"
+   * @returns {Date|null}
+   */
+  const parseDateFromString = (dateString) => {
+    if (!dateString) return null;
+    const parts = dateString.match(/(\d{2})-(\d{2})-(\d{4})\s*(\d{2}):(\d{2})/);
+    if (parts) {
+      return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]);
+    }
+    return new Date(dateString); // Fallback
+  };
  
   data.forEach(row => {
-    const scheduleDate = new Date(row.Tanggal);
-    // Lewati baris ini jika tanggalnya sudah lewat atau tidak valid
-    if (isNaN(scheduleDate.getTime()) || scheduleDate < today) {
+    const scheduleDate = parseDateFromString(row.Tanggal);
+    if (!scheduleDate || scheduleDate < today) {
       return;
     }
 
@@ -277,7 +291,7 @@ function generateCalendar(year, month, schedules) {
   // Tambahkan event listener untuk setiap tanggal yang punya jadwal
   calendarContainer.querySelectorAll('.has-schedule').forEach(dayEl => {
     dayEl.addEventListener('click', (e) => {
-      const dateStr = e.currentTarget.dataset.date;
+      const dateStr = e.currentTarget.parentElement.dataset.date;
       if (!dateStr) return;
 
       const targetListItem = document.querySelector(`li[data-date="${dateStr}"]`);

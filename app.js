@@ -76,20 +76,28 @@ function registerServiceWorker() {
  * @returns {Array<Object>}
  */
 function parseCSV(csvData) {
-    const lines = csvData.split("\n");
-    const headers = lines[0].split(",").map(header => header.trim());
-    const data = [];
-    for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(",").map(value => value.trim());
-        if (values.length === headers.length) {
-            const entry = {};
-            for (let j = 0; j < headers.length; j++) {
-                entry[headers[j]] = values[j];
+    // Regex untuk menangani koma di dalam field yang diapit kutip (jika ada)
+    // dan untuk memisahkan baris dengan benar (CRLF atau LF)
+    const lines = csvData.trim().split(/\r?\n/);
+    if (lines.length < 2) return [];
+
+    const headers = lines[0].split(',').map(h => h.trim().replace(/ /g, '_')); // Ganti spasi di header
+    
+    return lines.slice(1).map(line => {
+        // Regex ini memisahkan berdasarkan koma, tetapi mengabaikan koma di dalam tanda kutip.
+        const values = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+        
+        const entry = {};
+        headers.forEach((header, index) => {
+            if (values[index]) {
+                // Hapus tanda kutip di awal/akhir dan trim spasi
+                entry[header] = values[index].replace(/^"|"$/g, '').trim();
+            } else {
+                entry[header] = '';
             }
-            data.push(entry);
-        }
-    }
-    return data;
+        });
+        return entry;
+    });
 }
 
 /**
