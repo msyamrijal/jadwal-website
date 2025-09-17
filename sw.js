@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v4'; // Versi cache dinaikkan!
+const CACHE_NAME = 'jadwal-presentasi-v5'; // Versi cache dinaikkan untuk memaksa update
 const urlsToCache = [
   '/',
   'index.html',
@@ -26,7 +26,7 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('Cache dibuka, menyimpan file dasar aplikasi');
         return cache.addAll(urlsToCache);
-      })
+      }).then(() => self.skipWaiting()) // Aktifkan service worker baru segera setelah instalasi
   );
 });
 
@@ -64,10 +64,16 @@ self.addEventListener('fetch', event => {
 
 // Event: Activate
 // Hapus cache lama jika ada versi baru.
+// Klaim kontrol atas klien yang terbuka.
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(cacheNames => {
-    return Promise.all(cacheNames.map(cache => {
-      if (cache !== CACHE_NAME) return caches.delete(cache);
-    }));
-  }));
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) return caches.delete(cacheName);
+        })
+      ).then(() => self.clients.claim()); // Ambil alih kontrol halaman yang terbuka
+    })
+  );
 });

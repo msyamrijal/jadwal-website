@@ -2,7 +2,7 @@
     "name": "Jadwal Presentasi",
     "short_name": "Jadwal",
     "description": "Aplikasi untuk melihat jadwal presentasi.",
-    "start_url": "index.html",
+    "start_url": ".",
     "display": "standalone",
     "background_color": "#f8f9fa",
     "theme_color": "#2c3e50",
