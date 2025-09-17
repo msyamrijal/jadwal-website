@@ -39,6 +39,7 @@ header h1 {
  margin: 0;
  font-size: 1.7rem; /* Ukuran judul diperkecil lagi */
  font-weight: 700; /* Bold untuk Playfair Display */
+ color: var(--accent-color);
 }
 
 .header-content {
@@ -143,33 +144,11 @@ main {
 }
 
 #loading-indicator {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 15px; /* Jarak antara spinner dan teks */
-  padding: 40px 20px;
-  font-size: 1em;
+ text-align: center;
+ padding: 20px;
+ font-size: 1.2em;
  font-weight: 400;
-  color: #555; /* Warna teks lebih netral */
-}
-
-#loading-indicator p {
-  margin: 0;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f0f0f0; /* Warna dasar spinner */
-  border-top: 4px solid var(--accent-color); /* Warna aksen untuk animasi */
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+ color: var(--accent-color);
 }
 
 /* --- Style untuk Baris yang Bisa Diekspansi --- */
