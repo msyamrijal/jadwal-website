@@ -40,7 +40,10 @@ async function loadRekapData() {
     console.error("Gagal memuat data rekap:", error);
     // Hanya tampilkan error jika tidak ada data sama sekali (bahkan dari cache)
     if (Object.keys(participantSummary).length === 0) {
-      document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap. Periksa koneksi internet Anda.</p>`;
+      // Tampilkan pesan error di initial-prompt agar tidak merusak layout
+      const prompt = document.getElementById('initial-prompt');
+      prompt.textContent = 'Gagal memuat data rekap. Periksa koneksi internet Anda.';
+      prompt.style.color = 'red';
     }
   } finally {
     // Blok ini DIJAMIN akan selalu berjalan.
@@ -81,24 +84,6 @@ function createParticipantSummary(data) {
   const summary = {};
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
-
-  /**
-   * Mengurai string tanggal yang mungkin dalam format DD-MM-YYYY HH:mm atau format lain
-   * yang dapat dikenali oleh new Date(). Ini lebih andal daripada new Date() saja.
-   * @param {string} dateString - Contoh: "25-12-2024 09:30"
-   * @returns {Date|null}
-   */
-  const parseDateFromString = (dateString) => {
-    if (!dateString || dateString.trim() === '') return null;
-
-    const date = new Date(dateString);
-
-    if (!isNaN(date.getTime())) {
-      return date;
-    }
-    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
-    return null;
-  };
  
   data.forEach(row => {
     const scheduleDate = parseDateFromString(row.Tanggal);
@@ -251,13 +236,13 @@ function generateCalendar(year, month, schedules) {
     const daySchedules = scheduleMap.get(currentDateStr);
     let classes = '';
     let title = '';
-    let dateAttr = '';
+      let dateAttr = `data-date="${currentDateStr}"`; // Selalu tambahkan data-date
     if (daySchedules) {
         classes = 'has-schedule';
         title = `title="Jadwal: ${daySchedules.join(', ')}"`;
-        dateAttr = `data-date="${currentDateStr}"`;
     }
-    html += `<td><div class="${classes}" ${title} ${dateAttr}>${date}</div></td>`;
+      // Pindahkan dateAttr ke parent (td) untuk konsistensi
+      html += `<td ${dateAttr}><div class="${classes}" ${title}>${date}</div></td>`;
     date++;
   }
   html += '</tr>';
@@ -270,13 +255,13 @@ function generateCalendar(year, month, schedules) {
       const daySchedules = scheduleMap.get(currentDateStr);
       let classes = '';
       let title = '';
-      let dateAttr = '';
+      let dateAttr = `data-date="${currentDateStr}"`; // Selalu tambahkan data-date
       if (daySchedules) {
           classes = 'has-schedule';
           title = `title="Jadwal: ${daySchedules.join(', ')}"`;
-          dateAttr = `data-date="${currentDateStr}"`;
       }
-      html += `<td><div class="${classes}" ${title} ${dateAttr}>${date}</div></td>`;
+      // Pindahkan dateAttr ke parent (td) untuk konsistensi
+      html += `<td ${dateAttr}><div class="${classes}" ${title}>${date}</div></td>`;
       date++;
     }
     html += '</tr>';
@@ -298,7 +283,8 @@ function generateCalendar(year, month, schedules) {
   // Tambahkan event listener untuk setiap tanggal yang punya jadwal
   calendarContainer.querySelectorAll('.has-schedule').forEach(dayEl => {
     dayEl.addEventListener('click', (e) => {
-      const dateStr = e.currentTarget.parentElement.dataset.date;
+      // FIX: Ambil data-date dari parentElement (td)
+      const dateStr = e.currentTarget.parentElement.dataset.date; 
       if (!dateStr) return;
 
       const targetListItem = document.querySelector(`li[data-date="${dateStr}"]`);

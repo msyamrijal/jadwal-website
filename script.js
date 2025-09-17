@@ -37,25 +37,6 @@
  * @param {Array<Object>} parsedData 
  */
 function processScheduleData(parsedData) {
-  /**
-   * Mengurai string tanggal yang mungkin dalam format DD-MM-YYYY HH:mm atau format lain
-   * yang dapat dikenali oleh new Date(). Ini lebih andal daripada new Date() saja.
-   * @param {string} dateString - Contoh: "25-12-2024 09:30"
-   * @returns {Date|null}
-   */
-  const parseDateFromString = (dateString) => {
-    if (!dateString || dateString.trim() === '') return null;
-
-    // Kembali ke metode parsing yang lebih umum dan terbukti berhasil.
-    // Ini dapat menangani format seperti "9/15/2025 8:00:00" dengan benar.
-    const date = new Date(dateString);
-
-    if (!isNaN(date.getTime())) {
-      return date;
-    }
-    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
-    return null;
-  };
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

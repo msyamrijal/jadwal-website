@@ -128,6 +128,25 @@ async function fetchScheduleData() {
     }
 }
 
+/**
+ * Mengurai string tanggal yang mungkin dalam format DD-MM-YYYY HH:mm atau format lain
+ * yang dapat dikenali oleh new Date(). Ini lebih andal daripada new Date() saja.
+ * @param {string} dateString - Contoh: "25-12-2024 09:30" atau "9/15/2025 8:00:00"
+ * @returns {Date|null}
+ */
+function parseDateFromString(dateString) {
+    if (!dateString || dateString.trim() === '') return null;
+
+    // new Date() cukup andal untuk format umum seperti "MM/DD/YYYY HH:mm:ss"
+    // atau format yang dikenali ISO.
+    const date = new Date(dateString);
+
+    if (!isNaN(date.getTime())) {
+        return date;
+    }
+    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
+    return null;
+}
 
 /**
  * Melacak proses instalasi service worker baru.
