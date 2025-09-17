@@ -40,6 +40,10 @@ function loadRekapData() {
         if (!cachedData) { // Hanya tampilkan error jika tidak ada data cache sama sekali
           document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap. Periksa koneksi internet Anda.</p>`;
         }
+      })
+      .finally(() => {
+        // Pastikan loading indicator selalu hilang setelah percobaan fetch dari jaringan selesai.
+        loadingIndicator.style.display = 'none';
       });
   });
 }
@@ -53,7 +57,7 @@ function processRekapData(summaryData) {
   allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
   setupRekapSearch();
 
-  document.getElementById('loading-indicator').style.display = 'none';
+  // Indikator loading sekarang ditangani di blok .finally()
   document.getElementById('rekap-search').disabled = false;
 
   const lastParticipant = localStorage.getItem('lastRekapParticipant');
