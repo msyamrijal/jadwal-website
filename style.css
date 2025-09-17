@@ -396,3 +396,39 @@ main {
 .calendar-grid .has-schedule:hover {
  transform: scale(1.1);
 }
+
+/* --- Style untuk Notifikasi Pembaruan --- */
+#update-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#update-notification p {
+  margin: 0;
+  font-weight: 600;
+}
+
+#update-notification button {
+  background-color: var(--accent-color);
+  color: var(--text-light);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#update-notification button:hover {
+  background-color: #c95a4a;
+}

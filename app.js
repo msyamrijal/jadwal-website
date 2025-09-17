@@ -36,9 +36,37 @@ function setupPWA() {
  */
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(() => console.log('Service Worker berhasil didaftarkan.'))
-            .catch(error => console.error('Pendaftaran Service Worker gagal:', error));
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('Service Worker berhasil didaftarkan.');
+
+            // Cek jika ada worker baru yang sedang menunggu.
+            if (registration.waiting) {
+                showUpdateNotification(registration.waiting);
+                return;
+            }
+
+            // Cek jika ada worker baru yang sedang dalam proses instalasi.
+            if (registration.installing) {
+                trackInstalling(registration.installing);
+                return;
+            }
+
+            // Dengarkan event 'updatefound' untuk mendeteksi worker baru di masa depan.
+            registration.onupdatefound = () => {
+                console.log('Service Worker baru ditemukan, sedang diinstall.');
+                trackInstalling(registration.installing);
+            };
+        }).catch(error => {
+            console.error('Pendaftaran Service Worker gagal:', error);
+        });
+
+        // Muat ulang halaman ketika controller service worker berubah.
+        let refreshing;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            window.location.reload();
+            refreshing = true;
+        });
     }
 }
 
@@ -62,4 +90,33 @@ function parseCSV(csvData) {
         }
     }
     return data;
+}
+
+/**
+ * Melacak proses instalasi service worker baru.
+ * @param {ServiceWorker} worker 
+ */
+function trackInstalling(worker) {
+    worker.addEventListener('statechange', () => {
+        // Jika state menjadi 'installed', berarti worker baru siap dan menunggu.
+        if (worker.state === 'installed') {
+            showUpdateNotification(worker);
+        }
+    });
+}
+
+/**
+ * Menampilkan notifikasi bahwa versi baru tersedia.
+ * @param {ServiceWorker} worker 
+ */
+function showUpdateNotification(worker) {
+    const updateBanner = document.getElementById('update-notification');
+    const updateButton = document.getElementById('update-button');
+
+    if (!updateBanner || !updateButton) return;
+
+    updateBanner.style.display = 'block';
+    updateButton.onclick = () => {
+        worker.postMessage({ type: 'SKIP_WAITING' });
+    };
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v3'; // Versi cache dinaikkan!
+const CACHE_NAME = 'jadwal-presentasi-v4'; // Versi cache dinaikkan untuk pembaruan
 const urlsToCache = [
   '/',
   'index.html',
@@ -20,6 +20,13 @@ const urlsToCache = [
 // Event: Install
 // Saat service worker di-install, buka cache dan simpan semua file dasar aplikasi.
 self.addEventListener('install', event => {
+  // Menambahkan listener pesan di sini agar bisa menerima pesan 'SKIP_WAITING'
+  // bahkan saat worker sedang dalam fase 'installing'.
+  self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+      self.skipWaiting();
+    }
+  });
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
