@@ -89,6 +89,7 @@ function createParticipantSummary(data) {
   today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
  
   data.forEach(row => {
+    console.log('Raw data row:', row);
     const scheduleDate = parseDateFromString(row.Tanggal);
     if (!scheduleDate || scheduleDate < today) {
       return;
@@ -149,6 +150,7 @@ function displayParticipantDetails(name) {
  
   scheduleList.innerHTML = ''; // Kosongkan daftar sebelum mengisi
   schedules.forEach(schedule => {
+    console.log('Processed schedule object:', schedule);
     const listItem = document.createElement('li');
     // Tambahkan atribut data-date untuk identifikasi
     const dateStr = schedule.date.toISOString().split('T')[0]; // Format YYYY-MM-DD

@@ -1,4 +1,4 @@
- let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
+let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
  let allParticipantNames = []; // Variabel untuk menyimpan semua nama peserta unik
 
  async function loadData() {
@@ -30,7 +30,7 @@
     // Blok ini DIJAMIN akan selalu berjalan, baik sukses maupun gagal.
     loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
   }
- }
+}
 
 /**
  * Memproses data jadwal (baik dari cache maupun jaringan) dan memperbarui UI.
@@ -48,7 +48,7 @@ function processScheduleData(parsedData) {
 
   const participantSet = new Set();
   allData.forEach(row => {
-    Object.keys(row).filter(key => key.startsWith('`Peserta ${i}`') && row[key])
+    Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key])
       .forEach(key => participantSet.add(row[key].trim()));
   });
   allParticipantNames = [...participantSet].sort();
@@ -101,7 +101,7 @@ function processScheduleData(parsedData) {
     mataPelajaran.textContent = row['Mata_Pelajaran'];
     summaryRow.appendChild(mataPelajaran);
 
-    const pesertaList = Object.keys(row).filter(key => key.startsWith('`Peserta ${i}`') && row[key]).map(key => row[key]);
+    const pesertaList = Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key]).map(key => row[key]);
     const pesertaTd = document.createElement("td");
     pesertaTd.setAttribute('data-label', 'Peserta');
     pesertaTd.textContent = pesertaList.join(', ');
@@ -113,12 +113,12 @@ function processScheduleData(parsedData) {
 
     const detailCell = document.createElement("td");
     detailCell.colSpan = 3; // Agar mengisi seluruh lebar tabel
-    detailCell.innerHTML = `
-      <div class="detail-content">
+    detailCell.innerHTML = "`
+      <div class=\"detail-content\">
         <p><strong>Institusi:</strong> ${row.Institusi || 'Tidak ada data'}</p>
-        <p><strong>Materi Diskusi:</strong> ${row.Materi_Diskusi || 'Tidak ada data'}</p>
+        <p><strong>Materi Diskusi:</strong> ${row['Materi Diskusi'] || 'Tidak ada data'}</p>
       </div>
-    `;
+    `";
     detailRow.appendChild(detailCell);
 
     // 3. Tambahkan event listener untuk membuka/menutup detail
