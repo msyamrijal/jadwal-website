@@ -125,7 +125,7 @@ function createParticipantSummary(data) {
           subject: row['Mata_Pelajaran'], // Tetap ada untuk kalender
           date: scheduleDate,
           institusi: row.Institusi,
-          materi: row.Materi_Diskusi, // PERBAIKAN: Gunakan underscore
+          materi: row.Materi_Diskusi,
           otherParticipants: otherParticipants // Simpan data peserta lain
         });
       }
