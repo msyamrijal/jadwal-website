@@ -105,31 +105,27 @@ function parseCSV(csvData) {
  * Fungsi ini menjadi satu-satunya sumber untuk mendapatkan data jadwal.
  * @returns {Promise<Array<Object>>} Promise yang akan resolve dengan data yang sudah diparsing.
  */
-function fetchScheduleData() {
+async function fetchScheduleData() {
     // Gunakan URL yang sama untuk semua
     const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
 
-    return new Promise((resolve, reject) => {
-        fetch(spreadsheetUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Gagal mengambil data dari jaringan');
-                }
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('text/csv')) {
-                    throw new Error(`Respons dari server bukan file CSV yang valid. Tipe konten: ${contentType}`);
-                }
-                return response.text();
-            })
-            .then(csvData => {
-                const parsedData = parseCSV(csvData);
-                resolve(parsedData);
-            })
-            .catch(error => {
-                console.error("Error fetching central data:", error);
-                reject(error);
-            });
-    });
+    try {
+        const response = await fetch(spreadsheetUrl);
+        if (!response.ok) {
+            throw new Error(`Gagal mengambil data dari jaringan. Status: ${response.status}`);
+        }
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('text/csv')) {
+            throw new Error(`Respons dari server bukan file CSV yang valid. Tipe konten: ${contentType}`);
+        }
+        const csvData = await response.text();
+        const parsedData = parseCSV(csvData);
+        console.log('Data berhasil diparsing. Contoh baris pertama:', parsedData[0]); // Log untuk debugging
+        return parsedData;
+    } catch (error) {
+        console.error("Error di fetchScheduleData:", error);
+        throw error; // Lemparkan kembali error agar bisa ditangkap oleh pemanggil
+    }
 }
 
 

@@ -64,7 +64,7 @@ function processScheduleData(parsedData) {
 
   const participantSet = new Set();
   allData.forEach(row => {
-    Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key])
+    Object.keys(row).filter(key => key.startsWith('Peserta_') && row[key])
       .forEach(key => participantSet.add(row[key].trim()));
   });
   allParticipantNames = [...participantSet].sort();
@@ -109,7 +109,7 @@ function processScheduleData(parsedData) {
     mataPelajaran.textContent = row['Mata_Pelajaran'];
     summaryRow.appendChild(mataPelajaran);
 
-    const pesertaList = Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key]).map(key => row[key]);
+    const pesertaList = Object.keys(row).filter(key => key.startsWith('Peserta_') && row[key]).map(key => row[key]);
     const pesertaTd = document.createElement("td");
     pesertaTd.setAttribute('data-label', 'Peserta');
     pesertaTd.textContent = pesertaList.join(', ');
@@ -123,8 +123,8 @@ function processScheduleData(parsedData) {
     detailCell.colSpan = 3; // Agar mengisi seluruh lebar tabel
     detailCell.innerHTML = `
       <div class="detail-content">
-        <p><strong>Institusi:</strong> ${row.Institusi}</p>
-        <p><strong>Materi Diskusi:</strong> ${row['Materi Diskusi']}</p>
+        <p><strong>Institusi:</strong> ${row.Institusi || 'Tidak ada data'}</p>
+        <p><strong>Materi Diskusi:</strong> ${row.Materi_Diskusi || 'Tidak ada data'}</p>
       </div>
     `;
     detailRow.appendChild(detailCell);
@@ -213,7 +213,7 @@ function processScheduleData(parsedData) {
     if (isCompleteName) {
       // Jika nama lengkap, lakukan pencocokan persis (exact match).
       for (let i = 1; i <= 12; i++) {
-        const pesertaKey = `Peserta ${i}`;
+        const pesertaKey = `Peserta_${i}`;
         if (row[pesertaKey] && row[pesertaKey].toLowerCase() === pesertaFilter) {
           pesertaMatch = true;
           break;
@@ -222,7 +222,7 @@ function processScheduleData(parsedData) {
     } else {
       // Jika bukan nama lengkap (sedang mengetik), lakukan pencocokan parsial (substring match).
       for (let i = 1; i <= 12; i++) {
-        const pesertaKey = `Peserta ${i}`;
+        const pesertaKey = `Peserta_${i}`;
         if (row[pesertaKey] && row[pesertaKey].toLowerCase().includes(pesertaFilter)) {
           pesertaMatch = true;
           break;

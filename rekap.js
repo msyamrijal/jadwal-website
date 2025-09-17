@@ -98,7 +98,7 @@ function createParticipantSummary(data) {
       return;
     }
 
-    const participantKeys = Object.keys(row).filter(key => key.startsWith('Peserta '));
+    const participantKeys = Object.keys(row).filter(key => key.startsWith('Peserta_'));
     const allParticipantsInSession = participantKeys.map(k => row[k].trim()).filter(p => p); // Ambil semua nama peserta non-kosong di baris ini
  
     participantKeys.forEach(key => {
@@ -117,7 +117,7 @@ function createParticipantSummary(data) {
           subject: row['Mata_Pelajaran'], // Tetap ada untuk kalender
           date: scheduleDate,
           institusi: row.Institusi,
-          materi: row['Materi Diskusi'],
+          materi: row.Materi_Diskusi, // PERBAIKAN: Gunakan underscore
           otherParticipants: otherParticipants // Simpan data peserta lain
         });
       }
@@ -177,7 +177,7 @@ function displayParticipantDetails(name) {
 
     detailDiv.innerHTML = `
       <p><strong>Institusi:</strong> ${schedule.institusi}</p>
-      <p><strong>Materi Diskusi:</strong> ${schedule.materi}</p>
+      <p><strong>Materi Diskusi:</strong> ${schedule.materi || 'Tidak ada data'}</p>
       ${otherParticipantsHTML}
     `;
 
