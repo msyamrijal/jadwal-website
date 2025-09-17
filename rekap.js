@@ -119,6 +119,14 @@ function createParticipantSummary(data) {
       }
     });
   });
+
+  // Urutkan jadwal setiap peserta berdasarkan tanggal
+  for (const name in summary) {
+    summary[name].sort((a, b) => a.date - b.date);
+  }
+ 
+  return summary;
+}
  
 function displayParticipantDetails(name) {
   const detailsContainer = document.getElementById('participant-details-container');

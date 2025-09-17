@@ -48,7 +48,7 @@ function processScheduleData(parsedData) {
 
   const participantSet = new Set();
   allData.forEach(row => {
-    Object.keys(row).filter(key => key.startsWith('Peserta_') && row[key])
+    Object.keys(row).filter(key => key.startsWith('`Peserta ${i}`') && row[key])
       .forEach(key => participantSet.add(row[key].trim()));
   });
   allParticipantNames = [...participantSet].sort();
@@ -101,7 +101,7 @@ function processScheduleData(parsedData) {
     mataPelajaran.textContent = row['Mata_Pelajaran'];
     summaryRow.appendChild(mataPelajaran);
 
-    const pesertaList = Object.keys(row).filter(key => key.startsWith('Peserta_') && row[key]).map(key => row[key]);
+    const pesertaList = Object.keys(row).filter(key => key.startsWith('`Peserta ${i}`') && row[key]).map(key => row[key]);
     const pesertaTd = document.createElement("td");
     pesertaTd.setAttribute('data-label', 'Peserta');
     pesertaTd.textContent = pesertaList.join(', ');
