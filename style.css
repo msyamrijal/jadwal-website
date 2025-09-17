@@ -400,7 +400,7 @@ main {
 /* --- Style untuk Notifikasi Pembaruan --- */
 #update-notification {
   position: fixed;
-  bottom: 20px;
+  top: 20px; /* Diubah dari bottom ke top */
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--primary-color);
