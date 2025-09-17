@@ -1,0 +1,55 @@
+ <!DOCTYPE html>
+ <html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <title>Jadwal</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#2c3e50">
+  <link rel="stylesheet" href="style.css">
+ </head>
+ <body>
+  <header>
+    <div class="header-content">
+      <h1>Jadwaluna</h1>
+      <nav>
+        <button id="install-button" class="install-button" hidden>Install Aplikasi</button>
+        <a href="rekap.html">Rekap Peserta</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+  <div class="filter-container">
+  <select id="filter-institusi"></select>
+  <select id="filter-mapel"></select>
+  <div class="participant-search-wrapper">
+    <input type="text" id="filter-peserta" placeholder="Cari berdasarkan Peserta..." autocomplete="off">
+    <div id="jadwal-search-results" class="search-results-list"></div>
+  </div>
+  </div>
+
+  <div id="loading-indicator" style="display: none;">Memuat data...</div>
+
+  <table id="jadwal-table">
+  <thead>
+  <tr>
+  <th>Tanggal</th>
+  <th>Mata Pelajaran</th>
+  <th>Peserta</th>
+  </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
+  </main>
+  <script src="app.js"></script>
+  <script src="script.js"></script>
+ </body>
+ </html>

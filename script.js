@@ -1,15 +1,5 @@
- let deferredPrompt; // Variabel untuk menyimpan event install
  let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
-
- window.addEventListener('beforeinstallprompt', (e) => {
-  // Mencegah browser menampilkan prompt default
-  e.preventDefault();
-  // Simpan event agar bisa dipanggil nanti
-  deferredPrompt = e;
-  // Tampilkan tombol install kustom kita
-  const installButton = document.getElementById('install-button');
-  if (installButton) installButton.hidden = false;
- });
+ let allParticipantNames = []; // Variabel untuk menyimpan semua nama peserta unik
 
  function loadData() {
   const loadingIndicator = document.getElementById('loading-indicator');
@@ -51,80 +41,93 @@
   .filter(row => row.dateObject && row.dateObject >= today)
   .sort((a, b) => a.dateObject - b.dateObject); // 2. Urutkan dari tanggal terdekat
 
+  // Ambil semua nama peserta unik dari data yang sudah diproses
+  const participantSet = new Set();
+  allData.forEach(row => {
+    Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key])
+      .forEach(key => participantSet.add(row[key].trim()));
+  });
+  allParticipantNames = [...participantSet].sort();
+
   populateTable(allData); // Tampilkan data yang sudah difilter dan diurutkan
   populateInstitutionFilter(allData); // Buat opsi dropdown institusi
   populateSubjectFilter(allData); // Buat opsi dropdown mata pelajaran
   setupFilters(); // Siapkan event listener untuk input filter
+
+  // Muat dan terapkan filter peserta terakhir yang disimpan
+  const savedParticipant = localStorage.getItem('lastParticipantFilter');
+  if (savedParticipant) {
+    document.getElementById('filter-peserta').value = savedParticipant;
+    applyFilters(); // Terapkan filter yang tersimpan saat halaman dimuat
+  }
   })
   .catch(error => {
   console.error("Error fetching data:", error);
-  document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="5" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
+  document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
   })
   .finally(() => {
   loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
   });
  }
 
- function parseCSV(csvData) {
-  const lines = csvData.split("\n");
-  const headers = lines[0].split(",").map(header => header.trim());
-  const data = [];
-
-  for (let i = 1; i < lines.length; i++) {
-  const values = lines[i].split(",").map(value => value.trim());
-  if (values.length === headers.length) {
-  const entry = {};
-  for (let j = 0; j < headers.length; j++) {
-  entry[headers[j]] = values[j];
-  }
-  data.push(entry);
-  }
-  }
-
-  return data;
- }
-
  function populateTable(data) {
   const tableBody = document.querySelector("#jadwal-table tbody");
   tableBody.innerHTML = ''; // Kosongkan tabel sebelum mengisi data baru
-
+ 
+  if (data.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Tidak ada jadwal yang cocok dengan filter.</td></tr>`;
+    return;
+  }
+ 
   data.forEach(row => {
-  const tr = document.createElement("tr");
+    // 1. Buat baris ringkasan yang terlihat
+    const summaryRow = document.createElement("tr");
+    summaryRow.className = 'summary-row';
+    summaryRow.setAttribute('role', 'button'); // Baik untuk aksesibilitas
+    summaryRow.setAttribute('tabindex', '0'); // Agar bisa di-fokus dengan keyboard
 
-  const institusi = document.createElement("td");
-  institusi.setAttribute('data-label', 'Institusi');
-  institusi.textContent = row.Institusi;
-  tr.appendChild(institusi);
+    const tanggal = document.createElement("td");
+    tanggal.setAttribute('data-label', 'Tanggal');
+    const datePart = row.dateObject.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    const timePart = row.dateObject.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    tanggal.textContent = `${datePart}, ${timePart}`;
+    summaryRow.appendChild(tanggal);
 
-  const mataPelajaran = document.createElement("td");
-  mataPelajaran.setAttribute('data-label', 'Mata Pelajaran');
-  mataPelajaran.textContent = row['Mata_Pelajaran']; // Perubahan di sini
-  tr.appendChild(mataPelajaran);
+    const mataPelajaran = document.createElement("td");
+    mataPelajaran.setAttribute('data-label', 'Mata Pelajaran');
+    mataPelajaran.textContent = row['Mata_Pelajaran'];
+    summaryRow.appendChild(mataPelajaran);
 
-  const tanggal = document.createElement("td");
-  tanggal.setAttribute('data-label', 'Tanggal');
-  // Format tanggal agar lebih mudah dibaca
-  tanggal.textContent = row.dateObject.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  tr.appendChild(tanggal);
+    const pesertaList = Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key]).map(key => row[key]);
+    const pesertaTd = document.createElement("td");
+    pesertaTd.setAttribute('data-label', 'Peserta');
+    pesertaTd.textContent = pesertaList.join(', ');
+    summaryRow.appendChild(pesertaTd);
 
-  const materiDiskusi = document.createElement("td");
-  materiDiskusi.setAttribute('data-label', 'Materi Diskusi');
-  materiDiskusi.textContent = row['Materi Diskusi']; // Perubahan di sini
-  tr.appendChild(materiDiskusi);
-  
-  let peserta = "";
-  for(let i = 1; i <= 10; i++){
-  if(row["Peserta " + i]){
-  peserta += row["Peserta " + i] + ", ";
-  }
-  }
+    // 2. Buat baris detail yang tersembunyi
+    const detailRow = document.createElement("tr");
+    detailRow.className = 'detail-row';
 
-  const pesertaTd = document.createElement("td");
-  pesertaTd.setAttribute('data-label', 'Peserta');
-  pesertaTd.textContent = peserta.slice(0, -2);
-  tr.appendChild(pesertaTd);
+    const detailCell = document.createElement("td");
+    detailCell.colSpan = 3; // Agar mengisi seluruh lebar tabel
+    detailCell.innerHTML = `
+      <div class="detail-content">
+        <p><strong>Institusi:</strong> ${row.Institusi}</p>
+        <p><strong>Materi Diskusi:</strong> ${row['Materi Diskusi']}</p>
+      </div>
+    `;
+    detailRow.appendChild(detailCell);
 
-  tableBody.appendChild(tr);
+    // 3. Tambahkan event listener untuk membuka/menutup detail
+    const toggleDetails = () => {
+      summaryRow.classList.toggle('expanded');
+      detailRow.classList.toggle('visible');
+    };
+    summaryRow.addEventListener('click', toggleDetails);
+    summaryRow.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') toggleDetails(); });
+
+    tableBody.appendChild(summaryRow);
+    tableBody.appendChild(detailRow);
   });
  }
 
@@ -191,15 +194,30 @@
   // Cek filter peserta di semua kolom peserta
   let pesertaMatch = false;
   if (!pesertaFilter) {
-  pesertaMatch = true; // Jika filter peserta kosong, anggap cocok
+    pesertaMatch = true; // Jika filter peserta kosong, anggap cocok
   } else {
-  for (let i = 1; i <= 10; i++) {
-  const pesertaKey = `Peserta ${i}`;
-  if (row[pesertaKey] && row[pesertaKey].toLowerCase().includes(pesertaFilter)) {
-  pesertaMatch = true;
-  break; // Jika sudah ketemu, hentikan pencarian di kolom peserta lain
-  }
-  }
+    // Cek apakah teks filter adalah nama lengkap yang ada di daftar peserta.
+    const isCompleteName = allParticipantNames.some(name => name.toLowerCase() === pesertaFilter);
+
+    if (isCompleteName) {
+      // Jika nama lengkap, lakukan pencocokan persis (exact match).
+      for (let i = 1; i <= 12; i++) {
+        const pesertaKey = `Peserta ${i}`;
+        if (row[pesertaKey] && row[pesertaKey].toLowerCase() === pesertaFilter) {
+          pesertaMatch = true;
+          break;
+        }
+      }
+    } else {
+      // Jika bukan nama lengkap (sedang mengetik), lakukan pencocokan parsial (substring match).
+      for (let i = 1; i <= 12; i++) {
+        const pesertaKey = `Peserta ${i}`;
+        if (row[pesertaKey] && row[pesertaKey].toLowerCase().includes(pesertaFilter)) {
+          pesertaMatch = true;
+          break;
+        }
+      }
+    }
   }
 
   return institusiMatch && mapelMatch && pesertaMatch;
@@ -208,43 +226,68 @@
   populateTable(filteredData);
  }
 
- function setupFilters() {
-  document.getElementById('filter-institusi').addEventListener('change', applyFilters);
-  document.getElementById('filter-mapel').addEventListener('change', applyFilters);
-  document.getElementById('filter-peserta').addEventListener('input', applyFilters);
+function setupFilters() {
+  const institutionFilter = document.getElementById('filter-institusi');
+  const subjectFilter = document.getElementById('filter-mapel');
+  const participantFilter = document.getElementById('filter-peserta');
+
+  institutionFilter.addEventListener('change', () => {
+    const selectedInstitution = institutionFilter.value;
+
+    // Tentukan data yang relevan berdasarkan institusi yang dipilih
+    const relevantData = selectedInstitution
+      ? allData.filter(row => row.Institusi === selectedInstitution)
+      : allData; // Jika tidak ada institusi dipilih, gunakan semua data
+
+    // Perbarui opsi filter mata pelajaran dengan data yang relevan
+    populateSubjectFilter(relevantData);
+
+    // Terapkan kembali semua filter untuk memperbarui tabel
+    applyFilters();
+  });
+
+  subjectFilter.addEventListener('change', applyFilters);
+  
+  const searchResultsContainer = document.getElementById('jadwal-search-results');
+
+  participantFilter.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    searchResultsContainer.innerHTML = '';
+
+    if (searchTerm.length > 0) {
+      const matchingNames = allParticipantNames.filter(name => name.toLowerCase().includes(searchTerm));
+      
+      matchingNames.slice(0, 10).forEach(name => { // Batasi hingga 10 hasil
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.textContent = name;
+        item.addEventListener('click', () => {
+          participantFilter.value = name;
+          searchResultsContainer.innerHTML = '';
+          localStorage.setItem('lastParticipantFilter', name);
+          applyFilters();
+        });
+        searchResultsContainer.appendChild(item);
+      });
+    }
+
+    // Tetap terapkan filter saat mengetik
+    localStorage.setItem('lastParticipantFilter', participantFilter.value);
+    applyFilters();
+  });
+
+  // Sembunyikan hasil pencarian jika klik di luar
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.participant-search-wrapper')) {
+      searchResultsContainer.innerHTML = '';
+    }
+  });
  }
 
  document.addEventListener("DOMContentLoaded", () => {
+  // Panggil fungsi dari app.js untuk setup PWA dan Service Worker
+  if (typeof setupPWA === 'function') setupPWA();
+  if (typeof registerServiceWorker === 'function') registerServiceWorker();
+
   loadData();
-
-  const installButton = document.getElementById('install-button');
-  if (installButton) {
-    installButton.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        // Tampilkan prompt instalasi
-        deferredPrompt.prompt();
-        // Tunggu respons pengguna
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`Respons pengguna: ${outcome}`);
-        // Kita hanya bisa menggunakan prompt sekali, jadi reset variabelnya
-        deferredPrompt = null;
-        // Sembunyikan tombol setelah digunakan
-        installButton.hidden = true;
-      }
-    });
-  }
-
-  // Daftarkan Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(() => console.log('Service Worker berhasil didaftarkan.'))
-      .catch(error => console.error('Pendaftaran Service Worker gagal:', error));
-  }
- });
-
- window.addEventListener('appinstalled', () => {
-  // Kosongkan deferredPrompt dan sembunyikan tombol jika aplikasi berhasil diinstal
-  deferredPrompt = null;
-  const installButton = document.getElementById('install-button');
-  if (installButton) installButton.hidden = true;
  });

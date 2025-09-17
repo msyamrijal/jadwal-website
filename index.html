@@ -1,53 +1,56 @@
- <!DOCTYPE html>
- <html lang="id">
- <head>
+<!DOCTYPE html>
+<html lang="id">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <title>Jadwal Presentasi</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <title>Jadwal</title>
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#2c3e50">
   <link rel="stylesheet" href="style.css">
- </head>
- <body>
+  <style>
+    .main-nav { text-align: center; margin-top: 50px; }
+    .main-nav a {
+      display: inline-block;
+      margin: 10px;
+      padding: 20px 40px;
+      background-color: var(--primary-color);
+      color: var(--text-light);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .main-nav a:hover { background-color: #083344; transform: translateY(-2px); }
+  </style>
+</head>
+<body>
   <header>
     <div class="header-content">
-      <h1>Jadwal Presentasi</h1>
+      <h1>Jadwal</h1>
       <nav>
         <button id="install-button" class="install-button" hidden>Install Aplikasi</button>
-        <a href="rekap.html">Lihat Rekap Peserta</a>
       </nav>
     </div>
   </header>
-
   <main>
-  <div class="filter-container">
-  <select id="filter-institusi"></select>
-  <select id="filter-mapel"></select>
-  <input type="text" id="filter-peserta" placeholder="Cari berdasarkan Peserta...">
-  </div>
-
-  <div id="loading-indicator" style="display: none;">Memuat data...</div>
-
-  <table id="jadwal-table">
-  <thead>
-  <tr>
-  <th>Institusi</th>
-  <th>Mata Pelajaran</th>
-  <th>Tanggal</th>
-  <th>Materi Diskusi</th>
-  <th>Peserta</th>
-  </tr>
-  </thead>
-  <tbody>
-  </tbody>
-  </table>
+    <div class="main-nav">
+      <a href="jadwal.html">Lihat Semua Jadwal</a>
+      <a href="rekap.html">Lihat Rekap per Peserta</a>
+    </div>
   </main>
-  <script src="script.js"></script>
- </body>
- </html>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof setupPWA === 'function') setupPWA();
+      if (typeof registerServiceWorker === 'function') registerServiceWorker();
+    });
+  </script>
+</body>
+</html>

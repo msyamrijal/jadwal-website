@@ -1,169 +1,325 @@
-let deferredPrompt; // Variabel untuk menyimpan event install
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Mencegah browser menampilkan prompt default
-    e.preventDefault();
-    // Simpan event agar bisa dipanggil nanti
-    deferredPrompt = e;
-    // Tampilkan tombol install kustom kita
-    const installButton = document.getElementById('install-button');
-    if (installButton) installButton.hidden = false;
-});
-
+let participantSummary = {};
+let allParticipantNames = [];
+let currentCalendarDate = new Date();
+ 
 document.addEventListener("DOMContentLoaded", () => {
-    loadRekapData();
-    setupRekapSearch();
-
-    // Daftarkan Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(() => console.log('Service Worker berhasil didaftarkan.'))
-            .catch(error => console.error('Pendaftaran Service Worker gagal:', error));
-    }
-
-    const installButton = document.getElementById('install-button');
-    if (installButton) {
-        installButton.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                // Tampilkan prompt instalasi
-                deferredPrompt.prompt();
-                // Tunggu respons pengguna
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`Respons pengguna: ${outcome}`);
-                // Kita hanya bisa menggunakan prompt sekali, jadi reset variabelnya
-                deferredPrompt = null;
-                // Sembunyikan tombol setelah digunakan
-                installButton.hidden = true;
-            }
-        });
-    }
+  // Panggil fungsi dari app.js untuk setup PWA dan Service Worker
+  if (typeof setupPWA === 'function') setupPWA();
+  if (typeof registerServiceWorker === 'function') registerServiceWorker();
+ 
+  loadRekapData();
 });
-
+ 
 function loadRekapData() {
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const rekapContainer = document.getElementById('rekap-container');
-    loadingIndicator.style.display = 'block';
+  const loadingIndicator = document.getElementById('loading-indicator');
+  const initialPrompt = document.getElementById('initial-prompt');
+  const searchInput = document.getElementById('rekap-search');
+ 
+  // Sembunyikan prompt dan nonaktifkan input saat memuat
+  initialPrompt.classList.add('hidden');
+  loadingIndicator.style.display = 'block';
+  searchInput.disabled = true;
+ 
+  // URL yang sama dengan script utama
+  const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
+ 
+  fetch(spreadsheetUrl)
+    .then(response => {
+      if (!response.ok) throw new Error('Gagal mengambil data dari jaringan');
+      return response.text();
+    })
+    .then(csvData => {
+      const parsedData = parseCSV(csvData); // Fungsi parseCSV ada di app.js
+      participantSummary = createParticipantSummary(parsedData);
+      allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
+      setupRekapSearch(); // Siapkan pencarian setelah data siap
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error);
+      document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap.</p>`;
+    })
+    .finally(() => {
+      loadingIndicator.style.display = 'none';
+      searchInput.disabled = false;
 
-    // URL yang sama dengan script utama
-    const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTcEUYNKssh36NHW_Rk7D89EFDt-ZWFdKxQI32L_Q1exbwNhHuGHWKh_W8VFSA8E58vjhVrumodkUv9/pub?gid=0&single=true&output=csv";
-
-    fetch(spreadsheetUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Gagal mengambil data dari jaringan');
-            return response.text();
-        })
-        .then(csvData => {
-            const parsedData = parseCSV(csvData);
-            const participantSummary = createParticipantSummary(parsedData);
-            displaySummary(participantSummary);
-        })
-        .catch(error => {
-            console.error("Error fetching data:", error);
-            rekapContainer.innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap.</p>`;
-        })
-        .finally(() => {
-            loadingIndicator.style.display = 'none';
-        });
+      // Cek dan muat peserta terakhir yang dilihat
+      const lastParticipant = localStorage.getItem('lastRekapParticipant');
+      if (lastParticipant && participantSummary[lastParticipant]) {
+        displayParticipantDetails(lastParticipant);
+      } else {
+        // Hanya tampilkan prompt dan fokus jika tidak ada peserta yang dimuat
+        initialPrompt.classList.remove('hidden');
+        searchInput.focus();
+      }
+    });
 }
-
+ 
 function createParticipantSummary(data) {
-    const summary = {};
+  const summary = {};
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
+ 
+  data.forEach(row => {
+    const scheduleDate = new Date(row.Tanggal);
+    // Lewati baris ini jika tanggalnya sudah lewat atau tidak valid
+    if (isNaN(scheduleDate.getTime()) || scheduleDate < today) {
+      return;
+    }
 
-    data.forEach(row => {
-        for (let i = 1; i <= 10; i++) {
-            const participantName = row[`Peserta ${i}`];
-            if (participantName && participantName.trim() !== '') {
-                const name = participantName.trim();
-                
-                // Jika peserta belum ada di rekap, buat entri baru
-                if (!summary[name]) {
-                    summary[name] = [];
-                }
-
-                // Tambahkan jadwal ke rekap peserta
-                summary[name].push({
-                    subject: row['Mata_Pelajaran'],
-                    date: new Date(row.Tanggal) // Simpan sebagai objek Date untuk diurutkan
-                });
-            }
+    const participantKeys = Object.keys(row).filter(key => key.startsWith('Peserta '));
+    const allParticipantsInSession = participantKeys.map(k => row[k].trim()).filter(p => p); // Ambil semua nama peserta non-kosong di baris ini
+ 
+    participantKeys.forEach(key => {
+      const participantName = row[key];
+      if (participantName && participantName.trim() !== '') {
+        const name = participantName.trim();
+ 
+        if (!summary[name]) {
+          summary[name] = [];
         }
-    });
 
-    // Urutkan jadwal setiap peserta berdasarkan tanggal
-    for (const name in summary) {
-        summary[name].sort((a, b) => a.date - b.date);
-    }
-
-    return summary;
-}
-
-function displaySummary(summary) {
-    const rekapContainer = document.getElementById('rekap-container');
-    rekapContainer.innerHTML = '';
-
-    // Ambil nama peserta dan urutkan berdasarkan alfabet
-    const sortedNames = Object.keys(summary).sort((a, b) => a.localeCompare(b));
-
-    if (sortedNames.length === 0) {
-        rekapContainer.innerHTML = '<p>Tidak ada data peserta untuk ditampilkan.</p>';
-        return;
-    }
-
-    sortedNames.forEach(name => {
-        const card = document.createElement('div');
-        card.className = 'rekap-card';
-
-        const scheduleList = summary[name].map(schedule => `
-            <li>
-                <span class="mapel">${schedule.subject}</span>
-                <span class="tanggal">${schedule.date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            </li>
-        `).join('');
-
-        card.innerHTML = `
-            <h2>${name}</h2>
-            <ul>${scheduleList}</ul>
-        `;
-        rekapContainer.appendChild(card);
-    });
-}
-
-// Fungsi parseCSV (sama seperti di script.js)
-function parseCSV(csvData) {
-    const lines = csvData.split("\n");
-    const headers = lines[0].split(",").map(header => header.trim());
-    const data = [];
-    for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(",").map(value => value.trim());
-        if (values.length === headers.length) {
-            const entry = {};
-            for (let j = 0; j < headers.length; j++) {
-                entry[headers[j]] = values[j];
-            }
-            data.push(entry);
-        }
-    }
-    return data;
-}
-
-function setupRekapSearch() {
-    const searchInput = document.getElementById('rekap-search');
-    if (!searchInput) return;
-
-    searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const allCards = document.querySelectorAll('.rekap-card');
-
-        allCards.forEach(card => {
-            const participantName = card.querySelector('h2').textContent.toLowerCase();
-            card.style.display = participantName.includes(searchTerm) ? '' : 'none';
+        // Dapatkan daftar peserta lain di sesi yang sama
+        const otherParticipants = allParticipantsInSession.filter(p => p !== name);
+ 
+        summary[name].push({
+          subject: row['Mata_Pelajaran'], // Tetap ada untuk kalender
+          date: scheduleDate,
+          institusi: row.Institusi,
+          materi: row['Materi Diskusi'],
+          otherParticipants: otherParticipants // Simpan data peserta lain
         });
+      }
     });
+  });
+ 
+  // Urutkan jadwal setiap peserta berdasarkan tanggal
+  for (const name in summary) {
+    summary[name].sort((a, b) => a.date - b.date);
+  }
+ 
+  return summary;
 }
+ 
+function displayParticipantDetails(name) {
+  const detailsContainer = document.getElementById('participant-details-container');
+  const nameHeading = document.getElementById('participant-name-heading');
+  const scheduleList = document.getElementById('participant-schedule-list');
+  const initialPrompt = document.getElementById('initial-prompt');
+ 
+  // Simpan nama peserta yang dipilih ke localStorage
+  localStorage.setItem('lastRekapParticipant', name);
 
-window.addEventListener('appinstalled', () => {
-    // Kosongkan deferredPrompt dan sembunyikan tombol jika aplikasi berhasil diinstal
-    deferredPrompt = null;
-    const installButton = document.getElementById('install-button');
-    if (installButton) installButton.hidden = true;
-});
+  // Sembunyikan prompt dan hasil pencarian
+  initialPrompt.classList.add('hidden');
+  document.getElementById('search-results').innerHTML = '';
+  document.getElementById('rekap-search').value = name;
+ 
+  // Isi detail
+  const schedules = participantSummary[name];
+  nameHeading.innerHTML = `${name} <small class="schedule-count-badge">(Sisa ${schedules.length})</small>`;
+ 
+  scheduleList.innerHTML = ''; // Kosongkan daftar sebelum mengisi
+  schedules.forEach(schedule => {
+    const listItem = document.createElement('li');
+    // Tambahkan atribut data-date untuk identifikasi
+    const dateStr = schedule.date.toISOString().split('T')[0]; // Format YYYY-MM-DD
+    listItem.setAttribute('data-date', dateStr);
+
+    // Bagian ringkasan yang terlihat
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'schedule-summary';
+    summaryDiv.innerHTML = `
+      <span class="mapel">${schedule.subject}</span>
+      <span class="tanggal">${schedule.date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+    `;
+
+    // Bagian detail yang tersembunyi
+    const detailDiv = document.createElement('div');
+    detailDiv.className = 'schedule-details';
+
+    let otherParticipantsHTML = '';
+    if (schedule.otherParticipants && schedule.otherParticipants.length > 0) {
+      otherParticipantsHTML = `<p><strong>Peserta Lain:</strong> ${schedule.otherParticipants.join(', ')}</p>`;
+    }
+
+    detailDiv.innerHTML = `
+      <p><strong>Institusi:</strong> ${schedule.institusi}</p>
+      <p><strong>Materi Diskusi:</strong> ${schedule.materi}</p>
+      ${otherParticipantsHTML}
+    `;
+
+    // Tambahkan event listener untuk membuka/menutup
+    summaryDiv.addEventListener('click', () => {
+      detailDiv.classList.toggle('visible');
+      summaryDiv.classList.toggle('expanded');
+    });
+
+    listItem.appendChild(summaryDiv);
+    listItem.appendChild(detailDiv);
+    scheduleList.appendChild(listItem);
+  });
+ 
+  // Tampilkan kalender dan detail
+  currentCalendarDate = new Date(); // Reset ke bulan ini saat memilih peserta baru
+  generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), schedules);
+  detailsContainer.classList.remove('hidden');
+}
+ 
+function generateCalendar(year, month, schedules) {
+  const calendarContainer = document.getElementById('calendar-container');
+  const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+ 
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startingDay = firstDay.getDay(); // 0 = Minggu, 1 = Senin, ...
+ 
+  // Buat MAP tanggal jadwal untuk pencarian cepat dan mendapatkan detail
+  const scheduleMap = new Map();
+  schedules.forEach(s => {
+    const d = s.date;
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    if (!scheduleMap.has(dateStr)) {
+        scheduleMap.set(dateStr, []);
+    }
+    scheduleMap.get(dateStr).push(s.subject);
+  });
+ 
+  let html = `
+    <div class="calendar-header">
+      <button class="calendar-nav" id="prev-month">&lt;</button>
+      <h3>${monthNames[month]} ${year}</h3>
+      <button class="calendar-nav" id="next-month">&gt;</button>
+    </div>
+    <table class="calendar-grid">
+      <thead><tr><th>Min</th><th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th></tr></thead>
+      <tbody>
+  `;
+ 
+  let date = 1;
+  html += '<tr>';
+ 
+  // Sel kosong sebelum hari pertama
+  for (let i = 0; i < startingDay; i++) {
+    html += '<td></td>';
+  }
+ 
+  // Isi sel dengan tanggal
+  for (let i = startingDay; i < 7; i++) {
+    const currentDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+    const daySchedules = scheduleMap.get(currentDateStr);
+    let classes = '';
+    let title = '';
+    let dateAttr = '';
+    if (daySchedules) {
+        classes = 'has-schedule';
+        title = `title="Jadwal: ${daySchedules.join(', ')}"`;
+        dateAttr = `data-date="${currentDateStr}"`;
+    }
+    html += `<td><div class="${classes}" ${title} ${dateAttr}>${date}</div></td>`;
+    date++;
+  }
+  html += '</tr>';
+ 
+  // Baris-baris berikutnya
+  while (date <= daysInMonth) {
+    html += '<tr>';
+    for (let i = 0; i < 7 && date <= daysInMonth; i++) {
+      const currentDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+      const daySchedules = scheduleMap.get(currentDateStr);
+      let classes = '';
+      let title = '';
+      let dateAttr = '';
+      if (daySchedules) {
+          classes = 'has-schedule';
+          title = `title="Jadwal: ${daySchedules.join(', ')}"`;
+          dateAttr = `data-date="${currentDateStr}"`;
+      }
+      html += `<td><div class="${classes}" ${title} ${dateAttr}>${date}</div></td>`;
+      date++;
+    }
+    html += '</tr>';
+  }
+ 
+  html += '</tbody></table>';
+  calendarContainer.innerHTML = html;
+ 
+  // Tambahkan event listener untuk navigasi
+  document.getElementById('prev-month').addEventListener('click', () => {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+    generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), schedules);
+  });
+  document.getElementById('next-month').addEventListener('click', () => {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+    generateCalendar(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), schedules);
+  });
+
+  // Tambahkan event listener untuk setiap tanggal yang punya jadwal
+  calendarContainer.querySelectorAll('.has-schedule').forEach(dayEl => {
+    dayEl.addEventListener('click', (e) => {
+      const dateStr = e.currentTarget.dataset.date;
+      if (!dateStr) return;
+
+      const targetListItem = document.querySelector(`li[data-date="${dateStr}"]`);
+      if (targetListItem) {
+        // Gulir ke item jadwal yang sesuai
+        targetListItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Buka detailnya jika belum terbuka
+        const summaryDiv = targetListItem.querySelector('.schedule-summary');
+        const detailDiv = targetListItem.querySelector('.schedule-details');
+        if (!detailDiv.classList.contains('visible')) {
+          summaryDiv.classList.add('expanded');
+          detailDiv.classList.add('visible');
+        }
+
+        // Beri sorotan sementara
+        targetListItem.classList.add('highlighted');
+        setTimeout(() => {
+          targetListItem.classList.remove('highlighted');
+        }, 2500); // Sorotan selama 2.5 detik
+      }
+    });
+  });
+}
+ 
+function setupRekapSearch() {
+  const searchInput = document.getElementById('rekap-search');
+  const searchResultsContainer = document.getElementById('search-results');
+  const detailsContainer = document.getElementById('participant-details-container');
+  const initialPrompt = document.getElementById('initial-prompt');
+ 
+  searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    searchResultsContainer.innerHTML = '';
+ 
+    // Sembunyikan detail jika pengguna mulai mencari lagi
+    detailsContainer.classList.add('hidden');
+    initialPrompt.classList.add('hidden');
+ 
+    if (searchTerm.length === 0) {
+      initialPrompt.classList.remove('hidden');
+      localStorage.removeItem('lastRekapParticipant'); // Hapus status tersimpan
+      return;
+    }
+ 
+    const matchingNames = allParticipantNames.filter(name => name.toLowerCase().includes(searchTerm));
+ 
+    matchingNames.forEach(name => {
+      const item = document.createElement('div');
+      item.className = 'search-result-item';
+      item.textContent = name;
+      item.addEventListener('click', () => {
+        displayParticipantDetails(name);
+      });
+      searchResultsContainer.appendChild(item);
+    });
+  });
+ 
+  // Sembunyikan hasil pencarian jika klik di luar
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.rekap-search-container') && !e.target.closest('#search-results')) {
+      searchResultsContainer.innerHTML = '';
+    }
+  });
+}
