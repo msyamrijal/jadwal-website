@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v13-reset-page'; // Versi baru dengan halaman reset
+const CACHE_NAME = 'jadwal-presentasi-v14-csv-validation'; // Versi baru dengan validasi CSV
 const urlsToCache = [
   '/',
   'index.html',
@@ -96,11 +96,16 @@ self.addEventListener('fetch', event => {
 function fetchAndCache(request) {
   return fetch(request)
     .then(response => {
-      // Periksa apakah responsnya valid sebelum di-cache
-      if (response.ok) {
+      // Periksa apakah responsnya valid DAN merupakan file CSV sebelum di-cache.
+      // Ini mencegah "cache poisoning" dengan halaman error HTML dari Google.
+      const contentType = response.headers.get('content-type');
+      if (response.ok && contentType && contentType.includes('text/csv')) {
+        console.log('Menerima CSV yang valid dari jaringan, menyimpan ke cache.');
         caches.open(CACHE_NAME).then(cache => {
           cache.put(request, response.clone());
         });
+      } else {
+        console.warn('Menerima respons tidak valid dari jaringan, tidak akan di-cache:', response);
       }
       return response;
     })

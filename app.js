@@ -115,6 +115,10 @@ function fetchScheduleData() {
                 if (!response.ok) {
                     throw new Error('Gagal mengambil data dari jaringan');
                 }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('text/csv')) {
+                    throw new Error(`Respons dari server bukan file CSV yang valid. Tipe konten: ${contentType}`);
+                }
                 return response.text();
             })
             .then(csvData => {
