@@ -1,10 +1,11 @@
-const CACHE_NAME = 'jadwal-presentasi-v11-cleanup'; // Versi baru setelah pembersihan
+const CACHE_NAME = 'jadwal-presentasi-v12-offline-fix'; // Versi baru dengan fix offline
 const urlsToCache = [
   '/',
   'index.html',
   'jadwal.html', // Menambahkan jadwal.html
   'style.css',
   'script.js',
+  'idb.js', // File library IDB lokal
   'db.js', // File database baru
   'app.js', // File baru
   'rekap.js',
