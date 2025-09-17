@@ -37,11 +37,17 @@ function parseCSV(text) {
 
 function parseDateFromString(dateStr) {
     if (!dateStr) return null;
-    // Format: "DD/MM/YYYY HH:mm"
-    const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
-    if (!parts) return null;
-    // parts[1]=DD, parts[2]=MM, parts[3]=YYYY, parts[4]=HH, parts[5]=mm
-    return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]);
+    // Format: M/D/YYYY H:mm:ss
+    const [datePart, timePart] = dateStr.split(' ');
+    if (!datePart || !timePart) return null;
+
+    const [month, day, year] = datePart.split('/').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+
+    if (!year || !month || !day || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) return null;
+
+    // The month in JavaScript's Date is 0-indexed (0-11)
+    return new Date(year, month - 1, day, hours, minutes, seconds);
 }
 
 
