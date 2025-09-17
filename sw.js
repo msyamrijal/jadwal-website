@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v10-offline-first'; // Versi baru dengan strategi offline-first
+const CACHE_NAME = 'jadwal-presentasi-v11-cleanup'; // Versi baru setelah pembersihan
 const urlsToCache = [
   '/',
   'index.html',

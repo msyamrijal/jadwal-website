@@ -127,7 +127,8 @@ function displayParticipantDetails(name) {
  
   // Isi detail
   const schedules = participantSummary[name];
-  nameHeading.innerHTML = `${name} <small class="schedule-count-badge">(Sisa ${schedules.length})</small>`;
+  nameHeading.textContent = name;
+  document.getElementById('schedule-count').textContent = `(${schedules.length} Sisa)`;
  
   scheduleList.innerHTML = ''; // Kosongkan daftar sebelum mengisi
   schedules.forEach(schedule => {
