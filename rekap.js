@@ -110,7 +110,7 @@ function createParticipantSummary(data) {
           subject: row['Mata_Pelajaran'], // Tetap ada untuk kalender
           date: scheduleDate,
           institusi: row.Institusi,
-          materi: row.Materi_Diskusi,
+          materi: row.Materi_Diskusi || 'Tidak ada data', // FIX: Gunakan underscore
           otherParticipants: otherParticipants // Simpan data peserta lain
         });
       }
@@ -170,7 +170,7 @@ function displayParticipantDetails(name) {
 
     detailDiv.innerHTML = `
       <p><strong>Institusi:</strong> ${schedule.institusi}</p>
-      <p><strong>Materi Diskusi:</strong> ${schedule.materi || 'Tidak ada data'}</p>
+      <p><strong>Materi Diskusi:</strong> ${schedule.materi}</p>
       ${otherParticipantsHTML}
     `;
 
