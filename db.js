@@ -61,11 +61,19 @@ async function fetchScheduleData() {
 
 function parseDateFromString(dateStr) {
     if (!dateStr) return null;
-    // Format: "DD/MM/YYYY HH:mm"
-    const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
-    if (!parts) return null;
-    // parts[1]=DD, parts[2]=MM, parts[3]=YYYY, parts[4]=HH, parts[5]=mm
-    return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5]);
+    // Format: "MM/DD/YYYY HH:mm:ss" (from Google Sheets CSV)
+    const parts = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2})/);
+    if (!parts) {
+        // Fallback for "DD/MM/YYYY HH:mm" if the above doesn't match (e.g., for manual input or different sheet)
+        const fallbackParts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
+        if (fallbackParts) {
+            // parts[1]=DD, parts[2]=MM, parts[3]=YYYY, parts[4]=HH, parts[5]=mm
+            return new Date(fallbackParts[3], fallbackParts[2] - 1, fallbackParts[1], fallbackParts[4], fallbackParts[5]);
+        }
+        return null;
+    }
+    // parts[1]=MM, parts[2]=DD, parts[3]=YYYY, parts[4]=HH, parts[5]=mm, parts[6]=ss
+    return new Date(parts[3], parts[1] - 1, parts[2], parts[4], parts[5], parts[6]);
 }
 
 
