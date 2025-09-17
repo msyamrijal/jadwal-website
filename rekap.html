@@ -1,44 +1,53 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <title>Rekap Peserta</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="manifest" href="site.webmanifest">
-  <meta name="theme-color" content="#2c3e50">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>Jadwal</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="stylesheet" href="style.css"> <!-- Kita gunakan kembali style utama -->
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <h1>Rekap Peserta</h1>
-      <nav>
-        <button id="install-button" class="install-button" hidden>Install Aplikasi</button>
-        <a href="jadwal.html">Lihat Jadwal</a>
-      </nav>
-    </div>
-  </header>
-  <main>
-    <div class="rekap-search-container">
-      <input type="text" id="rekap-search" placeholder="Cari nama peserta...">
-    </div>
-    <div id="search-results"></div>
-    <div id="loading-indicator">Memuat data...</div>
-    <div id="participant-details-container" class="hidden">
-      <h2 id="participant-name-heading"></h2>
-      <div id="calendar-container"></div>
-      <h3>Daftar Jadwal:</h3>
-      <ul id="participant-schedule-list"></ul>
-    </div>
-    <p id="initial-prompt">Ketik nama peserta di atas untuk melihat rekap jadwal dan kalender.</p>
-  </main>
-  <script src="app.js"></script>
-  <script src="rekap.js"></script>
+    <header>
+        <div class="header-content">
+            <h1>Rekap Peserta</h1>
+            <nav>
+                <button id="install-button" class="install-button" hidden>Install Aplikasi</button>
+                <a href="jadwal.html">Lihat Jadwal</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="rekap-search-container">
+            <input type="text" id="rekap-search" placeholder="Cari nama peserta...">
+        </div>
+        
+        <!-- Hasil pencarian akan muncul di sini -->
+        <div id="search-results"></div>
+        
+        <div id="loading-indicator">Memuat data...</div>
+
+        <!-- Kontainer untuk menampilkan detail peserta dan kalender (awalnya tersembunyi) -->
+        <div id="participant-details-container" class="hidden">
+            <h2 id="participant-name-heading"></h2>
+            <div id="calendar-container"></div>
+            <h3>Daftar Jadwal: <span id="schedule-count"></span></h3>
+            <ul id="participant-schedule-list"></ul>
+        </div>
+
+        <!-- Pesan awal -->
+        <p id="initial-prompt">Ketik nama peserta di atas untuk melihat rekap jadwal dan kalender.</p>
+    </main>
+
+    <script src="app.js"></script>
+    <script src="rekap.js"></script>
 </body>
 </html>

@@ -1,12 +1,11 @@
-const CACHE_NAME = 'jadwal-presentasi-v5'; // Versi cache dinaikkan untuk memaksa update
+const CACHE_NAME = 'jadwal-presentasi-v3'; // Versi cache dinaikkan!
 const urlsToCache = [
   '/',
   'index.html',
-  'jadwal.html',
-  'rekap.html',
+  'jadwal.html', // Mengganti rekap.html dengan jadwal.html
   'style.css',
   'script.js',
-  'app.js',
+  'app.js', // File baru
   'rekap.js',
   'site.webmanifest',
   'apple-touch-icon.png',
@@ -26,7 +25,7 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('Cache dibuka, menyimpan file dasar aplikasi');
         return cache.addAll(urlsToCache);
-      }).then(() => self.skipWaiting()) // Aktifkan service worker baru segera setelah instalasi
+      })
   );
 });
 
@@ -64,16 +63,10 @@ self.addEventListener('fetch', event => {
 
 // Event: Activate
 // Hapus cache lama jika ada versi baru.
-// Klaim kontrol atas klien yang terbuka.
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) return caches.delete(cacheName);
-        })
-      ).then(() => self.clients.claim()); // Ambil alih kontrol halaman yang terbuka
-    })
-  );
+  event.waitUntil(caches.keys().then(cacheNames => {
+    return Promise.all(cacheNames.map(cache => {
+      if (cache !== CACHE_NAME) return caches.delete(cache);
+    }));
+  }));
 });
