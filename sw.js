@@ -15,8 +15,8 @@ const urlsToCache = [
   'favicon-16x16.png',
   'favicon.ico',
   // Ikon dari manifest yang sudah dikonsolidasi
-  'icons/icon-192x192.png',
-  'icons/icon-512x512.png'
+  'android-chrome-192x192.png',
+  'android-chrome-512x512.png'
 ];
 
 // Listener untuk pesan dari klien (misalnya, untuk skip waiting)
