@@ -113,12 +113,12 @@ function processScheduleData(parsedData) {
 
     const detailCell = document.createElement("td");
     detailCell.colSpan = 3; // Agar mengisi seluruh lebar tabel
-    detailCell.innerHTML = "`
+    detailCell.innerHTML = "
       <div class=\"detail-content\">
         <p><strong>Institusi:</strong> ${row.Institusi || 'Tidak ada data'}</p>
         <p><strong>Materi Diskusi:</strong> ${row['Materi Diskusi'] || 'Tidak ada data'}</p>
       </div>
-    `";
+    ";
     detailRow.appendChild(detailCell);
 
     // 3. Tambahkan event listener untuk membuka/menutup detail
