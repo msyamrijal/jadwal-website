@@ -16,8 +16,7 @@ function loadRekapData() {
   const searchInput = document.getElementById('rekap-search');
  
   // Sembunyikan prompt dan nonaktifkan input saat memuat
-  initialPrompt.classList.add('hidden');
-  loadingIndicator.style.display = 'block';
+  loadingIndicator.style.display = 'block'; // Cukup tampilkan loading
   searchInput.disabled = true;
  
   // Pola Cache-then-Network
@@ -44,6 +43,11 @@ function loadRekapData() {
       .finally(() => {
         // Pastikan loading indicator selalu hilang setelah percobaan fetch dari jaringan selesai.
         loadingIndicator.style.display = 'none';
+        // Aktifkan kembali input setelah semua proses selesai
+        searchInput.disabled = false;
+        // Jika tidak ada data sama sekali dan tidak ada peserta yang ditampilkan, tunjukkan prompt.
+        const detailsVisible = !document.getElementById('participant-details-container').classList.contains('hidden');
+        if (!detailsVisible) initialPrompt.classList.remove('hidden');
       });
   });
 }
@@ -57,8 +61,8 @@ function processRekapData(summaryData) {
   allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
   setupRekapSearch();
 
-  // Indikator loading sekarang ditangani di blok .finally()
-  document.getElementById('rekap-search').disabled = false;
+  // Sembunyikan prompt karena kita akan memproses data
+  document.getElementById('initial-prompt').classList.add('hidden');
 
   const lastParticipant = localStorage.getItem('lastRekapParticipant');
   if (lastParticipant && participantSummary[lastParticipant]) {
