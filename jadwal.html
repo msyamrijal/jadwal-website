@@ -167,12 +167,11 @@ function processScheduleData(parsedData) {
 
     const detailCell = document.createElement("td");
     detailCell.colSpan = 3; // Agar mengisi seluruh lebar tabel
-    detailCell.innerHTML = `
-      <div class="detail-content">
+    detailCell.innerHTML = "\n      <div class=\"detail-content\">
         <p><strong>Institusi:</strong> ${row.Institusi || 'Tidak ada data'}</p>
         <p><strong>Materi Diskusi:</strong> ${row['Materi Diskusi'] || 'Tidak ada data'}</p>
       </div>
-    `;
+    ";
     detailRow.appendChild(detailCell);
 
     // 3. Tambahkan event listener untuk membuka/menutup detail
@@ -316,7 +315,7 @@ function setupFilters() {
     if (searchTerm.length > 0) {
       const matchingNames = allParticipantNames.filter(name => name.toLowerCase().includes(searchTerm));
       
-      matchingNames.slice(0, 10).forEach(name => {
+      matchingNames.slice(0, 10).forEach(name => { // Batasi hingga 10 hasil
         const item = document.createElement('div');
         item.className = 'search-result-item';
         item.textContent = name;
@@ -350,3 +349,6 @@ function setupFilters() {
 
   loadData();
  });
+  </script>
+ </body>
+ </html>
