@@ -1,10 +1,11 @@
-const CACHE_NAME = 'jadwal-presentasi-v8-refactor'; // Versi baru setelah refactor
+const CACHE_NAME = 'jadwal-presentasi-v9-indexeddb'; // Versi baru dengan IndexedDB
 const urlsToCache = [
   '/',
   'index.html',
   'jadwal.html', // Menambahkan jadwal.html
   'style.css',
   'script.js',
+  'db.js', // File database baru
   'app.js', // File baru
   'rekap.js',
   'site.webmanifest',

@@ -5,35 +5,47 @@
   const loadingIndicator = document.getElementById('loading-indicator');
   loadingIndicator.style.display = 'block'; // Tampilkan indikator loading
 
-  // Gunakan fungsi terpusat dari app.js
-  fetchScheduleData()
-  .then(parsedData => {
-
-  // Fungsi bantuan untuk mengubah string tanggal menjadi objek Date
-  const parseDateFromString = (dateString) => {
-    if (!dateString || dateString.trim() === '') return null;
-
-    // Format seperti "9/15/2025 8:00:00" dapat langsung diproses oleh constructor Date.
-    const date = new Date(dateString);
-
-    // Periksa apakah tanggal yang dihasilkan valid.
-    if (!isNaN(date.getTime())) {
-      return date;
+  // Pola Cache-then-Network
+  // 1. Coba muat dari IndexedDB
+  getSchedules().then(cachedData => {
+    if (cachedData) {
+      console.log("Menampilkan data jadwal dari cache.");
+      processScheduleData(cachedData);
     }
-    console.warn(`Format tanggal tidak valid atau tidak dapat diproses: "${dateString}".`);
-    return null;
-  }
 
-  // 1. Filter data untuk tanggal mendatang & tambahkan objek Date untuk pengurutan
+    // 2. Selalu coba ambil data terbaru dari jaringan
+    fetchScheduleData()
+      .then(freshData => {
+        console.log("Data jadwal baru dari jaringan diterima.");
+        processScheduleData(freshData); // Perbarui UI dengan data baru
+        saveSchedules(freshData); // Simpan data baru ke IndexedDB
+      })
+      .catch(error => {
+        if (!cachedData) { // Hanya tampilkan error jika tidak ada data cache
+          document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
+        }
+      })
+      .finally(() => {
+        loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
+      });
+  });
+}
+
+/**
+ * Memproses data jadwal (baik dari cache maupun jaringan) dan memperbarui UI.
+ * @param {Array<Object>} parsedData 
+ */
+function processScheduleData(parsedData) {
+  const parseDateFromString = (dateString) => dateString ? new Date(dateString) : null;
+
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set ke tengah malam untuk perbandingan tanggal yang akurat
+  today.setHours(0, 0, 0, 0);
 
   allData = parsedData
-  .map(row => ({ ...row, dateObject: parseDateFromString(row.Tanggal) }))
-  .filter(row => row.dateObject && row.dateObject >= today)
-  .sort((a, b) => a.dateObject - b.dateObject); // 2. Urutkan dari tanggal terdekat
+    .map(row => ({ ...row, dateObject: parseDateFromString(row.Tanggal) }))
+    .filter(row => row.dateObject && row.dateObject >= today)
+    .sort((a, b) => a.dateObject - b.dateObject);
 
-  // Ambil semua nama peserta unik dari data yang sudah diproses
   const participantSet = new Set();
   allData.forEach(row => {
     Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key])
@@ -41,25 +53,17 @@
   });
   allParticipantNames = [...participantSet].sort();
 
-  populateTable(allData); // Tampilkan data yang sudah difilter dan diurutkan
-  populateInstitutionFilter(allData); // Buat opsi dropdown institusi
-  populateSubjectFilter(allData); // Buat opsi dropdown mata pelajaran
-  setupFilters(); // Siapkan event listener untuk input filter
+  populateTable(allData);
+  populateInstitutionFilter(allData);
+  populateSubjectFilter(allData);
+  setupFilters();
 
-  // Muat dan terapkan filter peserta terakhir yang disimpan
   const savedParticipant = localStorage.getItem('lastParticipantFilter');
   if (savedParticipant) {
     document.getElementById('filter-peserta').value = savedParticipant;
-    applyFilters(); // Terapkan filter yang tersimpan saat halaman dimuat
+    applyFilters();
   }
-  })
-  .catch(error => { // Error sudah di-handle di fungsi pusat, ini hanya untuk UI
-  document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
-  })
-  .finally(() => {
-  loadingIndicator.style.display = 'none'; // Sembunyikan indikator loading
-  });
- }
+}
 
  function populateTable(data) {
   const tableBody = document.querySelector("#jadwal-table tbody");
@@ -279,7 +283,6 @@ function setupFilters() {
   // Panggil fungsi dari app.js untuk setup PWA dan Service Worker
   if (typeof setupPWA === 'function') setupPWA();
   if (typeof registerServiceWorker === 'function') registerServiceWorker();
-  if (typeof setupResetFunctionality === 'function') setupResetFunctionality();
 
   loadData();
  });

@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Panggil fungsi dari app.js untuk setup PWA dan Service Worker
   if (typeof setupPWA === 'function') setupPWA();
   if (typeof registerServiceWorker === 'function') registerServiceWorker();
-  if (typeof setupResetFunctionality === 'function') setupResetFunctionality();
  
   loadRekapData();
 });
@@ -21,30 +20,49 @@ function loadRekapData() {
   loadingIndicator.style.display = 'block';
   searchInput.disabled = true;
  
-  // Gunakan fungsi terpusat dari app.js
-  fetchScheduleData()
-    .then(data => {
-      participantSummary = createParticipantSummary(data);
-      allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
-      setupRekapSearch(); // Siapkan pencarian setelah data siap
-    })
-    .catch(error => {
-      document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap.</p>`;
-    })
-    .finally(() => {
-      loadingIndicator.style.display = 'none';
-      searchInput.disabled = false;
+  // Pola Cache-then-Network
+  // 1. Coba muat dari IndexedDB terlebih dahulu
+  getRekap().then(cachedData => {
+    if (cachedData) {
+      console.log("Menampilkan data rekap dari cache.");
+      processRekapData(cachedData);
+    }
 
-      // Cek dan muat peserta terakhir yang dilihat
-      const lastParticipant = localStorage.getItem('lastRekapParticipant');
-      if (lastParticipant && participantSummary[lastParticipant]) {
-        displayParticipantDetails(lastParticipant);
-      } else {
-        // Hanya tampilkan prompt dan fokus jika tidak ada peserta yang dimuat
-        initialPrompt.classList.remove('hidden');
-        searchInput.focus();
-      }
-    });
+    // 2. Selalu coba ambil data terbaru dari jaringan
+    fetchScheduleData()
+      .then(freshData => {
+        console.log("Data rekap baru dari jaringan diterima.");
+        const freshSummary = createParticipantSummary(freshData);
+        processRekapData(freshSummary); // Perbarui UI dengan data baru
+        saveRekap(freshSummary); // Simpan data baru ke IndexedDB
+      })
+      .catch(error => {
+        if (!cachedData) { // Hanya tampilkan error jika tidak ada data cache sama sekali
+          document.querySelector('main').innerHTML = `<p style="text-align:center; color: red;">Gagal memuat data rekap. Periksa koneksi internet Anda.</p>`;
+        }
+      });
+  });
+}
+
+/**
+ * Memproses data rekap (baik dari cache maupun jaringan) dan memperbarui UI.
+ * @param {Object} summaryData 
+ */
+function processRekapData(summaryData) {
+  participantSummary = summaryData;
+  allParticipantNames = Object.keys(participantSummary).sort((a, b) => a.localeCompare(b));
+  setupRekapSearch();
+
+  document.getElementById('loading-indicator').style.display = 'none';
+  document.getElementById('rekap-search').disabled = false;
+
+  const lastParticipant = localStorage.getItem('lastRekapParticipant');
+  if (lastParticipant && participantSummary[lastParticipant]) {
+    displayParticipantDetails(lastParticipant);
+  } else {
+    document.getElementById('initial-prompt').classList.remove('hidden');
+    document.getElementById('rekap-search').focus();
+  }
 }
  
 function createParticipantSummary(data) {
