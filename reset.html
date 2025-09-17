@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Reset Aplikasi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; text-align: center; padding: 1em; }
+        .container { padding: 2em; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; }
+        h1 { color: #e26d5b; }
+        p { color: #333; line-height: 1.6; }
+        .status { margin-top: 1.5em; font-style: italic; color: #555; text-align: left; font-size: 0.9em; }
+        .status p { margin: 0.5em 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mereset Aplikasi...</h1>
+        <p>Harap tunggu. Cache dan data aplikasi sedang dibersihkan untuk memastikan Anda mendapatkan versi terbaru.</p>
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        async function hardResetApplication() {
+            const statusDiv = document.getElementById('status');
+            try {
+                statusDiv.innerHTML += '<p>1. Membatalkan pendaftaran Service Worker...</p>';
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) { await registration.unregister(); }
+                    statusDiv.innerHTML += '<p>&#10004; Service Worker berhasil dihapus.</p>';
+                }
+
+                statusDiv.innerHTML += '<p>2. Menghapus semua cache...</p>';
+                if ('caches' in window) {
+                    const keys = await caches.keys();
+                    await Promise.all(keys.map(key => caches.delete(key)));
+                    statusDiv.innerHTML += '<p>&#10004; Semua cache berhasil dihapus.</p>';
+                }
+
+                statusDiv.innerHTML += '<p>3. Memuat ulang aplikasi...</p>';
+                window.location.href = '/'; // Arahkan kembali ke halaman utama
+            } catch (error) {
+                statusDiv.innerHTML = `<p style="color: red;"><strong>Gagal!</strong> Terjadi kesalahan. Silakan coba bersihkan cache browser secara manual.</p>`;
+            }
+        }
+        window.addEventListener('load', hardResetApplication);
+    </sript>
+</body>
+</html>

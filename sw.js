@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v12-offline-fix'; // Versi baru dengan fix offline
+const CACHE_NAME = 'jadwal-presentasi-v13-reset-page'; // Versi baru dengan halaman reset
 const urlsToCache = [
   '/',
   'index.html',
@@ -42,6 +42,12 @@ self.addEventListener('install', event => {
 // Setiap kali halaman meminta sebuah file (gambar, css, dll.), service worker akan mencegatnya.
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
+
+  // Selalu abaikan halaman reset, biarkan browser mengambilnya dari jaringan.
+  // Ini adalah tombol darurat kita.
+  if (url.pathname.endsWith('/reset.html')) {
+    return; // Bypass service worker
+  }
 
   // STRATEGI 1: Stale-While-Revalidate untuk halaman HTML (permintaan navigasi).
   // Ini membuat aplikasi terasa instan saat dibuka, bahkan saat offline.
