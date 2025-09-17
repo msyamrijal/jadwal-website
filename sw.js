@@ -17,16 +17,16 @@ const urlsToCache = [
   'icons/icon-512x512.png'
 ];
 
+// Listener untuk pesan dari klien (misalnya, untuk skip waiting)
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Event: Install
 // Saat service worker di-install, buka cache dan simpan semua file dasar aplikasi.
 self.addEventListener('install', event => {
-  // Menambahkan listener pesan di sini agar bisa menerima pesan 'SKIP_WAITING'
-  // bahkan saat worker sedang dalam fase 'installing'.
-  self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-      self.skipWaiting();
-    }
-  });
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {

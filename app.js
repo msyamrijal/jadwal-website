@@ -115,7 +115,7 @@ function showUpdateNotification(worker) {
 
     if (!updateBanner || !updateButton) return;
 
-    updateBanner.style.display = 'block';
+    updateBanner.style.display = 'flex'; // Gunakan 'flex' agar sesuai dengan styling di CSS
     updateButton.onclick = () => {
         worker.postMessage({ type: 'SKIP_WAITING' });
     };
