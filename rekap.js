@@ -94,7 +94,7 @@ function createParticipantSummary(data) {
       return;
     }
 
-    const participantKeys = Object.keys(row).filter(key => key.startsWith('Peserta_'));
+    const participantKeys = Object.keys(row).filter(key => key.startsWith('Peserta '));
     const allParticipantsInSession = participantKeys.map(k => row[k].trim()).filter(p => p); // Ambil semua nama peserta non-kosong di baris ini
  
     participantKeys.forEach(key => {
@@ -113,20 +113,12 @@ function createParticipantSummary(data) {
           subject: row['Mata_Pelajaran'], // Tetap ada untuk kalender
           date: scheduleDate,
           institusi: row.Institusi,
-          materi: row.Materi_Diskusi || 'Tidak ada data', // FIX: Gunakan underscore
+          materi: row['Materi Diskusi'] || 'Tidak ada data',
           otherParticipants: otherParticipants // Simpan data peserta lain
         });
       }
     });
   });
- 
-  // Urutkan jadwal setiap peserta berdasarkan tanggal
-  for (const name in summary) {
-    summary[name].sort((a, b) => a.date - b.date);
-  }
- 
-  return summary;
-}
  
 function displayParticipantDetails(name) {
   const detailsContainer = document.getElementById('participant-details-container');

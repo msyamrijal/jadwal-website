@@ -205,7 +205,7 @@ function processScheduleData(parsedData) {
     if (isCompleteName) {
       // Jika nama lengkap, lakukan pencocokan persis (exact match).
       for (let i = 1; i <= 12; i++) {
-        const pesertaKey = `Peserta_${i}`;
+        const pesertaKey = `Peserta ${i}`;
         if (row[pesertaKey] && row[pesertaKey].toLowerCase() === pesertaFilter) {
           pesertaMatch = true;
           break;
@@ -214,7 +214,7 @@ function processScheduleData(parsedData) {
     } else {
       // Jika bukan nama lengkap (sedang mengetik), lakukan pencocokan parsial (substring match).
       for (let i = 1; i <= 12; i++) {
-        const pesertaKey = `Peserta_${i}`;
+        const pesertaKey = `Peserta ${i}`;
         if (row[pesertaKey] && row[pesertaKey].toLowerCase().includes(pesertaFilter)) {
           pesertaMatch = true;
           break;
