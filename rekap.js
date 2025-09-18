@@ -35,7 +35,8 @@ async function loadRekapData() {
     const freshSummary = createParticipantSummary(freshData);
     processRekapData(freshSummary); // Perbarui UI dengan data baru
     await saveRekap(freshSummary); // Simpan data rekap baru ke IndexedDB
- 
+
+    
   } catch (error) {
     console.error("Gagal memuat data rekap:", error);
     // Hanya tampilkan error jika tidak ada data sama sekali (bahkan dari cache)
