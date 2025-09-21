@@ -1,6 +1,6 @@
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { fetchScheduleData, updateSchedule, createSchedule } from './db.js';
+import { fetchSchedulesByParticipant, updateSchedule, createSchedule } from './db.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loadingIndicator = document.getElementById('loading-indicator');
@@ -11,10 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelCreateBtn = document.getElementById('cancel-create-btn');
 
     // --- AUTHENTICATION CHECK ---
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // Pengguna sudah login, muat data manajemen
-            loadManagementData();
+            // Pastikan displayName tersedia, karena ini krusial untuk mengambil data
+            if (user.displayName) {
+                // Pengguna sudah login dan punya nama, muat data manajemen
+                loadManagementData(user.displayName);
+            } else {
+                // Jika tidak ada displayName, coba muat ulang profil sekali
+                await user.reload();
+                const updatedUser = auth.currentUser;
+                if (updatedUser.displayName) {
+                    loadManagementData(updatedUser.displayName);
+                } else {
+                    // Jika masih tidak ada, tampilkan pesan error
+                    loadingIndicator.style.display = 'none';
+                    schedulesContainer.innerHTML = `<p style="color: red;">Gagal memuat data: Nama pengguna tidak ditemukan. Silakan perbarui profil Anda di halaman Dashboard.</p>`;
+                }
+            }
         } else {
             // Pengguna tidak login, paksa kembali ke halaman login
             console.log('Akses ditolak. Pengguna tidak terautentikasi.');
@@ -22,12 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function loadManagementData() {
+    async function loadManagementData(participantName) {
         loadingIndicator.style.display = 'block';
         schedulesContainer.innerHTML = '';
         try {
-            const schedules = await fetchScheduleData();
-            renderEditableSchedules(schedules);
+            const schedules = await fetchSchedulesByParticipant(participantName);
+            if (schedules.length === 0) {
+                schedulesContainer.innerHTML = `<p>Anda tidak memiliki jadwal untuk dikelola. Jadwal yang sudah lewat tidak ditampilkan.</p>`;
+            } else {
+                renderEditableSchedules(schedules);
+            }
         } catch (error) {
             schedulesContainer.innerHTML = `<p style="color: red;">Gagal memuat data jadwal: ${error.message}</p>`;
         } finally {
