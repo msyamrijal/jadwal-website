@@ -32,6 +32,7 @@ fs.createReadStream(filePath)
       // Buat objek yang akan disimpan ke Firestore
       const scheduleData = {
         Tanggal: admin.firestore.Timestamp.fromDate(jsDate), // Konversi ke Timestamp Firestore
+        searchable_participants: [], // Field baru untuk pencarian fleksibel
         Mata_Pelajaran: row.Mata_Pelajaran || '',
         Institusi: row.Institusi || '',
         'Materi Diskusi': row['Materi Diskusi'] || '',
@@ -49,6 +50,15 @@ fs.createReadStream(filePath)
         'Peserta 11': row['Peserta 11'] || '',
         'Peserta 12': row['Peserta 12'] || '',
       };
+
+      // Isi field `searchable_participants` dengan nama yang sudah dinormalisasi
+      for (let i = 1; i <= 12; i++) {
+        const participantName = row[`Peserta ${i}`];
+        if (participantName && participantName.trim() !== '') {
+          // Normalisasi: ubah ke huruf kecil dan hapus spasi berlebih
+          scheduleData.searchable_participants.push(participantName.trim().toLowerCase());
+        }
+      }
 
       // Tambahkan dokumen baru ke koleksi 'schedules'
       await collectionRef.add(scheduleData);

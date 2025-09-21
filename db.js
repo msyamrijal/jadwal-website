@@ -34,30 +34,22 @@ export async function fetchScheduleData() {
  */
 export async function fetchSchedulesByParticipant(participantName) {
   try {
-    // Firestore tidak mendukung query OR pada field yang berbeda secara native.
-    // Jadi, kita harus melakukan 12 query terpisah dan menggabungkan hasilnya.
-    const participantQueries = [];
-    for (let i = 1; i <= 12; i++) {
-      const q = query(collection(db, "schedules"), where(`Peserta ${i}`, "==", participantName));
-      participantQueries.push(getDocs(q));
-    }
+    // Normalisasi nama input agar cocok dengan data di database
+    const normalizedName = participantName.trim().toLowerCase();
 
-    const querySnapshots = await Promise.all(participantQueries);
-    const schedulesMap = new Map(); // Gunakan Map untuk menghindari duplikat
+    // Gunakan query 'array-contains' yang lebih efisien dan fleksibel
+    const q = query(collection(db, "schedules"), where("searchable_participants", "array-contains", normalizedName));
+    const querySnapshot = await getDocs(q);
 
-    querySnapshots.forEach(snapshot => {
-      snapshot.forEach(doc => {
-        if (!schedulesMap.has(doc.id)) {
-          schedulesMap.set(doc.id, {
-            id: doc.id,
-            ...doc.data(),
-            dateObject: doc.data().Tanggal.toDate()
-          });
-        }
+    const schedules = [];
+    querySnapshot.forEach(doc => {
+      schedules.push({
+        id: doc.id,
+        ...doc.data(),
+        dateObject: doc.data().Tanggal.toDate()
       });
     });
 
-    const schedules = Array.from(schedulesMap.values());
     // Urutkan berdasarkan tanggal
     schedules.sort((a, b) => a.dateObject - b.dateObject);
     

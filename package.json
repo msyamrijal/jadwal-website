@@ -2,5 +2,23 @@
   "dependencies": {
     "csv-parser": "^3.2.0",
     "firebase-admin": "^13.5.0"
-  }
+  },
+  "name": "jadwal-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dashboard.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msyamrijal/jadwal-website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/msyamrijal/jadwal-website/issues"
+  },
+  "homepage": "https://github.com/msyamrijal/jadwal-website#readme"
 }
