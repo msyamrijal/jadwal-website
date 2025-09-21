@@ -15,6 +15,8 @@
         .edit-form input, .edit-form textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; }
         .edit-form button { background-color: var(--accent-color); color: var(--text-light); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: background-color 0.3s; }
         .edit-form button:hover { background-color: #c95a4a; }
+        .edit-form button[type="button"] { background-color: var(--border-color); color: var(--text-dark); }
+        .edit-form button[type="button"]:hover { background-color: #ccc; }
         .logout-button { background: none; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 8px 18px; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
         .logout-button:hover { background-color: var(--accent-color); color: var(--text-light); }
     </style>
@@ -33,6 +35,10 @@
         <h2 class="welcome-message">Selamat Datang, <span id="user-name"></span>!</h2>
         <p>Di sini Anda dapat melihat dan mengedit detail jadwal Anda.</p>
 
+        <div class="actions-bar" style="margin: 20px 0;">
+            <button id="add-schedule-button" class="edit-form button">Tambah Jadwal Baru</button>
+        </div>
+
         <!-- Form untuk memperbarui profil, tersembunyi secara default -->
         <div id="update-profile-container" class="schedule-item-edit" style="display: none;">
             <h4>Perbarui Profil Anda</h4>
@@ -42,6 +48,34 @@
                 <input type="text" id="new-displayName" required>
                 <button type="submit">Simpan Nama & Tampilkan Jadwal</button>
                 <div id="update-profile-error" style="color: red; font-size: 0.9em; margin-top: 10px;"></div>
+            </form>
+        </div>
+
+        <!-- Form untuk membuat jadwal baru, tersembunyi secara default -->
+        <div id="create-schedule-container" class="schedule-item-edit" style="display: none;">
+            <h4>Tambah Jadwal Baru</h4>
+            <form id="create-schedule-form" class="edit-form">
+                <label for="new-subject">Mata Pelajaran:</label>
+                <input type="text" id="new-subject" required>
+
+                <label for="new-institution">Institusi:</label>
+                <input type="text" id="new-institution" required>
+
+                <label for="new-date">Tanggal & Waktu:</label>
+                <input type="datetime-local" id="new-date" required>
+
+                <label for="new-material">Materi Diskusi:</label>
+                <textarea id="new-material" rows="3"></textarea>
+
+                <fieldset style="border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; margin-top: 15px;">
+                    <legend>Peserta</legend>
+                    <div id="participant-inputs">
+                        <!-- Input untuk peserta akan dibuat oleh JavaScript -->
+                    </div>
+                </fieldset>
+
+                <button type="submit">Simpan Jadwal</button>
+                <button type="button" id="cancel-create-button">Batal</button>
             </form>
         </div>
 

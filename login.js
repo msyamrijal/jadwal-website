@@ -1,11 +1,12 @@
 import { auth } from './firebase-config.js';
-import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const loginButton = document.getElementById('login-button');
     const errorMessage = document.getElementById('error-message');
     const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const googleLoginButton = document.getElementById('google-login-button');
 
     // Cek apakah pengguna sudah login, jika ya, redirect ke dashboard
     onAuthStateChanged(auth, (user) => {
@@ -85,6 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 .finally(() => {
                     loginButton.disabled = false;
                 });
+        });
+    }
+
+    if (googleLoginButton) {
+        googleLoginButton.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            
+            try {
+                const result = await signInWithPopup(auth, provider);
+                // Login berhasil, onAuthStateChanged akan menangani redirect.
+                console.log('Login dengan Google berhasil untuk:', result.user.email);
+            } catch (error) {
+                console.error('Error login dengan Google:', error);
+                // Handle common errors
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    errorMessage.textContent = 'Gagal login dengan Google. Silakan coba lagi.';
+                    errorMessage.style.display = 'block';
+                }
+            }
         });
     }
 });

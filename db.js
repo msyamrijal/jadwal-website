@@ -1,6 +1,6 @@
 
 import { db } from './firebase-config.js';
-import { collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { collection, getDocs, query, where, updateDoc, doc, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 export async function fetchScheduleData() {
   try {
@@ -73,6 +73,29 @@ export async function updateSchedule(scheduleId, data) {
     await updateDoc(scheduleRef, data);
 }
 
+/**
+ * Membuat dokumen jadwal baru di Firestore.
+ * @param {Object} scheduleData Objek dengan data jadwal baru.
+ */
+export async function createSchedule(scheduleData) {
+    // 1. Siapkan data final untuk Firestore
+    const dataToSave = { ...scheduleData };
+
+    // 2. Buat array `searchable_participants` dari data peserta, sama seperti di migration-script
+    dataToSave.searchable_participants = [];
+    for (let i = 1; i <= 12; i++) {
+        const participantName = dataToSave[`Peserta ${i}`];
+        if (participantName && participantName.trim() !== '') {
+            dataToSave.searchable_participants.push(participantName.trim().toLowerCase());
+        }
+    }
+
+    // 3. Tambahkan dokumen baru ke koleksi 'schedules'
+    // Firestore SDK akan otomatis mengonversi objek Date JavaScript ke Timestamp
+    const docRef = await addDoc(collection(db, "schedules"), dataToSave);
+    console.log("Jadwal baru berhasil dibuat dengan ID:", docRef.id);
+    return docRef;
+}
 // --- FUNGSI DATABASE (INDEXEDDB) --- //
 
 const DB_NAME = 'jadwalDB';

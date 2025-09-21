@@ -1,10 +1,11 @@
 import { auth } from './firebase-config.js';
-import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
     const registerButton = document.getElementById('register-button');
     const errorMessage = document.getElementById('error-message');
+    const googleLoginButton = document.getElementById('google-login-button');
 
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
@@ -65,6 +66,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Kembalikan tombol ke kondisi semula
                 registerButton.disabled = false;
                 registerButton.textContent = 'Daftar';
+            }
+        });
+    }
+
+    if (googleLoginButton) {
+        googleLoginButton.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            
+            try {
+                const result = await signInWithPopup(auth, provider);
+                // Saat pengguna mendaftar dengan Google, akun otomatis dibuat.
+                // Firebase secara otomatis mengisi `displayName` dari akun Google.
+                console.log('Pendaftaran/Login dengan Google berhasil untuk:', result.user.email);
+                // Langsung arahkan ke dashboard.
+                window.location.replace('/dashboard.html');
+            } catch (error) {
+                console.error('Error daftar/login dengan Google:', error);
+                // Handle common errors
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    errorMessage.textContent = 'Gagal mendaftar dengan Google. Silakan coba lagi.';
+                    errorMessage.style.display = 'block';
+                }
             }
         });
     }

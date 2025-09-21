@@ -1,14 +1,22 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { fetchSchedulesByParticipant, updateSchedule } from './db.js';
+import { fetchSchedulesByParticipant, updateSchedule, createSchedule } from './db.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const userNameEl = document.getElementById('user-name');
     const schedulesListEl = document.getElementById('my-schedules-list');
     const loadingIndicator = document.getElementById('loading-indicator');
     const logoutButton = document.getElementById('logout-button');
+
+    // Elemen untuk form update profil
     const updateProfileContainer = document.getElementById('update-profile-container');
     const updateProfileForm = document.getElementById('update-profile-form');
+
+    // Elemen untuk form create jadwal
+    const addScheduleButton = document.getElementById('add-schedule-button');
+    const createScheduleContainer = document.getElementById('create-schedule-container');
+    const createScheduleForm = document.getElementById('create-schedule-form');
+    const cancelCreateButton = document.getElementById('cancel-create-button');
 
     // --- FUNGSI UTAMA ---
 
@@ -33,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentUser.displayName) {
                 // KASUS NORMAL: Pengguna punya nama, tampilkan jadwal.
                 updateProfileContainer.style.display = 'none';
+                addScheduleButton.style.display = 'block'; // Tampilkan tombol tambah jadwal
                 userNameEl.textContent = currentUser.displayName;
                 fetchUserSchedules(currentUser.displayName);
             } else {
@@ -40,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 userNameEl.textContent = 'Peserta';
                 updateProfileContainer.style.display = 'block';
             }
+            generateParticipantInputs(); // Buat input peserta untuk form create
         } else {
             // Pengguna tidak login, paksa kembali ke halaman login
             console.log('Pengguna tidak terautentikasi, mengarahkan ke login...');
@@ -167,7 +177,72 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 5. Fungsi Logout
+    // 6. Logika untuk menampilkan/menyembunyikan form tambah jadwal
+    addScheduleButton.addEventListener('click', () => {
+        createScheduleContainer.style.display = 'block';
+        addScheduleButton.style.display = 'none';
+        schedulesListEl.style.display = 'none'; // Sembunyikan daftar jadwal saat form aktif
+    });
+
+    cancelCreateButton.addEventListener('click', () => {
+        createScheduleContainer.style.display = 'none';
+        addScheduleButton.style.display = 'block';
+        schedulesListEl.style.display = 'block';
+        createScheduleForm.reset(); // Bersihkan form
+    });
+
+    // 7. Fungsi untuk membuat input peserta secara dinamis
+    function generateParticipantInputs() {
+        const container = document.getElementById('participant-inputs');
+        container.innerHTML = '';
+        for (let i = 1; i <= 12; i++) {
+            const div = document.createElement('div');
+            div.style.marginBottom = '8px';
+            div.innerHTML = `
+                <label for="new-participant-${i}" style="font-weight: normal; font-size: 0.9em;">Peserta ${i}:</label>
+                <input type="text" id="new-participant-${i}" name="participant-${i}">
+            `;
+            container.appendChild(div);
+        }
+    }
+
+    // 8. Tangani submit form untuk membuat jadwal baru
+    createScheduleForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const button = createScheduleForm.querySelector('button[type="submit"]');
+        button.disabled = true;
+        button.textContent = 'Menyimpan...';
+
+        try {
+            const newScheduleData = {
+                'Mata_Pelajaran': document.getElementById('new-subject').value,
+                'Institusi': document.getElementById('new-institution').value,
+                'Tanggal': new Date(document.getElementById('new-date').value),
+                'Materi Diskusi': document.getElementById('new-material').value,
+            };
+
+            // Kumpulkan nama peserta
+            for (let i = 1; i <= 12; i++) {
+                const participantName = document.getElementById(`new-participant-${i}`).value.trim();
+                newScheduleData[`Peserta ${i}`] = participantName || '';
+            }
+
+            // Panggil fungsi dari db.js untuk membuat dokumen
+            await createSchedule(newScheduleData);
+
+            alert('Jadwal baru berhasil ditambahkan!');
+            // Muat ulang halaman untuk menampilkan data terbaru, termasuk jadwal baru
+            window.location.reload();
+
+        } catch (error) {
+            console.error('Gagal membuat jadwal baru:', error);
+            alert(`Terjadi kesalahan: ${error.message}`);
+            button.disabled = false;
+            button.textContent = 'Simpan Jadwal';
+        }
+    });
+
+    // 9. Fungsi Logout
     logoutButton.addEventListener('click', async () => {
         await signOut(auth);
         // onAuthStateChanged akan otomatis mendeteksi perubahan dan me-redirect
