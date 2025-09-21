@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { fetchSchedulesByParticipant, updateSchedule, createSchedule } from './db.js';
+import { fetchScheduleData, updateSchedule, createSchedule } from './db.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const userNameEl = document.getElementById('user-name');
@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const createScheduleContainer = document.getElementById('create-schedule-container');
     const createScheduleForm = document.getElementById('create-schedule-form');
     const cancelCreateButton = document.getElementById('cancel-create-button');
+
+    // Variabel global untuk menyimpan data dan filter
+    let allSchedules = [];
+    let allParticipantNames = [];
+
 
     // --- FUNGSI UTAMA ---
 
@@ -42,8 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // KASUS NORMAL: Pengguna punya nama, tampilkan jadwal.
                 updateProfileContainer.style.display = 'none';
                 addScheduleButton.style.display = 'block'; // Tampilkan tombol tambah jadwal
-                userNameEl.textContent = currentUser.displayName;
-                fetchUserSchedules(currentUser.displayName);
+                initializeDashboard(currentUser);
             } else {
                 // KASUS PERBAIKAN: Pengguna tidak punya nama, tampilkan form update.
                 userNameEl.textContent = 'Peserta';
@@ -57,28 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Ambil data jadwal khusus untuk pengguna yang login dari backend
-    async function fetchUserSchedules(participantName) {
-        if (!participantName) {
-            schedulesListEl.innerHTML = '<p>Nama Anda tidak terdaftar. Silakan perbarui profil Anda.</p>';
-            return;
-        }
-
+    // 2. Inisialisasi Dashboard: Ambil semua data dan siapkan filter
+    async function initializeDashboard(user) {
+        userNameEl.textContent = user.displayName;
         loadingIndicator.style.display = 'block';
-        schedulesListEl.innerHTML = '';
 
         try {
-            // Panggil fungsi baru dari db.js
-            const schedules = await fetchSchedulesByParticipant(participantName);
+            allSchedules = await fetchScheduleData(); // Ambil SEMUA jadwal
+            
+            // Ekstrak semua nama peserta unik untuk fitur pencarian
+            const participantSet = new Set();
+            allSchedules.forEach(row => {
+                Object.keys(row).filter(key => key.startsWith('Peserta ') && row[key])
+                .forEach(key => participantSet.add(row[key].trim()));
+            });
+            allParticipantNames = [...participantSet].sort();
 
-            if (schedules.length === 0) {
-                schedulesListEl.innerHTML = '<p>Anda tidak memiliki jadwal mendatang.</p>';
-            } else {
-                renderSchedules(schedules);
-            }
-
+            setupFilters(); // Siapkan event listener untuk filter
+            applyFilters(); // Terapkan filter (awalnya akan menampilkan semua)
         } catch (error) {
-            console.error("Error mengambil jadwal pengguna:", error);
+            console.error("Error menginisialisasi dashboard:", error);
             schedulesListEl.innerHTML = `<p style="color: red;">Terjadi kesalahan saat memuat jadwal Anda.</p>`;
         } finally {
             loadingIndicator.style.display = 'none';
@@ -87,6 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Tampilkan jadwal dalam bentuk form yang bisa diedit
     function renderSchedules(schedules) {
+        schedulesListEl.innerHTML = ''; // Selalu kosongkan sebelum render
+        if (schedules.length === 0) {
+            schedulesListEl.innerHTML = '<p>Tidak ada jadwal yang cocok dengan filter yang dipilih.</p>';
+            return;
+        }
         schedules.forEach(schedule => {
             const scheduleDate = schedule.dateObject;
             // Format tanggal untuk input datetime-local: YYYY-MM-DDTHH:mm
@@ -107,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label for="material-${schedule.id}">Materi Diskusi:</label>
                     <textarea id="material-${schedule.id}" rows="3">${schedule['Materi Diskusi']}</textarea>
 
+                    <div class="form-feedback" style="display: none; margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 0.9em;"></div>
                     <button type="submit">Simpan Perubahan</button>
                 </form>
             `;
@@ -114,13 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Tangani proses update saat form di-submit
+    // 4. Tangani proses update jadwal saat form di-submit
     schedulesListEl.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (e.target.classList.contains('edit-form')) {
             const form = e.target;
             const scheduleId = form.dataset.scheduleId;
             const button = form.querySelector('button');
+            const feedbackEl = form.querySelector('.form-feedback');
             button.textContent = 'Menyimpan...';
             button.disabled = true;
 
@@ -135,10 +144,30 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 // Panggil fungsi update dari db.js
                 await updateSchedule(scheduleId, updatedData);
-                alert('Perubahan berhasil disimpan!');
+
+                // Perbarui data di state lokal (allSchedules) agar UI konsisten tanpa reload
+                const scheduleIndex = allSchedules.findIndex(s => s.id === scheduleId);
+                if (scheduleIndex > -1) {
+                    allSchedules[scheduleIndex] = { ...allSchedules[scheduleIndex], ...updatedData, dateObject: newDate };
+                }
+
+                // Tampilkan pesan sukses
+                feedbackEl.textContent = 'Perubahan berhasil disimpan!';
+                feedbackEl.style.backgroundColor = '#d4edda';
+                feedbackEl.style.color = '#155724';
+                feedbackEl.style.display = 'block';
+
+                // Sembunyikan pesan setelah beberapa detik
+                setTimeout(() => {
+                    feedbackEl.style.display = 'none';
+                }, 3000);
+
             } catch (error) {
                 console.error("Gagal menyimpan perubahan:", error);
-                alert(`Gagal menyimpan: ${error.message}`);
+                feedbackEl.textContent = `Gagal menyimpan: ${error.message}`;
+                feedbackEl.style.backgroundColor = '#f8d7da';
+                feedbackEl.style.color = '#721c24';
+                feedbackEl.style.display = 'block';
             } finally {
                 button.textContent = 'Simpan Perubahan';
                 button.disabled = false;
@@ -146,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 5. Tangani submit form untuk memperbarui profil
+    // 5. Tangani submit form untuk memperbarui profil pengguna
     if (updateProfileForm) {
         updateProfileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -176,12 +205,107 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- FUNGSI-FUNGSI FILTER ---
+
+    function populateInstitutionFilter() {
+        const institutionFilter = document.getElementById('filter-institusi');
+        institutionFilter.innerHTML = '<option value="">Semua Institusi</option>';
+        const institutions = [...new Set(allSchedules.map(row => row.Institusi))].sort();
+        institutions.forEach(inst => {
+            if (inst) {
+                institutionFilter.innerHTML += `<option value="${inst}">${inst}</option>`;
+            }
+        });
+    }
+
+    function populateSubjectFilter(data) {
+        const subjectFilter = document.getElementById('filter-mapel');
+        const currentValue = subjectFilter.value;
+        subjectFilter.innerHTML = '<option value="">Semua Mata Pelajaran</option>';
+        const subjects = [...new Set(data.map(row => row['Mata_Pelajaran']))].sort();
+        subjects.forEach(subj => {
+            if (subj) {
+                subjectFilter.innerHTML += `<option value="${subj}">${subj}</option>`;
+            }
+        });
+        subjectFilter.value = currentValue; // Pertahankan filter jika memungkinkan
+    }
+
+    function applyFilters() {
+        const institusiFilter = document.getElementById('filter-institusi').value;
+        const mapelFilter = document.getElementById('filter-mapel').value;
+        const pesertaFilter = document.getElementById('filter-peserta').value.toLowerCase();
+
+        const filteredData = allSchedules.filter(row => {
+            const institusiMatch = !institusiFilter || row.Institusi === institusiFilter;
+            const mapelMatch = !mapelFilter || row['Mata_Pelajaran'] === mapelFilter;
+
+            let pesertaMatch = true;
+            if (pesertaFilter) {
+                pesertaMatch = row.searchable_participants.some(p => p.includes(pesertaFilter));
+            }
+
+            return institusiMatch && mapelMatch && pesertaMatch;
+        });
+
+        renderSchedules(filteredData);
+    }
+
+    function setupFilters() {
+        const institutionFilter = document.getElementById('filter-institusi');
+        const subjectFilter = document.getElementById('filter-mapel');
+        const participantFilter = document.getElementById('filter-peserta');
+        const searchResultsContainer = document.getElementById('jadwal-search-results');
+
+        populateInstitutionFilter();
+        populateSubjectFilter(allSchedules);
+
+        institutionFilter.addEventListener('change', () => {
+            const relevantData = institutionFilter.value 
+                ? allSchedules.filter(row => row.Institusi === institutionFilter.value)
+                : allSchedules;
+            populateSubjectFilter(relevantData);
+            applyFilters();
+        });
+
+        subjectFilter.addEventListener('change', applyFilters);
+
+        participantFilter.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            searchResultsContainer.innerHTML = '';
+            if (searchTerm.length > 1) {
+                const matchingNames = allParticipantNames.filter(name => name.toLowerCase().includes(searchTerm));
+                matchingNames.slice(0, 5).forEach(name => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.textContent = name;
+                    item.addEventListener('click', () => {
+                        participantFilter.value = name;
+                        searchResultsContainer.innerHTML = '';
+                        applyFilters();
+                    });
+                    searchResultsContainer.appendChild(item);
+                });
+            }
+            applyFilters();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.participant-search-wrapper')) {
+                searchResultsContainer.innerHTML = '';
+            }
+        });
+    }
+
+    // --- FUNGSI-FUNGSI UI LAINNYA ---
     
     // 6. Logika untuk menampilkan/menyembunyikan form tambah jadwal
     addScheduleButton.addEventListener('click', () => {
         createScheduleContainer.style.display = 'block';
         addScheduleButton.style.display = 'none';
-        schedulesListEl.style.display = 'none'; // Sembunyikan daftar jadwal saat form aktif
+        schedulesListEl.style.display = 'none';
+        document.querySelector('.filters').style.display = 'none';
     });
 
     cancelCreateButton.addEventListener('click', () => {
@@ -189,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addScheduleButton.style.display = 'block';
         schedulesListEl.style.display = 'block';
         createScheduleForm.reset(); // Bersihkan form
+        document.querySelector('.filters').style.display = 'flex';
     });
 
     // 7. Fungsi untuk membuat input peserta secara dinamis

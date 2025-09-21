@@ -19,6 +19,12 @@
         .edit-form button[type="button"]:hover { background-color: #ccc; }
         .logout-button { background: none; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 8px 18px; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
         .logout-button:hover { background-color: var(--accent-color); color: var(--text-light); }
+        .filters { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; padding: 15px; background-color: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow-sm); }
+        .filters select, .filters input { padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; flex-grow: 1; }
+        .participant-search-wrapper { position: relative; flex-grow: 1; }
+        .search-results-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 0 0 6px 6px; z-index: 1000; max-height: 200px; overflow-y: auto; box-shadow: var(--shadow); }
+        .search-result-item { padding: 10px; cursor: pointer; }
+        .search-result-item:hover { background-color: #f0f0f0; }
     </style>
 </head>
 <body>
@@ -33,7 +39,7 @@
 
     <main class="dashboard-container">
         <h2 class="welcome-message">Selamat Datang, <span id="user-name"></span>!</h2>
-        <p>Di sini Anda dapat melihat dan mengedit detail jadwal Anda.</p>
+        <p>Di sini Anda dapat melihat, memfilter, mengedit, dan menambahkan jadwal.</p>
 
         <div class="actions-bar" style="margin: 20px 0;">
             <button id="add-schedule-button" class="edit-form button">Tambah Jadwal Baru</button>
@@ -77,6 +83,18 @@
                 <button type="submit">Simpan Jadwal</button>
                 <button type="button" id="cancel-create-button">Batal</button>
             </form>
+        </div>
+
+        <!-- Kontrol Filter Baru -->
+        <div class="filters">
+            <select id="filter-institusi" title="Filter berdasarkan institusi"></select>
+            <select id="filter-mapel" title="Filter berdasarkan mata pelajaran"></select>
+            <div class="participant-search-wrapper">
+                <input type="text" id="filter-peserta" placeholder="Cari nama peserta...">
+                <div id="jadwal-search-results" class="search-results-list">
+                    <!-- Hasil pencarian peserta akan muncul di sini -->
+                </div>
+            </div>
         </div>
 
         <div id="my-schedules-list">

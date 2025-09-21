@@ -68,9 +68,25 @@ export async function fetchSchedulesByParticipant(participantName) {
  * @param {Object} data Objek dengan field yang akan diupdate.
  */
 export async function updateSchedule(scheduleId, data) {
+    const dataToUpdate = { ...data };
+
+    // Cek apakah ada field 'Peserta' yang diupdate.
+    // Jika ya, hitung ulang array `searchable_participants`.
+    const hasParticipantChanges = Object.keys(dataToUpdate).some(key => key.startsWith('Peserta '));
+
+    if (hasParticipantChanges) {
+        dataToUpdate.searchable_participants = [];
+        for (let i = 1; i <= 12; i++) {
+            const participantName = dataToUpdate[`Peserta ${i}`];
+            if (participantName && participantName.trim() !== '') {
+                dataToUpdate.searchable_participants.push(participantName.trim().toLowerCase());
+            }
+        }
+    }
+
     const scheduleRef = doc(db, "schedules", scheduleId);
     // Firestore secara otomatis mengonversi objek Date JavaScript ke Timestamp
-    await updateDoc(scheduleRef, data);
+    await updateDoc(scheduleRef, dataToUpdate);
 }
 
 /**
