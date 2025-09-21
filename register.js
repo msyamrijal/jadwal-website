@@ -6,9 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('register-button');
     const errorMessage = document.getElementById('error-message');
 
-    // Jika sudah login, redirect
+    // Jika pengguna sudah login (misalnya, dari tab lain), arahkan ke dashboard.
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            console.log('Pengguna sudah login, mengarahkan ke dashboard...');
             window.location.replace('/dashboard.html');
         }
     });
@@ -17,16 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // Tampilkan status loading pada tombol
             registerButton.disabled = true;
-            registerButton.textContent = 'Memproses...';
+            registerButton.textContent = 'Mendaftarkan...';
             errorMessage.style.display = 'none';
 
-            const displayName = registerForm.displayName.value;
+            const displayName = registerForm.displayName.value.trim();
             const email = registerForm.email.value;
             const password = registerForm.password.value;
 
-            if (password.length < 6) {
-                errorMessage.textContent = 'Password harus terdiri dari minimal 6 karakter.';
+            // Validasi sederhana agar nama tidak kosong
+            if (!displayName) {
+                errorMessage.textContent = 'Nama Lengkap (Sesuai di Jadwal) tidak boleh kosong.';
                 errorMessage.style.display = 'block';
                 registerButton.disabled = false;
                 registerButton.textContent = 'Daftar';
@@ -34,26 +37,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                // 1. Buat pengguna baru
+                // 1. Buat pengguna baru dengan email dan password
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 
-                // 2. Update profil pengguna dengan nama lengkap
+                // 2. Perbarui profil pengguna dengan nama lengkap
+                // Ini langkah krusial agar jadwal bisa ditemukan
                 await updateProfile(userCredential.user, {
                     displayName: displayName
                 });
 
-                console.log('Registrasi berhasil untuk:', userCredential.user.email);
-                // Redirect akan ditangani oleh onAuthStateChanged
+                console.log('Pendaftaran berhasil untuk:', userCredential.user.email);
+                // `onAuthStateChanged` akan mendeteksi pengguna baru dan mengarahkan ke dashboard secara otomatis.
 
             } catch (error) {
-                console.error('Error registrasi:', error.code);
-                let friendlyMessage = 'Gagal mendaftar. Silakan coba lagi.';
-                if (error.code === 'auth/email-already-in-use') {
-                    friendlyMessage = 'Email ini sudah terdaftar. Silakan gunakan email lain atau login.';
+                console.error('Error pendaftaran:', error.code, error.message);
+                let friendlyMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                
+                // Memberikan pesan error yang lebih mudah dimengerti
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        friendlyMessage = 'Email ini sudah terdaftar. Silakan gunakan email lain atau login.';
+                        break;
+                    case 'auth/weak-password':
+                        friendlyMessage = 'Password terlalu lemah. Gunakan minimal 6 karakter.';
+                        break;
+                    case 'auth/invalid-email':
+                        friendlyMessage = 'Format email yang Anda masukkan tidak valid.';
+                        break;
                 }
                 errorMessage.textContent = friendlyMessage;
                 errorMessage.style.display = 'block';
 
+                // Kembalikan tombol ke kondisi semula
                 registerButton.disabled = false;
                 registerButton.textContent = 'Daftar';
             }
