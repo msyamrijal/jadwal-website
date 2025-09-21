@@ -226,11 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function saveRowChanges(row) {
         const scheduleId = row.dataset.scheduleId;
         const updatedData = {};
-        const inputs = row.querySelectorAll('input');
+        // FIX: Pilih hanya input data, bukan semua input (seperti checkbox)
+        const inputs = row.querySelectorAll('input[type="text"], input[type="datetime-local"]');
         let hasError = false;
 
         inputs.forEach(input => {
-            const cell = input.closest('td');
+            const cell = input.closest('td'); // Ini aman karena input ada di dalam sel
             const key = cell.dataset.key;
             if (key === 'Tanggal') {
                 updatedData[key] = new Date(input.value);
