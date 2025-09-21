@@ -21,14 +21,22 @@
         .logout-button:hover { background-color: var(--accent-color); color: var(--text-light); }
         /* Style untuk Kalender dan Daftar Jadwal */
         #participant-details-container { margin-top: 20px; }
-        #calendar-container { background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: var(--shadow); }
+        #calendar-container { background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 25px; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-header button { background: #eee; border: 1px solid #ddd; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
         .calendar-day, .calendar-day-name { padding: 10px 5px; }
         .calendar-day-name { font-weight: bold; font-size: 0.9em; color: #888; }
-        .calendar-day.has-schedule { background-color: var(--accent-color); color: white; border-radius: 50%; font-weight: bold; cursor: help; }
+        .calendar-day.has-schedule { background-color: var(--accent-color); color: white; border-radius: 50%; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        .calendar-day.has-schedule:hover { transform: scale(1.1); }
         #participant-schedule-list { list-style: none; padding: 0; margin-top: 25px; }
-        #participant-schedule-list li { background-color: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
+        #participant-schedule-list li { background-color: var(--card-bg); border-radius: 8px; margin-bottom: 10px; box-shadow: var(--shadow-sm); overflow: hidden; transition: all 0.3s ease; }
+        #participant-schedule-list li.highlighted { box-shadow: 0 0 0 3px var(--accent-color); }
+        .schedule-summary { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .schedule-summary:hover { background-color: #f9f9f9; }
+        .schedule-summary.expanded { border-bottom: 1px solid var(--border-color); }
+        .schedule-details { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; }
+        .schedule-details.visible { max-height: 200px; padding: 15px; }
     </style>
 </head>
 <body>
@@ -44,6 +52,11 @@
     <main class="dashboard-container">
         <h2 class="welcome-message">Selamat Datang, <span id="user-name"></span>!</h2>
 
+        <div class="actions-bar" style="margin: 20px 0; padding: 15px; background-color: var(--card-bg); border-radius: 8px; text-align: center;">
+            <p style="margin-top: 0;">Perlu mengubah atau menambah jadwal? Buka halaman manajemen.</p>
+            <a href="manage.html" class="action-button" style="text-decoration: none;">Kelola Jadwal</a>
+        </div>
+
         <!-- Form untuk memperbarui profil, tersembunyi secara default -->
         <div id="update-profile-container" class="schedule-item-edit" style="display: none;">
             <h4>Perbarui Profil Anda</h4>
@@ -58,8 +71,9 @@
 
         <!-- Kontainer untuk menampilkan detail jadwal pengguna -->
         <div id="participant-details-container" style="display: none;">
+            <h2 id="participant-name-heading" style="font-family: 'Playfair Display', serif; color: var(--primary-color);"></h2>
             <div id="calendar-container"></div>
-            <h3 style="margin-top: 25px;">Daftar Jadwal Anda: <span id="schedule-count" class="schedule-count-badge"></span></h3>
+            <h3>Daftar Jadwal: <span id="schedule-count" class="schedule-count-badge"></span></h3>
             <ul id="participant-schedule-list"></ul>
         </div>
 
