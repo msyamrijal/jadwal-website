@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { fetchScheduleData } from './db.js';
+import { isAdmin } from './auth-admin.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const userNameEl = document.getElementById('user-name');
@@ -35,6 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentUser.displayName) {
                 updateProfileContainer.style.display = 'none';
                 renderDashboardForUser(currentUser);
+
+                // Tampilkan link admin jika pengguna adalah admin
+                if (isAdmin(currentUser)) {
+                    const adminLink = document.getElementById('admin-panel-link');
+                    if (adminLink) adminLink.style.display = 'inline-block';
+                }
             } else {
                 userNameEl.textContent = 'Peserta';
                 updateProfileContainer.style.display = 'block';

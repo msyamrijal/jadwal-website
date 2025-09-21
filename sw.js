@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v16-auth'; // Versi baru dengan halaman login
+const CACHE_NAME = 'jadwal-presentasi-v17-admin'; // Versi baru dengan halaman admin
 const urlsToCache = [
   '/',
   'index.html',
@@ -6,6 +6,8 @@ const urlsToCache = [
   'login.html',
   'register.html',
   'dashboard.html',
+  'manage.html',
+  'admin.html',
   'style.css',
   'script.js',
   'idb.js', // File library IDB lokal
@@ -13,6 +15,9 @@ const urlsToCache = [
   'login.js',
   'dashboard.js',
   'db.js', // File database baru
+  'manage.js',
+  'admin.js',
+  'auth-admin.js',
   'app.js', // File baru
   'rekap.js',
   'site.webmanifest',

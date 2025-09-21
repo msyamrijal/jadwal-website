@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Jadwaluna</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            /* Hapus max-width agar bisa selebar layar */
+            max-width: none;
+        }
+        main {
+            /* Atur max-width di main content, bukan di body */
+            max-width: 95%;
+            margin: 20px auto;
+        }
+        .admin-container h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+        }
+        .table-wrapper {
+            overflow-x: auto; /* Ini kunci untuk membuat tabel bisa di-scroll horizontal */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        #admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #admin-table th, #admin-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            white-space: nowrap; /* Mencegah teks turun baris */
+            font-size: 0.85rem;
+        }
+        #admin-table thead th {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            position: sticky;
+            top: 0; /* Membuat header tabel "mengapung" saat scroll vertikal */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Admin Panel</h1>
+            <nav><a href="dashboard.html">Kembali ke Dashboard</a></nav>
+        </div>
+    </header>
+    <main class="admin-container">
+        <h2 id="admin-title">Memuat data...</h2>
+        <div id="table-wrapper" class="table-wrapper"></div>
+    </main>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
