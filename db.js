@@ -1,6 +1,6 @@
 
 import { db } from './firebase-config.js';
-import { collection, getDocs, query, where, updateDoc, doc, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 export async function fetchScheduleData() {
   try {
@@ -111,6 +111,16 @@ export async function createSchedule(scheduleData) {
     const docRef = await addDoc(collection(db, "schedules"), dataToSave);
     console.log("Jadwal baru berhasil dibuat dengan ID:", docRef.id);
     return docRef;
+}
+
+/**
+ * Menghapus dokumen jadwal dari Firestore.
+ * @param {string} scheduleId ID dokumen yang akan dihapus.
+ */
+export async function deleteSchedule(scheduleId) {
+    const scheduleRef = doc(db, "schedules", scheduleId);
+    await deleteDoc(scheduleRef);
+    console.log(`Jadwal dengan ID: ${scheduleId} berhasil dihapus.`);
 }
 // --- FUNGSI DATABASE (INDEXEDDB) --- //
 

@@ -41,6 +41,22 @@
             position: sticky;
             top: 0; /* Membuat header tabel "mengapung" saat scroll vertikal */
         }
+        .action-cell button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .action-cell button:hover { opacity: 0.8; }
+        .btn-edit { background-color: #3498db; color: white; }
+        .btn-save { background-color: #2ecc71; color: white; }
+        .btn-cancel { background-color: #f1c40f; color: #333; }
+        .btn-delete { background-color: #e74c3c; color: white; }
+        #admin-table td input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;
+        }
     </style>
 </head>
 <body>
