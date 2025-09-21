@@ -19,12 +19,20 @@ fs.createReadStream(filePath)
   .pipe(csv())
   .on('data', async (row) => {
     try {
+      // --- Pemeriksaan Defensif ---
+      // Cek apakah kolom 'Tanggal' ada dan berisi teks. Ini mencegah error
+      // jika header CSV salah dibaca (misalnya karena karakter BOM).
+      if (!row.Tanggal || typeof row.Tanggal !== 'string') {
+        console.warn(`[PERINGATAN] Baris dilewati karena kolom 'Tanggal' tidak ditemukan atau kosong. Periksa header CSV Anda. Baris:`, JSON.stringify(row));
+        return; // Lewati baris ini dan lanjutkan ke baris berikutnya
+      }
+
       // --- Transformasi Data ---
       // Google Sheet CSV date format: "MM/DD/YYYY HH:mm:ss"
       const dateParts = row.Tanggal.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2})/);
       if (!dateParts) {
-        console.warn(`Format tanggal tidak valid untuk baris: ${JSON.stringify(row)}. Baris dilewati.`);
-        return;
+        console.warn(`[PERINGATAN] Format tanggal tidak valid untuk baris: ${JSON.stringify(row)}. Baris dilewati.`);
+        return; // Lewati baris ini
       }
       // parts[1]=MM, parts[2]=DD, parts[3]=YYYY, parts[4]=HH, parts[5]=mm, parts[6]=ss
       const jsDate = new Date(dateParts[3], dateParts[1] - 1, dateParts[2], dateParts[4], dateParts[5], dateParts[6]);
