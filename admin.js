@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let allSchedules = []; // Store all schedules for filtering
     let dateSortDirection = 'desc'; // Default sort: newest first
 
+    // Definisikan header di scope yang lebih tinggi agar bisa diakses oleh beberapa fungsi
+    const headers = ['Actions', 'ID', 'Tanggal', 'Mata_Pelajaran', 'Institusi', 'Materi Diskusi', ...Array.from({ length: 12 }, (_, i) => `Peserta ${i + 1}`)];
+
     onAuthStateChanged(auth, (user) => {
         if (user && isAdmin(user)) {
             // Pengguna adalah admin, muat data
@@ -47,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         table.id = 'admin-table';
 
         // Buat Header Tabel
-        const headers = ['Actions', 'ID', 'Tanggal', 'Mata_Pelajaran', 'Institusi', 'Materi Diskusi', ...Array.from({ length: 12 }, (_, i) => `Peserta ${i + 1}`)];
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
 
@@ -92,8 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         thead.addEventListener('input', updateTableView);
 
         // Tambahkan event listener untuk klik pada body tabel (delegasi)
-        const tbody = table.querySelector('tbody');
-        if (tbody) {
+        if (tbody) { // Gunakan variabel tbody yang sudah dideklarasikan di atas
             tbody.addEventListener('click', handleTableClick);
         }
     }
@@ -111,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         schedules.forEach(schedule => {
             const row = document.createElement('tr');
             row.dataset.scheduleId = schedule.id;
+            // `headers` sekarang bisa diakses di sini
 
             headers.forEach(header => {
                 const td = document.createElement('td');
