@@ -19,6 +19,11 @@
             font-family: 'Playfair Display', serif;
             color: var(--primary-color);
         }
+        .action-button {
+            background-color: var(--accent-color); color: var(--text-light); border: none;
+            padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;
+            font-size: 0.9rem;
+        }
         .bulk-replace-container {
             background-color: var(--card-bg);
             padding: 15px 20px;
@@ -34,6 +39,17 @@
         .bulk-replace-container input, .bulk-replace-container select { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; }
         .bulk-replace-container button { background-color: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
         .bulk-replace-container button:hover { background-color: #c95a4a; }
+
+        .schedule-form-container { background-color: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 20px; padding: 20px; }
+        .schedule-form-container h4 { margin-top: 0; color: var(--primary-color); }
+        .edit-form label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.9em; }
+        .edit-form input, .edit-form textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; }
+        .edit-form button { background-color: var(--accent-color); color: var(--text-light); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: background-color 0.3s; }
+        .edit-form button:hover { background-color: #c95a4a; }
+        .edit-form button[type="button"] { background-color: var(--border-color); color: var(--text-dark); }
+        .edit-form button[type="button"]:hover { background-color: #ccc; }
+        .form-feedback { display: none; margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 0.9em; }
+        .participant-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
 
         .table-wrapper {
             overflow-x: auto; /* Ini kunci untuk membuat tabel bisa di-scroll horizontal */
@@ -113,6 +129,29 @@
     </header>
     <main class="admin-container">
         <h2 id="admin-title">Memuat data...</h2>
+
+        <!-- Form untuk membuat jadwal baru (tersembunyi) -->
+        <div id="create-schedule-container" class="schedule-form-container" style="display: none;">
+            <h4>Tambah Jadwal Baru</h4>
+            <form id="create-schedule-form" class="edit-form">
+                <label for="new-subject">Mata Pelajaran:</label>
+                <input type="text" id="new-subject" required>
+                <label for="new-institution">Institusi:</label>
+                <input type="text" id="new-institution" required>
+                <label for="new-date">Tanggal & Waktu:</label>
+                <input type="datetime-local" id="new-date" required>
+                <label for="new-material">Materi Diskusi:</label>
+                <textarea id="new-material" rows="3"></textarea>
+                <fieldset style="border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; margin-top: 15px;">
+                    <legend>Peserta</legend>
+                    <div id="new-participant-inputs" class="participant-grid"></div>
+                </fieldset>
+                <div id="create-feedback" class="form-feedback"></div>
+                <button type="submit">Simpan Jadwal</button>
+                <button type="button" id="cancel-create-btn">Batal</button>
+            </form>
+        </div>
+
         <div class="bulk-replace-container">
             <h4>Ganti Data Massal:</h4>
             <select id="replace-column-select" title="Pilih kolom"></select>
@@ -120,6 +159,7 @@
             <input type="text" id="replace-text" placeholder="Ganti dengan teks ini...">
             <button id="replace-all-btn">Ganti Semua</button>
         </div>
+        <button id="add-schedule-btn" class="action-button" style="margin-bottom: 20px;">Tambah Jadwal Baru</button>
         <div id="table-wrapper" class="table-wrapper"></div>
     </main>
     <script type="module" src="admin.js"></script>

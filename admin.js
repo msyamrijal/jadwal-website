@@ -2,7 +2,7 @@ import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { db } from './firebase-config.js';
 import { doc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { fetchScheduleData, updateSchedule, deleteSchedule } from './db.js';
+import { fetchScheduleData, updateSchedule, deleteSchedule, createSchedule } from './db.js';
 import { isAdmin } from './auth-admin.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAdminTableShell(); // Render kerangka tabel sekali
             updateTableView(); // Terapkan filter dan sort awal
             setupBulkReplace();
+            setupAddSchedule();
         } catch (error) {
             tableWrapper.innerHTML = `<p style="color: red;">Gagal memuat data: ${error.message}</p>`;
         }
@@ -444,6 +445,77 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             button.disabled = false;
             button.textContent = 'Ganti Semua';
+        }
+    }
+
+    // --- ADD SCHEDULE FUNCTIONS ---
+
+    function setupAddSchedule() {
+        const addBtn = document.getElementById('add-schedule-btn');
+        const cancelBtn = document.getElementById('cancel-create-btn');
+        const createContainer = document.getElementById('create-schedule-container');
+        const createForm = document.getElementById('create-schedule-form');
+
+        addBtn.addEventListener('click', () => {
+            createContainer.style.display = 'block';
+            addBtn.style.display = 'none';
+            generateNewParticipantInputs();
+            createContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            createContainer.style.display = 'none';
+            addBtn.style.display = 'block';
+            createForm.reset();
+        });
+
+        createForm.addEventListener('submit', handleCreateSchedule);
+    }
+
+    function generateNewParticipantInputs() {
+        const container = document.getElementById('new-participant-inputs');
+        container.innerHTML = '';
+        for (let i = 1; i <= 12; i++) {
+            container.innerHTML += `
+                <div>
+                    <label for="new-peserta-${i}">Peserta ${i}:</label>
+                    <input type="text" id="new-peserta-${i}">
+                </div>
+            `;
+        }
+    }
+
+    async function handleCreateSchedule(e) {
+        e.preventDefault();
+        const form = e.target;
+        const button = form.querySelector('button[type="submit"]');
+        const feedbackEl = document.getElementById('create-feedback');
+
+        button.disabled = true;
+        button.textContent = 'Menyimpan...';
+
+        try {
+            const newScheduleData = {
+                'Mata_Pelajaran': document.getElementById('new-subject').value,
+                'Institusi': document.getElementById('new-institution').value,
+                'Tanggal': new Date(document.getElementById('new-date').value),
+                'Materi Diskusi': document.getElementById('new-material').value,
+            };
+            for (let i = 1; i <= 12; i++) {
+                newScheduleData[`Peserta ${i}`] = document.getElementById(`new-peserta-${i}`).value.trim();
+            }
+
+            await createSchedule(newScheduleData);
+            alert('Jadwal baru berhasil dibuat! Halaman akan dimuat ulang untuk menampilkan data terbaru.');
+            window.location.reload();
+
+        } catch (error) {
+            feedbackEl.textContent = `Gagal membuat jadwal: ${error.message}`;
+            feedbackEl.style.backgroundColor = '#f8d7da';
+            feedbackEl.style.color = '#721c24';
+            feedbackEl.style.display = 'block';
+            button.disabled = false;
+            button.textContent = 'Simpan Jadwal';
         }
     }
 });
