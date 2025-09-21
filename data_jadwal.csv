@@ -1,0 +1,187 @@
+ID,Institusi,Mata_Pelajaran,Tanggal,Peserta 1,Peserta 2,Peserta 3,Peserta 4,Peserta 5,Peserta 6,Peserta 7,Peserta 8,Peserta 9,Peserta 10,Peserta 11,Peserta 12,Materi Diskusi
+1,PTIQ H,Kajian Literatur tentang al-Qur`an,9/15/2025 8:00:00,Kel. 1,Saepul,Nur Kholisah,,,,,,,,,,Tafsir Lingkungan
+2,PTIQ H,Kajian Literatur tentang al-Qur`an,9/22/2025 8:00:00,Kel. 2,Zaky Zimmatillah Zulfikar,Farhani Azkia,,,,,,,,,,Kritik terhadap repetisi kajian ulumul Qur'an
+3,PTIQ H,Kajian Literatur tentang al-Qur`an,9/29/2025 8:00:00,Kel. 3,Nurul Jannah,Muhamad Imdadur Rachman,,,,,,,,,,Syariat Humanis
+4,PTIQ H,Kajian Literatur tentang al-Qur`an,10/6/2025 8:00:00,Kel. 4,Salman Alfarezi,Muchamad Subulul Hikam,,,,,,,,,,Tafsir Kontekstual Al-Qur'an
+5,PTIQ H,Kajian Literatur tentang al-Qur`an,10/13/2025 8:00:00,Kel. 5,Siti Muliana,Zulfi Fadhlurrahman,,,,,,,,,,Tafsir Fenomenologi
+6,PTIQ H,Kajian Literatur tentang al-Qur`an,10/20/2025 8:00:00,Kel. 6,Nur Ardhiansyah Khalillurahman Ibrahim,Putri Salsabila Azkya,,,,,,,,,,Tekstualitas Al-Qur'an
+7,PTIQ H,Kajian Literatur tentang al-Qur`an,10/27/2025 8:00:00,Kel. 7,Yolan Hardika Pratama,Muhammad Syamsur Rijal,,,,,,,,,,Al-Qur'an dan perspektif feminis
+8,PTIQ H,Kajian Literatur tentang al-Qur`an,11/3/2025 8:00:00,Kel. 8,Zaeni Anwar,Nailul Khoiril Marom,,,,,,,,,,Al-Qur'an dan pembebasan perempuan
+9,PTIQ H,Kajian Literatur tentang al-Qur`an,11/10/2025 8:00:00,Kel. 9,Hilya Hasna Nabila,Muh. Ikbal Amsah,,,,,,,,,,Kritik Al-Qur'an terhadap streotip agama islam
+10,PTIQ H,Kajian Literatur tentang al-Qur`an,11/17/2025 8:00:00,Kel. 10,Nurul Huda,Ibnatul Mardiah,,,,,,,,,,Inklusivisme agama dalam Al-Qur'an
+11,PTIQ H,Kajian Literatur tentang al-Qur`an,11/24/2025 8:00:00,Kel. 11,Zulfani Hidayat,Muhammad Imran,,,,,,,,,,Pribumisasi Al-Qur'an
+12,PTIQ H,Kajian Literatur tentang al-Qur`an,12/1/2025 8:00:00,Kel. 12,Rusdi,Mukhamad Iskhak Nawawi,,,,,,,,,,Tafsir transformatif
+13,PTIQ H,Kajian Literatur tentang al-Qur`an,12/8/2025 8:00:00,Kel. 13,Noviyatul Badriyah,Kamila Na’im,,,,,,,,,,Integrasi ilmu dalam kajian AL-Qur'an
+14,PTIQ H,Hadis Wa 'Ulumuh,9/15/2025 10:00:00,Kel. 1,Yolan Hardika Pratama,Zaeni Anwar,,,,,,,,,,Sejarah Perkembangan Hadits dan Ilmu Musthalah al-Hadits
+15,PTIQ H,Hadis Wa 'Ulumuh,9/22/2025 10:00:00,Kel. 2,Nurul Huda,Nur Kholisah,,,,,,,,,,Termonologi Hadits (Tadrib ar Rawi)
+16,PTIQ H,Hadis Wa 'Ulumuh,9/29/2025 10:00:00,Kel. 3,Ibnatul Mardiah,Zulfi Fadhlurrahman,,,,,,,,,,At-Tahammul wa al-Ada'
+17,PTIQ H,Hadis Wa 'Ulumuh,10/6/2025 10:00:00,Kel. 4,Rusdi,Putri Salsabila Azkya,,,,,,,,,,Al-Jarh Wa at-Ta'dil (Bagian 1)
+18,PTIQ H,Hadis Wa 'Ulumuh,10/13/2025 10:00:00,Kel. 5,Muhammad Imran,Muh. Ikbal Amsah,,,,,,,,,,Al-Jarh Wa at-Ta'dil (Bagian 2)
+19,PTIQ H,Hadis Wa 'Ulumuh,10/20/2025 10:00:00,Kel. 6,Hilya Hasna Nabila,Muhammad Syamsur Rijal,,,,,,,,,,Al-Jarh Wa at-Ta'dil (Bagian 3)
+20,PTIQ H,Hadis Wa 'Ulumuh,10/27/2025 10:00:00,Kel. 7,Nur Ardhiansyah Khalillurahman Ibrahim,Zaky Zimmatillah Zulfikar,,,,,,,,,,Sabab al-Wurud
+21,PTIQ H,Hadis Wa 'Ulumuh,11/3/2025 10:00:00,Kel. 8,Siti Muliana,Muchamad Subulul Hikam,,,,,,,,,,Riwayat Ahlil Bid'ah
+22,PTIQ H,Hadis Wa 'Ulumuh,11/10/2025 10:00:00,Kel. 9,Salman Alfarezi,Zulfani Hidayat,,,,,,,,,,Takhrij Hadits
+23,PTIQ H,Hadis Wa 'Ulumuh,11/17/2025 10:00:00,Kel. 10,Nailul Khoiril Marom,Muhamad Imdadur Rachman,,,,,,,,,,Mengamalkan Hadits Dla'if
+24,PTIQ H,Hadis Wa 'Ulumuh,11/24/2025 10:00:00,Kel. 11,Saepul,Mukhamad Iskhak Nawawi,,,,,,,,,,Amaliyyah at-Tash-hih Wa at-Tadl'if
+25,PTIQ H,Hadis Wa 'Ulumuh,12/1/2025 10:00:00,Kel. 12,Kamila Na’im,Noviyatul Badriyah,,,,,,,,,,Hadits Muhkam Dan Mukhtalaf
+26,PTIQ H,Hadis Wa 'Ulumuh,12/8/2025 10:00:00,Kel. 13,Nurul Jannah,Farhani Azkia,,,,,,,,,,Mengenal Takwil Hadits-hadits Mutasyabihat
+27,PTIQ H,Harmeneutika Tafsir,9/15/2025 13:00:00,Kel. 1,Noviyatul Badriyah,Nurul Jannah,,,,,,,,,,Hermeneutika versi Schleiermacher
+28,PTIQ H,Harmeneutika Tafsir,9/22/2025 13:00:00,Kel. 2,Hilya Hasna Nabila,Saepul,Siti Muliana,,,,,,,,,Hermeneutika versi Dilthey
+29,PTIQ H,Harmeneutika Tafsir,9/29/2025 13:00:00,Kel. 3,Kamila Na’im,Muhammad Imran,Zulfi Fadhlurrahman,,,,,,,,,Hermeneutika versi Heidegger
+30,PTIQ H,Harmeneutika Tafsir,10/6/2025 13:00:00,Kel. 4,Mukhamad Iskhak Nawawi,Zaeni Anwar,Nur Ardhiansyah Khalillurahman Ibrahim,,,,,,,,,Hermeneutika demitologisasi Bultmann
+31,PTIQ H,Harmeneutika Tafsir,10/13/2025 13:00:00,Kel. 5,Nur Kholisah,Ibnatul Mardiah,Muchamad Subulul Hikam,,,,,,,,,Hermeneutika filosofis Gadamer
+32,PTIQ H,Harmeneutika Tafsir,10/20/2025 13:00:00,Kel. 6,M. Zulfani Hidayat,Muh. Ikbal Amsah,,,,,,,,,,Hermeneutika pembebasan Habermas
+33,PTIQ H,Harmeneutika Tafsir,10/27/2025 13:00:00,Kel. 7,Salman Alfarezi,Putri Salsabila Azkya,,,,,,,,,,Hermeneutika simbol Ricoeur
+34,PTIQ H,Harmeneutika Tafsir,11/3/2025 13:00:00,Kel. 8,Zaky Zimmatillah Zulfikar,Farhani Azkia,,,,,,,,,,Hermeneutika radikal Derrida
+35,PTIQ H,Harmeneutika Tafsir,11/10/2025 13:00:00,Kel. 9,Muhammad Syamsur Rijal,Yolan Hardika Pratama,,,,,,,,,,Latar belakang pemikiran Nasr Hamid Abu Zaid
+36,PTIQ H,Harmeneutika Tafsir,11/17/2025 13:00:00,Kel. 10,Nurul Huda,Rusdi,,,,,,,,,,Hermeneutika Fazlur Rahman
+37,PTIQ H,Harmeneutika Tafsir,11/24/2025 13:00:00,Kel. 11,Nailul Khoiril Marom,Muhamad Imdadur Rachman,,,,,,,,,,Hermeneutika Husaini dan Al Baghdadi
+38,PTIQ H,Sejarah Tafsir,9/16/2025 8:00:00,Kel. 1,Zaky Zimmatillah Zulfikar,Muh. Ikbal Amsah,,,,,,,,,,Perkembangan Tafsir pada MasaRasulullah Saw dan Analisis terhadap Jamiul Bayan
+39,PTIQ H,Sejarah Tafsir,9/23/2025 8:00:00,Kel. 2,Nurul Jannah,Kamila Na’im,,,,,,,,,,Perkembangan Tafsir pada MasaSahabat dan Analisis Tafsir Ibnu Masud
+40,PTIQ H,Sejarah Tafsir,9/30/2025 8:00:00,Kel. 3,Zaeni Anwar,Mukhamad Iskhak Nawawi,,,,,,,,,,Perkembangan Tafsir pada MasaTabiin dan Analisis Tafsir Muqatil bin Sulaiman
+41,PTIQ H,Sejarah Tafsir,10/7/2025 8:00:00,Kel. 4,Hilya Hasna Nabila,Nailul Khoiril Marom,,,,,,,,,,Perkembangan Tafsir pada MasaTabi’ al-Tabiin dan Analisis Tafsir Sofyan Al-Tsauri
+42,PTIQ H,Sejarah Tafsir,10/14/2025 8:00:00,Kel. 5,Salman Alfarezi,M. Zulfani Hidayat,,,,,,,,,,Perkembangan Tafsir pada MasaStagnan dan Analisis Tafsir Al-Kasyaf
+43,PTIQ H,Sejarah Tafsir,10/21/2025 8:00:00,Kel. 6,Siti Muliana,Yolan Hardika Pratama,,,,,,,,,,Perkembangan Tafsir pada MasaKebangkitan dan Analisis Tafsir Al-Manar
+44,PTIQ H,Sejarah Tafsir,10/28/2025 8:00:00,Kel. 7,Nur Ardhiansyah Khalillurahman Ibrahim,Zulfi Fadhlurrahman,,,,,,,,,,Perkembangan Tafsir di Saudi Arabia dan Analisis Tafsir As-Sa’di
+45,PTIQ H,Sejarah Tafsir,11/4/2025 8:00:00,Kel. 8,Muhamad Imdadur Rachman,Muhammad Imran,,,,,,,,,,Perkembangan Tafsir di Mesir dan Analisis Tafsir Al-Muntakhab
+46,PTIQ H,Sejarah Tafsir,11/11/2025 8:00:00,Kel. 9,Rusdi,Ibnatul Mardiah,,,,,,,,,,Perkembangan Tafsir di Tunisia dan Analisis Tafsir Ibnu ‘Asyur
+47,PTIQ H,Sejarah Tafsir,11/18/2025 8:00:00,Kel. 10,Farhani Azkia,Muchamad Subulul Hikam,,,,,,,,,,Perkembangan Tafsir di Suriah dan Analisis Tafsir Wahbah Al-Zuhaili
+48,PTIQ H,Sejarah Tafsir,11/25/2025 8:00:00,Kel. 11,Noviyatul Badriyah,Nurul Huda,,,,,,,,,,Perkembangan Tafsir di Turki dan Analisis Tafsir Saeed Nursi
+49,PTIQ H,Sejarah Tafsir,12/2/2025 8:00:00,Kel. 12,Muhammad Syamsur Rijal,Saepul,,,,,,,,,,Perkembangan Tafsir di Iran dan Analisis Tafsir Al-Mizan
+50,PTIQ H,Sejarah Tafsir,12/9/2025 8:00:00,Kel. 13,Nur Kholisah,Putri Salsabila Azkya,,,,,,,,,,Perkembangan Tafsir di Indonesia dan Analisis Tafsir Al-Misbah
+51,PTIQ H,Tafsir dan Isu-isu Kontemporer,10/7/2025 10:00:00,Kel. 1,Putri Salsabila Azkya,Salman Alfarezi,Yolan Hardika Pratama,Nailul Khoiril Marom,,,,,,,,
+52,PTIQ H,Tafsir dan Isu-isu Kontemporer,10/14/2025 10:00:00,Kel. 2,Zaeni Anwar,Zulfi Fadhlurrahman,Siti Muliana,Nurul Huda,,,,,,,,
+53,PTIQ H,Tafsir dan Isu-isu Kontemporer,10/21/2025 10:00:00,Kel. 3,Nur Ardhiansyah Khalillurahman Ibrahim,M. Zulfani Hidayat,Saepul,,,,,,,,,
+54,PTIQ H,Tafsir dan Isu-isu Kontemporer,10/28/2025 10:00:00,Kel. 4,Rusdi,Zaky Zimmatillah Zulfikar,Nur Kholisah,,,,,,,,,
+55,PTIQ H,Tafsir dan Isu-isu Kontemporer,11/4/2025 10:00:00,Kel. 5,Mukhamad Iskhak Nawawi,Noviyatul Badriyah,Ibnatul Mardiah,,,,,,,,,
+56,PTIQ H,Tafsir dan Isu-isu Kontemporer,11/11/2025 10:00:00,Kel. 6,Hilya Hasna Nabila,Farhani Azkia,Kamila Na’im,,,,,,,,,
+57,PTIQ H,Tafsir dan Isu-isu Kontemporer,11/18/2025 10:00:00,Kel. 7,Muhamad Imdadur Rachman,Muchamad Subulul Hikam,Nurul Jannah,,,,,,,,,
+58,PTIQ H,Tafsir dan Isu-isu Kontemporer,11/25/2025 10:00:00,Kel. 8,Muhammad Syamsur Rijal,Muhammad Imran,Muh. Ikbal Amsah,,,,,,,,,
+59,PTIQ H,Metodologi Penelitian Tafsir,9/23/2025 13:00:00,Kel. 1,Nurul Huda,Nurul Jannah,Ibnatul Mardiah,Muhamad Imdadur Rachman,Putri Salsabila Azkya,,,,,,,JENIS PENELITIAN TAFSIR DAN MODEL-MODEL PENELITIAN TAFSIR
+60,PTIQ H,Metodologi Penelitian Tafsir,9/30/2025 13:00:00,Kel. 2,Muhammad Imran,Siti Muliana,M. Zulfani Hidayat,Nailul Khoiril Marom,Nur Ardhiansyah Khalillurahman Ibrahim,,,,,,,METODE BERFIKIR ILMIAH DAN PERMASALAHAN PENELITIAN TAFSIR
+61,PTIQ H,Metodologi Penelitian Tafsir,10/7/2025 13:00:00,Kel. 3,Hilya Hasna Nabila,Salman Alfarezi,Zulfi Fadhlurrahman,Farhani Azkia,,,,,,,,GAGASAN DAN PRINSIP KUNCI TAFSIR KONTEKSTUAL
+62,PTIQ H,Metodologi Penelitian Tafsir,10/14/2025 13:00:00,Kel. 4,Rusdi,Yolan Hardika Pratama,Kamila Na’im,Mukhamad Iskhak Nawawi,,,,,,,,PENELITIAN TAFSIR TEMATIK
+63,PTIQ H,Metodologi Penelitian Tafsir,10/21/2025 13:00:00,Kel. 5,Nur Kholisah,Zaky Zimmatillah Zulfikar,Zaeni Anwar,Saepul,,,,,,,,PENELITIAN TAFSIR PERBANDINGAN
+64,PTIQ H,Metodologi Penelitian Tafsir,10/28/2025 13:00:00,UTS,,,,,,,,,,,,UTS
+65,PTIQ H,Metodologi Penelitian Tafsir,11/4/2025 13:00:00,Kel. 6,Muhammad Syamsur Rijal,Muh. Ikbal Amsah,Muchamad Subulul Hikam,Noviyatul Badriyah,,,,,,,,LIVING QURAN: SEBUAH PENDEKATAN BARU DALAM KAJIAN AL-QUR’AN
+66,PTIQ H,Metodologi Penelitian Tafsir,11/11/2025 13:00:00,Dosen,,,,,,,,,,,,
+67,PTIQ H,Metodologi Penelitian Tafsir,11/18/2025 13:00:00,Dosen,,,,,,,,,,,,
+68,PTIQ H,Metodologi Penelitian Tafsir,11/25/2025 13:00:00,Dosen,,,,,,,,,,,,
+69,PTIQ H,Metodologi Penelitian Tafsir,12/2/2025 13:00:00,Kel. 1&2,Nurul Huda,Nurul Jannah,Ibnatul Mardiah,Muhamad Imdadur Rachman,Putri Salsabila Azkya,Muhammad Imran,Siti Muliana,M. Zulfani Hidayat,Nailul Khoiril Marom,Nur Ardhiansyah Khalillurahman Ibrahim,,
+70,PTIQ H,Metodologi Penelitian Tafsir,12/9/2025 13:00:00,Kel. 3&4,Hilya Hasna Nabila,Salman Alfarezi,Zulfi Fadhlurrahman,Farhani Azkia,Rusdi,Yolan Hardika Pratama,Kamila Na’im,Mukhamad Iskhak Nawawi,,,,
+71,PTIQ H,Metodologi Penelitian Tafsir,12/16/2025 13:00:00,Kel. 5&6,Nur Kholisah,Zaky Zimmatillah Zulfikar,Zaeni Anwar,Saepul,Muhammad Syamsur Rijal,Muh. Ikbal Amsah,Muchamad Subulul Hikam,Noviyatul Badriyah,,,,
+72,PTIQ I,Hadis Wa 'Ulumuh,9/15/2025 8:00:00,Kel. 1,Darmawangsa,Moh. Fadllurrahman,,,,,,,,,,Sejarah Perkembangan Hadits dan Ilmu Musthalah al-Hadits
+73,PTIQ I,Hadis Wa 'Ulumuh,9/22/2025 10:00:00,Kel. 2,Ahmad Mahrus Mariadi,Muhamad Iqbal,,,,,,,,,,Termonologi Hadits (Tadrib ar Rawi)
+74,PTIQ I,Hadis Wa 'Ulumuh,9/29/2025 8:00:00,Kel. 3,Umiatu Rohmah,Azhar Ahmad Falahan,,,,,,,,,,At-Tahammul wa al-Ada’
+75,PTIQ I,Hadis Wa 'Ulumuh,10/6/2025 8:00:00,Kel. 4,Adam Azizi,Fasrul Syahrir,,,,,,,,,,"Al-Jarh Wa at-Ta’dil (Bag 1, Iqazh 1 sampai 3, kajian ar-Raf’u wa at-Takmil karya al-Laknawi)"
+76,PTIQ I,Hadis Wa 'Ulumuh,10/13/2025 8:00:00,Kel. 5,Mohammad A'mmar Bin Mohd Nai,Ince Atika Ramadhani,,,,,,,,,,"Al-Jarh Wa at-Ta’dil (Bag 2, Iqazh 4 sampai 16, kajian ar-Raf’u wa at-Takmil karya al-Laknawi)"
+77,PTIQ I,Hadis Wa 'Ulumuh,10/20/2025 8:00:00,Kel. 6,Abdul Jabar,Nurfaizah Jamaluddin,,,,,,,,,,"Al-Jarh Wa at-Ta’dil (Bag 3, Iqazh 17 sampai 25, kajian ar-Raf’u wa at-Takmil karya al-Laknawi)"
+78,PTIQ I,Hadis Wa 'Ulumuh,10/27/2025 8:00:00,UTS,,,,,,,,,,,,UTS
+79,PTIQ I,Hadis Wa 'Ulumuh,11/3/2025 8:00:00,Kel. 7,Lukman,Khofawati Khoiriyyah,,,,,,,,,,Sabab al-Wurud
+80,PTIQ I,Hadis Wa 'Ulumuh,11/10/2025 8:00:00,Kel. 8,Iqbal Salafuddin Zaini,Triyanti Nurkhikmah,,,,,,,,,,Riwayat Ahlil Bid’ah
+81,PTIQ I,Hadis Wa 'Ulumuh,11/17/2025 8:00:00,Kel. 9,Al Fahrizal,Dannu Akbar,,,,,,,,,,Takhrij Hadits
+82,PTIQ I,Hadis Wa 'Ulumuh,11/24/2025 8:00:00,Kel. 10,Irfan Fauzi,Imamul Burhan,,,,,,,,,,Mengamalkan Hadits Dla’if
+83,PTIQ I,Hadis Wa 'Ulumuh,12/1/2025 8:00:00,Kel. 11,Ahmad Sayyid Al Adam,Elvin Maulidin Ikhsan,,,,,,,,,,‘Amaliyyah at-Tash-hih Wa at-Tadl’if
+84,PTIQ I,Hadis Wa 'Ulumuh,12/8/2025 8:00:00,Kel. 12,Agung Setiabudi,Muhammad Haikal Bin Hasmezam,,,,,,,,,,Hadits Muhkam Dan Mukhtalaf
+85,PTIQ I,Hadis Wa 'Ulumuh,12/15/2025 8:00:00,Kel. 13,Hilal Askary Syirwan,,,,,,,,,,,Mengenal Takwil Hadits-hadits Mutasyabihat (Kajian kitab Daf’u syubhat at-tasybih karya al-Hafizh Ibnul Jauzi)
+86,PTIQ I,Hadis Wa 'Ulumuh,12/22/2025 8:00:00,UTS,,,,,,,,,,,,UAS
+87,PTIQ I,Harmeneutika Tafsir,9/15/2025 10:00:00,Kel. 1,Umiatu Rohmah,Al Fahrizal,Abdul Jabar,,,,,,,,,Memahami Sebagai Seni: Schleiermacher dan Hermeneutika Romantik
+88,PTIQ I,Harmeneutika Tafsir,9/22/2025 10:00:00,Kel. 2,Nurfaizah Jamaluddin,Elvin Maulidin Ikhsan,Khofawati Khoiriyyah,,,,,,,,,Memahami Sebagai Metode Ilmiah: Dilthey dan Hemeneutik Ilmu-Ilmu Sosial Kemanusiaan
+89,PTIQ I,Harmeneutika Tafsir,9/29/2025 10:00:00,Kel. 3,Iqbal Salafuddin Zaini,Triyanti Nurkhikmah,Azhar Ahmad Falahan,,,,,,,,,Memahami Sebagai Cara Berada: Heidegger dan Hermeneutik Faktisitas
+90,PTIQ I,Harmeneutika Tafsir,10/6/2025 10:00:00,Kel. 4,Mohammad A'mmar Bin Mohd Nai,Irfan Fauzi,,,,,,,,,,Memahami Sebagai Menyingkap: Rudolf Butlmann dan Hermeneutik Demitologisasi
+91,PTIQ I,Harmeneutika Tafsir,10/13/2025 10:00:00,Kel. 5,Fasrul Syahrir,Muhammad Haikal Bin Hasmezam,,,,,,,,,,Memahami Sebagai Kesepahaman: Gadamer dan Hermeneutik Filosofis
+92,PTIQ I,Harmeneutika Tafsir,10/20/2025 10:00:00,Kel. 6,Ahmad Mahrus Mariadi,Lukman,,,,,,,,,,Memahami Sebagai Membebaskan: Habermas dan Hermeneutik Kritis
+93,PTIQ I,Harmeneutika Tafsir,10/27/2025 10:00:00,Kel. 7,Dannu Akbar,Moh. Fadllurrahman,,,,,,,,,,Memahami Sebagai Merenungkan: Ricoeur dan Hermeneutik Simbol
+94,PTIQ I,Harmeneutika Tafsir,11/3/2025 10:00:00,Kel. 8,Muhamad Iqbal,Hilal Askary Syirwan,,,,,,,,,,Memahami Sebagai Menangguhkan: Derrida dan Hermeneutik Radikal
+95,PTIQ I,Harmeneutika Tafsir,11/10/2025 10:00:00,UTS,,,,,,,,,,,,UTS
+96,PTIQ I,Harmeneutika Tafsir,11/17/2025 10:00:00,UTS,,,,,,,,,,,,UTS
+97,PTIQ I,Harmeneutika Tafsir,11/24/2025 10:00:00,UTS,,,,,,,,,,,,UTS
+98,PTIQ I,Harmeneutika Tafsir,12/1/2025 10:00:00,Kel. 12,Darmawangsa,Agung Setiabudi,,,,,,,,,,Hermeneutika Al Quran: Nasr Hamid Abu Zaid
+99,PTIQ I,Harmeneutika Tafsir,12/8/2025 10:00:00,Kel. 13,Imamul Burhan,Ahmad Sayyid Al Adam,,,,,,,,,,Hermeneutika Al Quran: Fazlur Rahman
+100,PTIQ I,Harmeneutika Tafsir,12/15/2025 10:00:00,Kel. 14,Adam Azizi,Ince Atika Ramadhani,,,,,,,,,,Hermeneutika dan Tafsir Al Quran
+101,PTIQ I,Harmeneutika Tafsir,12/22/2025 10:00:00,UAS,,,,,,,,,,,,UAS
+102,PTIQ I,Kajian Literatur tentang al-Qur`an,9/15/2025 13:00:00,Kel. 1,Imamul Burhan,Irfan Fauzi,,,,,,,,,,Tafsir Lingkungan
+103,PTIQ I,Kajian Literatur tentang al-Qur`an,9/22/2025 13:00:00,Kel. 2,Khofawati Khoiriyyah,Triyanti Nurkhikmah,,,,,,,,,,Kritik Terhadap Repetisi Kajian Ulumul Qur`an
+104,PTIQ I,Kajian Literatur tentang al-Qur`an,9/29/2025 13:00:00,Kel. 3,Fasrul Syahrir,Elvin Maulidin Ikhsan,,,,,,,,,,Syariat Humanis
+105,PTIQ I,Kajian Literatur tentang al-Qur`an,10/6/2025 13:00:00,Kel. 4,Ahmad Mahrus Mariadi,Muhammad Haikal Bin Hasmezam,,,,,,,,,,Tafsir Kontekstual al-Qur`an
+106,PTIQ I,Kajian Literatur tentang al-Qur`an,10/13/2025 13:00:00,Kel. 5,Mohammad A'mmar Bin Mohd Nai,Abdul Jabar,,,,,,,,,,Tafsir Fenomenologi
+107,PTIQ I,Kajian Literatur tentang al-Qur`an,10/20/2025 13:00:00,Kel. 6,Al Fahrizal,Azhar Ahmad Falahan,,,,,,,,,,Tekstualitas al-Qur`an
+108,PTIQ I,Kajian Literatur tentang al-Qur`an,10/27/2025 13:00:00,UTS,,,,,,,,,,,,UTS
+109,PTIQ I,Kajian Literatur tentang al-Qur`an,11/3/2025 13:00:00,Kel. 7,Adam Azizi,Nurfaizah Jamaluddin,,,,,,,,,,al-Qur`an dan Perspektif Feminis
+110,PTIQ I,Kajian Literatur tentang al-Qur`an,11/10/2025 13:00:00,Kel. 8,Umiatu Rohmah,Dannu Akbar,,,,,,,,,,al-Qur`an dan Pembebasan Perempuan
+111,PTIQ I,Kajian Literatur tentang al-Qur`an,11/17/2025 13:00:00,Kel. 9,Muhamad Iqbal,Moh. Fadllurrahman,,,,,,,,,,Kritik al-Qur`an Terhadap Stereotip Agama Islam
+112,PTIQ I,Kajian Literatur tentang al-Qur`an,11/24/2025 13:00:00,Kel. 10,Ince Atika Ramadhani,Lukman,,,,,,,,,,Inklusivisme Agama dalam al-Qur`an
+113,PTIQ I,Kajian Literatur tentang al-Qur`an,12/1/2025 13:00:00,Kel. 11,Ahmad Sayyid Al Adam,Hilal Askary Syirwan,,,,,,,,,,Pribumisasi Islam
+114,PTIQ I,Kajian Literatur tentang al-Qur`an,12/8/2025 13:00:00,Kel. 12,Agung Setiabudi,Iqbal Salafuddin Zaini,,,,,,,,,,Tafsir Transformatif
+115,PTIQ I,Kajian Literatur tentang al-Qur`an,12/15/2025 13:00:00,Kel. 13,Darmawangsa,,,,,,,,,,,Integrasi Ilmu dalam Kajian al-Qur`an
+116,PTIQ I,Kajian Literatur tentang al-Qur`an,12/22/2025 13:00:00,UAS,,,,,,,,,,,,UAS
+117,PTIQ I,Tafsir dan Isu-isu Kontemporer,9/9/2025 8:00:00,Dosen,,,,,,,,,,,,Dosen
+118,PTIQ I,Tafsir dan Isu-isu Kontemporer,9/16/2025 8:00:00,Dosen,,,,,,,,,,,,Dosen
+119,PTIQ I,Tafsir dan Isu-isu Kontemporer,9/23/2025 8:00:00,Dosen,,,,,,,,,,,,Dosen
+120,PTIQ I,Tafsir dan Isu-isu Kontemporer,9/30/2025 8:00:00,Dosen,,,,,,,,,,,,Dosen
+121,PTIQ I,Tafsir dan Isu-isu Kontemporer,10/7/2025 8:00:00,Dosen,,,,,,,,,,,,Dosen
+122,PTIQ I,Tafsir dan Isu-isu Kontemporer,10/14/2025 8:00:00,Dosen,,,,,,,,,,,,Dosen
+123,PTIQ I,Tafsir dan Isu-isu Kontemporer,10/21/2025 8:00:00,UTS,,,,,,,,,,,,UTS
+124,PTIQ I,Tafsir dan Isu-isu Kontemporer,10/28/2025 8:00:00,Kel. 1,Dannu Akbar,Ahmad Sayyid Al Adam,Abdul Jabar,Lukman,,,,,,,,-
+125,PTIQ I,Tafsir dan Isu-isu Kontemporer,11/4/2025 8:00:00,Kel. 2,Iqbal Salafuddin Zaini,Elvin Maulidin Ikhsan,Adam Azizi,,,,,,,,,-
+126,PTIQ I,Tafsir dan Isu-isu Kontemporer,11/11/2025 8:00:00,Kel. 3,Irfan Fauzi,Umiatu Rohmah,Khofawati Khoiriyyah,,,,,,,,,-
+127,PTIQ I,Tafsir dan Isu-isu Kontemporer,11/18/2025 8:00:00,Kel. 4,Imamul Burhan,Ince Atika Ramadhani,Hilal Askary Syirwan,,,,,,,,,-
+128,PTIQ I,Tafsir dan Isu-isu Kontemporer,11/25/2025 8:00:00,Kel. 5,Azhar Ahmad Falahan,Nurfaizah Jamaluddin,Fasrul Syahrir,,,,,,,,,-
+129,PTIQ I,Tafsir dan Isu-isu Kontemporer,12/2/2025 8:00:00,Kel. 6,Darmawangsa,Muhammad Haikal Bin Hasmezam,Moh. Fadllurrahman,,,,,,,,,-
+130,PTIQ I,Tafsir dan Isu-isu Kontemporer,12/9/2025 8:00:00,Kel. 7,Agung Setiabudi,Triyanti Nurkhikmah,Mohammad A'mmar Bin Mohd Nai,,,,,,,,,-
+131,PTIQ I,Tafsir dan Isu-isu Kontemporer,12/16/2025 8:00:00,Kel. 8,Al Fahrizal,Ahmad Mahrus Mariadi,Muhamad Iqbal,,,,,,,,,-
+132,PTIQ I,Tafsir dan Isu-isu Kontemporer,12/23/2025 8:00:00,UAS,,,,,,,,,,,,UAS
+133,PTIQ I,Sejarah Tafsir,9/16/2025 10:00:00,Kel. 1,Darmawangsa,Muhamad Iqbal,,,,,,,,,,Perkembangan Tafsir pada Masa Rasulullah Saw dan Analisis terhadap Jamiul Bayan
+134,PTIQ I,Sejarah Tafsir,9/23/2025 10:00:00,Kel. 2,Al Fahrizal,Umiatu Rohmah,,,,,,,,,,Perkembangan Tafsir pada Masa Sahabat dan Analisis Tafsir Ibnu Masud
+135,PTIQ I,Sejarah Tafsir,9/30/2025 10:00:00,Kel. 3,Ahmad Mahrus Mariadi,Nurfaizah Jamaluddin,,,,,,,,,,Perkembangan Tafsir pada Masa Tabiin dan Analisis Tafsir Muqatil Bin Sulaiman
+136,PTIQ I,Sejarah Tafsir,10/7/2025 10:00:00,Kel. 4,Lukman,Ince Atika Ramadhani,,,,,,,,,,Perkembangan Tafsir pada Masa Tabi al-Tabiin dan Analisis Tafsir Sofyan Al-Tsauri
+137,PTIQ I,Sejarah Tafsir,10/14/2025 10:00:00,Kel. 5,Elvin Maulidin Ikhsan,Azhar Ahmad Falahan,,,,,,,,,,Perkembangan Tafsir pada Masa Stagnan dan Analisis Tafsir Al-Kasyaf
+138,PTIQ I,Sejarah Tafsir,10/21/2025 10:00:00,Kel. 6,Abdul Jabar,Imamul Burhan,,,,,,,,,,Perkembangan Tafsir pada Masa Kebangkitan dan Analisis Tafsir Al-Manar
+139,PTIQ I,Sejarah Tafsir,10/28/2025 10:00:00,UTS,,,,,,,,,,,,UTS
+140,PTIQ I,Sejarah Tafsir,11/4/2025 10:00:00,Kel. 7,Moh. Fadllurrahman,Fasrul Syahrir,,,,,,,,,,Perkembangan Tafsir di Saudi Arabia dan Analisis Tafsir As-Sa'di
+141,PTIQ I,Sejarah Tafsir,11/11/2025 10:00:00,Kel. 8,Mohammad A'mmar Bin Mohd Nai,Agung Setiabudi,,,,,,,,,,Perkembangan Tafsir di Mesir dan Analisis Tafsir Al-Muntakhab
+142,PTIQ I,Sejarah Tafsir,11/18/2025 10:00:00,Kel. 9,Ahmad Sayyid Al Adam,Irfan Fauzi,,,,,,,,,,Perkembangan Tafsir di Tunisia dan Analisis Tafsir Ibnu 'Asyur
+143,PTIQ I,Sejarah Tafsir,11/25/2025 10:00:00,Kel. 10,Khofawati Khoiriyyah,Triyanti Nurkhikmah,,,,,,,,,,Perkembangan Tafsir di Suriah dan Analisis Tafsir Wahbah Al-Zuhaili
+144,PTIQ I,Sejarah Tafsir,12/2/2025 10:00:00,Kel. 11,Hilal Askary Syirwan,Muhammad Haikal Bin Hasmezam,,,,,,,,,,Perkembangan Tafsir di Turki dan Analisis Tafsir Saeed Nursi
+145,PTIQ I,Sejarah Tafsir,12/9/2025 10:00:00,Kel. 12,Iqbal Salafuddin Zaini,Adam Azizi,,,,,,,,,,Perkembangan Tafsir di Iran dan Analisis Tafsir Al-Mizan
+146,PTIQ I,Sejarah Tafsir,12/16/2025 10:00:00,Kel. 13,Dannu Akbar,,,,,,,,,,,Perkembangan Tafsir di Indonesia dan Analisis Tafsir Al-Misbah
+147,PTIQ I,Sejarah Tafsir,12/23/2025 10:00:00,UAS,,,,,,,,,,,,UAS
+148,PTIQ I,Metodologi Penelitian Tafsir,9/9/2025 13:00:00,Dosen,,,,,,,,,,,,Pengantar
+149,PTIQ I,Metodologi Penelitian Tafsir,9/16/2025 13:00:00,Dosen,,,,,,,,,,,,Pengantar
+150,PTIQ I,Metodologi Penelitian Tafsir,9/23/2025 13:00:00,Kel. 1,Mohammad A'mmar Bin Mohd Nai,Agung Setiabudi,Darmawangsa,Hilal Askary Syirwan,,,,,,,,Kerangka Umum Metodologi Penelitian Tafsir
+151,PTIQ I,Metodologi Penelitian Tafsir,9/30/2025 13:00:00,Kel. 2,Muhammad Haikal Bin Hasmezam,Umiatu Rohmah,Dannu Akbar,,,,,,,,,Jenis dan Model Penelitian Tafsir
+152,PTIQ I,Metodologi Penelitian Tafsir,10/7/2025 13:00:00,Kel. 3,Ince Atika Ramadhani,Ahmad Mahrus Mariadi,Azhar Ahmad Falahan,,,,,,,,,Metode Berpikir Ilmiah dan Permasalahan Penelitian Terdahulu
+153,PTIQ I,Metodologi Penelitian Tafsir,10/14/2025 13:00:00,Kel. 4,Adam Azizi,Moh. Fadllurrahman,Triyanti Nurkhikmah,,,,,,,,,Desain Penelitian Tafsir
+154,PTIQ I,Metodologi Penelitian Tafsir,10/21/2025 13:00:00,Kel. 5,Nurfaizah Jamaluddin,Al Fahrizal,Abdul Jabar,,,,,,,,,Gagasan dan Prinsip Kunci Tafsir Kontekstual
+155,PTIQ I,Metodologi Penelitian Tafsir,10/28/2025 13:00:00,Kel. 6,Iqbal Salafuddin Zaini,Irfan Fauzi,Muhamad Iqbal,,,,,,,,,Living Qur`an: Sebuah Pendekatan Baru dalam Kajian al-Qur`an
+156,PTIQ I,Metodologi Penelitian Tafsir,11/4/2025 13:00:00,Kel. 7,Fasrul Syahrir,Lukman,Elvin Maulidin Ikhsan,,,,,,,,,Penelitian Tafsir Tematik
+157,PTIQ I,Metodologi Penelitian Tafsir,11/11/2025 13:00:00,Kel. 8,Khofawati Khoiriyyah,Imamul Burhan,Ahmad Sayyid Al Adam,,,,,,,,,Penelitian Tafsir Perbandingan
+158,PTIQ I,Metodologi Penelitian Tafsir,11/18/2025 13:00:00,UTS,,,,,,,,,,,,UTS
+159,PTIQ I,Metodologi Penelitian Tafsir,11/25/2025 13:00:00,Presentasi Proposal,,,,,,,,,,,,Presentasi Proposal
+160,PTIQ I,Metodologi Penelitian Tafsir,12/2/2025 13:00:00,Presentasi Proposal,,,,,,,,,,,,Presentasi Proposal
+161,PTIQ I,Metodologi Penelitian Tafsir,12/9/2025 13:00:00,Presentasi Proposal,,,,,,,,,,,,Presentasi Proposal
+162,PTIQ I,Metodologi Penelitian Tafsir,12/16/2025 13:00:00,Presentasi Proposal,,,,,,,,,,,,Presentasi Proposal
+163,PTIQ I,Metodologi Penelitian Tafsir,12/23/2025 13:00:00,UAS,,,,,,,,,,,,UAS
+164,PKU B,Fiqih Muamalah Kontemporer,9/18/2025 13:00:00,Kel. 1,Muh. Ikbal Amsah,Mukhamad Iskhak Nawawi,Muhammad Syamsur Rijal,Zaeni Anwar,Salman Alfarezi,,,,,,,Pajak dan Zakat
+165,PKU B,Fiqih Muamalah Kontemporer,9/25/2025 13:00:00,Kel. 2,Saepul,Nurfaizah Jamaluddin,Zulfi Fadhlurrahman,Rusdi,,,,,,,,Perbankan (Bank dan Riba)
+166,PKU B,Fiqih Muamalah Kontemporer,10/2/2025 13:00:00,Kel. 3,Muhamad Imdadur Rachman,Nur Ardhiansyah Khalillurahman Ibrahim,Zaky Zimmatillah Zulfikar,Nurul Huda,,,,,,,,Ta'min (Asuransi)
+167,PKU B,Fiqih Muamalah Kontemporer,10/9/2025 13:00:00,Kel. 4,Muhammad Haikal bin Hasmezam,Umiatu Rohmah,Muhammad Imran,Subulul Hikam,,,,,,,,Investasi
+168,PKU B,Fiqih Muamalah Kontemporer,10/16/2025 13:00:00,Kel. 5,Yolan Hardika Pratama,Mohammad A'mmar bin Mohd Naim,Ki Nailul Khoiril Marom,Triyanti Nurhikmah,,,,,,,,Wakaf
+169,PKU B,Ilmu Teologi Klasik dan Kontemporer,9/18/2025 9:00:00,Kel. 1,Subulul Hikam,Muh. Ikbal Amsah,,,,,,,,,,أهمية علم الكلام وعوامل نشآته
+170,PKU B,Ilmu Teologi Klasik dan Kontemporer,9/25/2025 9:00:00,Kel. 2,Muhamad Imdadur Rachman,Muhammad Imran,,,,,,,,,,الشيعة
+171,PKU B,Ilmu Teologi Klasik dan Kontemporer,10/2/2025 9:00:00,Kel. 3,Muhammad Syamsur Rijal,Mukhamad Iskhak Nawawi,,,,,,,,,,الخوارج
+172,PKU B,Ilmu Teologi Klasik dan Kontemporer,10/9/2025 9:00:00,Kel. 4,Nailul Khoiril Marom,Nur Ardhiansyah Khalillurahman Ibrahim,,,,,,,,,,المرجئة
+173,PKU B,Ilmu Teologi Klasik dan Kontemporer,10/16/2025 9:00:00,Kel. 5,Nurfaizah Jamaluddin,Nurul Huda,,,,,,,,,,الكرامية
+174,PKU B,Ilmu Teologi Klasik dan Kontemporer,10/23/2025 9:00:00,Kel. 6,Rusdi,Saepul,,,,,,,,,,المعتزلة  ١
+175,PKU B,Ilmu Teologi Klasik dan Kontemporer,10/30/2025 9:00:00,Kel. 7,Salman Alfarezi Muchamad,,,,,,,,,,,المعتزلة ٢
+176,PKU B,Ilmu Teologi Klasik dan Kontemporer,11/6/2025 9:00:00,Kel. 8,Triyanti Nurhikmah,,,,,,,,,,,الاشعرية ١
+177,PKU B,Ilmu Teologi Klasik dan Kontemporer,11/13/2025 9:00:00,Kel. 9,Umiatu Rohmah,,,,,,,,,,,الاشعرية ٢
+178,PKU B,Ilmu Teologi Klasik dan Kontemporer,11/20/2025 9:00:00,Kel. 10,Yolan Hardika Pratama,,,,,,,,,,,الماتوريدية
+179,PKU B,Ilmu Teologi Klasik dan Kontemporer,11/27/2025 9:00:00,Kel. 11,Zaeni Anwar,,,,,,,,,,,السلفية
+180,PKU B,Ilmu Teologi Klasik dan Kontemporer,12/4/2025 9:00:00,Kel. 12,Zaky Zimmatillah Zulfikar,,,,,,,,,,,اخوان المسلمين
+181,PKU B,Ilmu Teologi Klasik dan Kontemporer,12/11/2025 9:00:00,Kel. 13,Zulfi Fadhlurrahman,,,,,,,,,,,حزب التحرير
+182,PKU B,Ilmu Teologi Klasik dan Kontemporer,12/18/2025 9:00:00,Kel. 14,Mohammad A’mmar bin Mohd Naim,,,,,,,,,,,القاعدة والداعش
+183,PKU B,Ilmu Teologi Klasik dan Kontemporer,12/25/2025 9:00:00,Kel. 15,Muhammad Haikal bin Hasmezam,,,,,,,,,,,الوسطية
+184,PKU B,Ilmu Teologi Klasik dan Kontemporer,1/1/2026 9:00:00,,UAS,,,,,,,,,,,امتحان اخرالحصة
+185,PKU A,,1/2/2026 9:00:00,,,,,,,,,,,,,
+186,PKUP,,1/3/2026 9:00:00,,,,,,,,,,,,,

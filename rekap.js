@@ -1,3 +1,5 @@
+import { fetchScheduleData, getRekap, saveRekap } from './db.js';
+
 let scheduleSummary = {};
 let allParticipantNames = [];
 let currentCalendarDate = new Date();
@@ -91,8 +93,8 @@ function createParticipantSummary(data) {
  
   data.forEach(row => {
     console.log('Raw data row:', row);
-    const scheduleDate = parseDateFromString(row.Tanggal);
-    if (!scheduleDate || scheduleDate < today) {
+    // Gunakan dateObject yang sudah ada dari Firestore
+    if (!row.dateObject || row.dateObject < today) {
       return;
     }
 
@@ -113,7 +115,7 @@ function createParticipantSummary(data) {
  
         summary[name].push({
           subject: row['Mata_Pelajaran'], // Tetap ada untuk kalender
-          date: scheduleDate,
+          date: row.dateObject, // Gunakan dateObject
           institusi: row.Institusi,
           materi: row['Materi Diskusi'] || 'Tidak ada data',
           otherParticipants: otherParticipants // Simpan data peserta lain

@@ -1,4 +1,6 @@
-let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
+import { fetchScheduleData, getRawSchedules, saveRawSchedules } from './db.js';
+
+let allData = []; // Variabel untuk menyimpan semua data asli
  let allParticipantNames = []; // Variabel untuk menyimpan semua nama peserta unik
 
  async function loadData() {
@@ -24,7 +26,7 @@ let allData = []; // Variabel untuk menyimpan semua data asli dari spreadsheet
     console.error("Gagal memuat data:", error);
     // Hanya tampilkan error jika tidak ada data sama sekali (bahkan dari cache)
     if (allData.length === 0) {
-      document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi atau URL spreadsheet.</td></tr>`;
+      document.querySelector("#jadwal-table tbody").innerHTML = `<tr><td colspan="3" style="text-align:center; color: red;">Gagal memuat data. Periksa koneksi internet Anda.</td></tr>`;
     }
   } finally {
     // Blok ini DIJAMIN akan selalu berjalan, baik sukses maupun gagal.
@@ -42,7 +44,7 @@ function processScheduleData(parsedData) {
   today.setHours(0, 0, 0, 0);
 
   allData = parsedData
-    .map(row => ({ ...row, dateObject: parseDateFromString(row.Tanggal) }))
+    // .map(row => ({ ...row, dateObject: parseDateFromString(row.Tanggal) })) // Baris ini tidak diperlukan lagi karena dateObject sudah ada
     .filter(row => row.dateObject && row.dateObject >= today)
     .sort((a, b) => a.dateObject - b.dateObject);
 

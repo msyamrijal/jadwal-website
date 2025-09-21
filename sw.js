@@ -1,11 +1,17 @@
-const CACHE_NAME = 'jadwal-presentasi-v14-csv-validation'; // Versi baru dengan validasi CSV
+const CACHE_NAME = 'jadwal-presentasi-v16-auth'; // Versi baru dengan halaman login
 const urlsToCache = [
   '/',
   'index.html',
   'jadwal.html', // Menambahkan jadwal.html
+  'login.html',
+  'register.html',
+  'dashboard.html',
   'style.css',
   'script.js',
   'idb.js', // File library IDB lokal
+  'firebase-config.js', // File konfigurasi Firebase
+  'login.js',
+  'dashboard.js',
   'db.js', // File database baru
   'app.js', // File baru
   'rekap.js',
@@ -70,9 +76,10 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // STRATEGI 2: Network-First untuk data Google Sheets.
-  // Selalu coba dapatkan data terbaru, fallback ke cache jika offline. URL diubah ke host yang benar.
-  if (url.hostname === 'docs.google.com') {
+  // STRATEGI 2: Network-Only untuk API Firebase.
+  // Jangan pernah cache permintaan API dinamis.
+  if (url.hostname.includes('firebase') || url.hostname.includes('googleapis.com')) {
+    // Langsung ke jaringan, jangan coba cache.
     event.respondWith(fetchAndCache(event.request));
     return;
   }
@@ -94,25 +101,11 @@ self.addEventListener('fetch', event => {
  * @param {Request} request
  */
 function fetchAndCache(request) {
-  return fetch(request)
-    .then(response => {
-      // Periksa apakah responsnya valid DAN merupakan file CSV sebelum di-cache.
-      // Ini mencegah "cache poisoning" dengan halaman error HTML dari Google.
-      const contentType = response.headers.get('content-type');
-      if (response.ok && contentType && contentType.includes('text/csv')) {
-        console.log('Menerima CSV yang valid dari jaringan, menyimpan ke cache.');
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(request, response.clone());
-        });
-      } else {
-        console.warn('Menerima respons tidak valid dari jaringan, tidak akan di-cache:', response);
-      }
-      return response;
-    })
-    .catch(err => {
-      console.log('Fetch gagal, mencoba mengambil dari cache.', err);
-      return caches.match(request);
-    });
+  // Untuk API Firebase, kita hanya ingin mengambil dari jaringan.
+  // Jika gagal, biarkan saja gagal agar aplikasi tahu sedang offline.
+  // Kita tidak lagi menyimpan data dinamis (CSV) di cache Service Worker.
+  // Data offline sekarang sepenuhnya ditangani oleh IndexedDB.
+  return fetch(request);
 }
 
 // Event: Activate

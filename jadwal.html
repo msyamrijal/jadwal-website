@@ -19,7 +19,8 @@
       <h1>Jadwaluna</h1>
       <nav>
         <button id="install-button" class="install-button" hidden>Install Aplikasi</button>
-        <a href="index.html">Ke Jadwalku</a>
+        <a href="index.html" style="margin-right: 10px;">Ke Jadwalku</a>
+        <a href="dashboard.html">Login Peserta</a>
       </nav>
     </div>
   </header>
@@ -48,9 +49,12 @@
   </tbody>
   </table>
   </main>
-  <script src="idb.js?v=1726559619"></script>
-  <script src="db.js?v=1726559619"></script>
-  <script src="app.js?v=1726559619"></script>
-  <script src="script.js?v=1726559619"></script>
+  <!-- Firebase dan Konfigurasi (sebagai module) -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="db.js"></script>
+  <script type="module" src="script.js"></script>
+  <!-- Skrip non-module -->
+  <script src="idb.js"></script>
+  <script src="app.js"></script>
  </body>
  </html>
