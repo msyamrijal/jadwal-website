@@ -6,14 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('register-button');
     const errorMessage = document.getElementById('error-message');
 
-    // Jika pengguna sudah login (misalnya, dari tab lain), arahkan ke dashboard.
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log('Pengguna sudah login, mengarahkan ke dashboard...');
-            window.location.replace('/dashboard.html');
-        }
-    });
-
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -47,7 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 console.log('Pendaftaran berhasil untuk:', userCredential.user.email);
-                // `onAuthStateChanged` akan mendeteksi pengguna baru dan mengarahkan ke dashboard secara otomatis.
+                
+                // Pendaftaran dan pembaruan profil berhasil, sekarang arahkan ke dashboard.
+                window.location.replace('/dashboard.html');
 
             } catch (error) {
                 console.error('Error pendaftaran:', error.code, error.message);
