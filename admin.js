@@ -28,11 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadAdminData() {
         try {
             allSchedules = await fetchScheduleData();
-            setupFilters();
-            applyFilters(); // Render initial table
+            renderAdminTable(allSchedules); // Cukup render tabel sekali
         } catch (error) {
             tableWrapper.innerHTML = `<p style="color: red;">Gagal memuat data: ${error.message}</p>`;
-            document.querySelector('.filter-container').style.display = 'none';
         }
     }
 
@@ -51,8 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const headerRow = document.createElement('tr');
         headers.forEach(headerText => {
             const th = document.createElement('th');
-            th.textContent = headerText;
-            th.dataset.key = headerText; // Simpan key untuk referensi
+            th.dataset.key = headerText;
+
+            const titleSpan = document.createElement('span');
+            titleSpan.textContent = headerText;
+            th.appendChild(titleSpan);
+
+            // Tambahkan input filter untuk kolom yang relevan
+            // Kolom 'Actions' dan 'ID' tidak perlu filter
+            if (!['Actions', 'ID'].includes(headerText)) {
+                const filterInput = document.createElement('input');
+                filterInput.type = 'text';
+                filterInput.placeholder = `Filter...`;
+                filterInput.dataset.filterKey = headerText; // Tandai input ini sebagai filter
+                th.appendChild(filterInput);
+            }
+
             headerRow.appendChild(th);
         });
         thead.appendChild(headerRow);
@@ -98,6 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Tambahkan event listener ke seluruh tabel untuk delegasi event
         table.addEventListener('click', handleTableClick);
+
+        // Tambahkan event listener untuk filter di header
+        thead.addEventListener('input', applyFilters);
+
+        // Tambahkan event listener untuk edit/hapus/simpan
+        tbody.addEventListener('click', handleTableClick);
     }
 
     async function handleTableClick(e) {
@@ -126,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleEditMode(row, isEditing) {
-        const cells = row.querySelectorAll('td[data-key]');
+        const cells = row.querySelectorAll('td');
         cells.forEach(cell => {
             const key = cell.dataset.key;
             if (key === 'ID' || key === 'Actions') return;
@@ -136,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.dataset.originalValue = currentValue; // Simpan nilai asli
                 let input;
                 if (key === 'Tanggal') {
-                    // Konversi tanggal dari format 'dd MMM yyyy, HH.mm' ke format 'yyyy-MM-ddTHH:mm'
+                    // Konversi tanggal dari format 'dd MMM yyyy, HH.mm' ke format 'yyyy-MM-ddTHH:mm' untuk input
                     // FIX: Ambil tanggal asli dari data yang tersimpan, bukan tanggal saat ini.
                     const scheduleId = row.dataset.scheduleId;
                     const schedule = allSchedules.find(s => s.id === scheduleId);
@@ -213,43 +231,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FILTER FUNCTIONS ---
 
-    function setupFilters() {
-        const institutionFilter = document.getElementById('filter-institusi');
-        const subjectFilter = document.getElementById('filter-mapel');
-        const participantFilter = document.getElementById('filter-peserta');
-
-        populateFilter(institutionFilter, 'Semua Institusi', [...new Set(allSchedules.map(s => s.Institusi))]);
-        populateFilter(subjectFilter, 'Semua Mata Pelajaran', [...new Set(allSchedules.map(s => s.Mata_Pelajaran))]);
-
-        institutionFilter.addEventListener('change', applyFilters);
-        subjectFilter.addEventListener('change', applyFilters);
-        participantFilter.addEventListener('input', applyFilters);
-    }
-
-    function populateFilter(selectElement, defaultOptionText, options) {
-        selectElement.innerHTML = `<option value="">${defaultOptionText}</option>`;
-        options.sort().forEach(optionValue => {
-            if (optionValue) {
-                const option = document.createElement('option');
-                option.value = optionValue;
-                option.textContent = optionValue;
-                selectElement.appendChild(option);
+    function applyFilters() {
+        const filterInputs = document.querySelectorAll('#admin-table thead input[data-filter-key]');
+        const filters = {};
+        filterInputs.forEach(input => {
+            if (input.value) {
+                filters[input.dataset.filterKey] = input.value.toLowerCase();
             }
         });
-    }
 
-    function applyFilters() {
-        const institusiFilter = document.getElementById('filter-institusi').value;
-        const mapelFilter = document.getElementById('filter-mapel').value;
-        const pesertaFilter = document.getElementById('filter-peserta').value.toLowerCase();
+        const tableBody = document.querySelector('#admin-table tbody');
+        if (!tableBody) return;
+        const rows = tableBody.querySelectorAll('tr');
 
-        const filteredData = allSchedules.filter(row => {
-            const institusiMatch = !institusiFilter || row.Institusi === institusiFilter;
-            const mapelMatch = !mapelFilter || row['Mata_Pelajaran'] === mapelFilter;
-            const pesertaMatch = !pesertaFilter || (row.searchable_participants && row.searchable_participants.some(p => p.includes(pesertaFilter)));
-            return institusiMatch && mapelMatch && pesertaMatch;
+        rows.forEach(row => {
+            let isVisible = true;
+            for (const key in filters) {
+                const filterValue = filters[key];
+                const cell = row.querySelector(`td[data-key="${key}"]`);
+                
+                if (cell) {
+                    const cellValue = cell.textContent.toLowerCase();
+                    if (!cellValue.includes(filterValue)) {
+                        isVisible = false;
+                        break; // Jika satu filter tidak cocok, tidak perlu cek filter lain
+                    }
+                }
+            }
+            row.style.display = isVisible ? '' : 'none';
         });
-
-        renderAdminTable(filteredData);
     }
 });
