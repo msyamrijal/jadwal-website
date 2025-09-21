@@ -1,5 +1,6 @@
 import { auth } from './firebase-config.js';
-import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { signInWithGoogle } from './auth-helpers.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
@@ -72,20 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            
             try {
-                const result = await signInWithPopup(auth, provider);
-                // Saat pengguna mendaftar dengan Google, akun otomatis dibuat.
-                // Firebase secara otomatis mengisi `displayName` dari akun Google.
-                console.log('Pendaftaran/Login dengan Google berhasil untuk:', result.user.email);
-                // Langsung arahkan ke dashboard.
-                window.location.replace('/dashboard.html');
+                await signInWithGoogle();
+                // Redirect ditangani di dalam signInWithGoogle
             } catch (error) {
-                console.error('Error daftar/login dengan Google:', error);
-                // Handle common errors
-                if (error.code !== 'auth/popup-closed-by-user') {
-                    errorMessage.textContent = 'Gagal mendaftar dengan Google. Silakan coba lagi.';
+                // Hanya tampilkan pesan error jika bukan karena popup ditutup oleh pengguna
+                if (error.message !== 'POPUP_CLOSED') {
+                    errorMessage.textContent = error.message;
                     errorMessage.style.display = 'block';
                 }
             }

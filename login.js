@@ -1,5 +1,6 @@
 import { auth } from './firebase-config.js';
-import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { signInWithGoogle } from './auth-helpers.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
@@ -91,17 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            
             try {
-                const result = await signInWithPopup(auth, provider);
-                // Login berhasil, onAuthStateChanged akan menangani redirect.
-                console.log('Login dengan Google berhasil untuk:', result.user.email);
+                await signInWithGoogle();
+                // Redirect ditangani di dalam signInWithGoogle
             } catch (error) {
-                console.error('Error login dengan Google:', error);
-                // Handle common errors
-                if (error.code !== 'auth/popup-closed-by-user') {
-                    errorMessage.textContent = 'Gagal login dengan Google. Silakan coba lagi.';
+                // Hanya tampilkan pesan error jika bukan karena popup ditutup oleh pengguna
+                if (error.message !== 'POPUP_CLOSED') {
+                    errorMessage.textContent = error.message;
                     errorMessage.style.display = 'block';
                 }
             }
