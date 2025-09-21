@@ -19,6 +19,18 @@
             font-family: 'Playfair Display', serif;
             color: var(--primary-color);
         }
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-container input, .filter-container select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            flex-grow: 1;
+        }
         .table-wrapper {
             overflow-x: auto; /* Ini kunci untuk membuat tabel bisa di-scroll horizontal */
             border: 1px solid var(--border-color);
@@ -68,6 +80,11 @@
     </header>
     <main class="admin-container">
         <h2 id="admin-title">Memuat data...</h2>
+        <div class="filter-container">
+            <select id="filter-institusi"></select>
+            <select id="filter-mapel"></select>
+            <input type="text" id="filter-peserta" placeholder="Cari nama peserta...">
+        </div>
         <div id="table-wrapper" class="table-wrapper"></div>
     </main>
     <script type="module" src="admin.js"></script>
