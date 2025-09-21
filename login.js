@@ -1,10 +1,11 @@
 import { auth } from './firebase-config.js';
-import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const loginButton = document.getElementById('login-button');
     const errorMessage = document.getElementById('error-message');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
 
     // Cek apakah pengguna sudah login, jika ya, redirect ke dashboard
     onAuthStateChanged(auth, (user) => {
@@ -51,6 +52,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginButton.disabled = false;
                 loginButton.textContent = 'Login';
             }
+        });
+    }
+
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = loginForm.email.value;
+
+            // Reset pesan error
+            errorMessage.style.display = 'none';
+            errorMessage.style.color = 'red'; // Kembalikan ke warna default
+
+            if (!email) {
+                errorMessage.textContent = 'Silakan masukkan alamat email Anda di atas, lalu klik "Lupa Password".';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            loginButton.disabled = true;
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    errorMessage.textContent = 'Email untuk reset password telah dikirim. Silakan periksa inbox Anda.';
+                    errorMessage.style.color = 'green'; // Beri feedback positif
+                    errorMessage.style.display = 'block';
+                })
+                .catch((error) => {
+                    errorMessage.textContent = error.code === 'auth/user-not-found' ? 'Tidak ada pengguna yang terdaftar dengan email ini.' : 'Gagal mengirim email reset. Coba lagi.';
+                    errorMessage.style.display = 'block';
+                })
+                .finally(() => {
+                    loginButton.disabled = false;
+                });
         });
     }
 });
