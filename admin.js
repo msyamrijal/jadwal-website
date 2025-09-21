@@ -39,14 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderAdminTable(schedules) {
-        if (schedules.length === 0) {
-            tableWrapper.innerHTML = '<p>Tidak ada data jadwal untuk ditampilkan.</p>'; return;
-        }
+    /**
+     * Membuat kerangka tabel (header dan body kosong) sekali saja.
+     */
+    function renderAdminTableShell() {
+        const table = document.createElement('table');
+        table.id = 'admin-table';
+
         // Buat Header Tabel
         const headers = ['Actions', 'ID', 'Tanggal', 'Mata_Pelajaran', 'Institusi', 'Materi Diskusi', ...Array.from({ length: 12 }, (_, i) => `Peserta ${i + 1}`)];
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
+
         headers.forEach(headerText => {
             const th = document.createElement('th');
             th.dataset.key = headerText;
@@ -71,12 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 filterInput.dataset.filterKey = headerText; // Tandai input ini sebagai filter
                 th.appendChild(filterInput);
             }
-        });
-
-        function renderAdminTableShell() {
-
             headerRow.appendChild(th);
         });
+
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
@@ -89,10 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Tambahkan event listener untuk filter di header
         thead.addEventListener('input', updateTableView);
+
+        // Tambahkan event listener untuk klik pada body tabel (delegasi)
+        const tbody = table.querySelector('tbody');
+        if (tbody) {
+            tbody.addEventListener('click', handleTableClick);
+        }
     }
 
+    /**
+     * Mengisi atau memperbarui baris-baris di dalam body tabel.
+     * @param {Array} schedules Data jadwal yang akan ditampilkan.
+     */
     function renderTableBody(schedules) {
-        const tbody = document.createElement('tbody');
+        const tbody = document.querySelector('#admin-table tbody');
+        if (!tbody) return;
+
+        tbody.innerHTML = ''; // Kosongkan body tabel sebelum mengisi ulang
+
         schedules.forEach(schedule => {
             const row = document.createElement('tr');
             row.dataset.scheduleId = schedule.id;
@@ -125,13 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             tbody.appendChild(row);
         });
-
-        // Tambahkan event listener ke seluruh tabel untuk delegasi event
-        table.addEventListener('click', handleTableClick);
-
-        // Tambahkan event listener untuk edit/hapus/simpan
-        if (!tbody) return;
-        tbody.addEventListener('click', handleTableClick);
     }
 
     async function handleTableClick(e) {
