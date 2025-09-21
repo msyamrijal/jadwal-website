@@ -188,13 +188,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Konversi ke format yang diterima oleh input datetime-local
                     const isoString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
                     input = `<input type="datetime-local" value="${isoString}">`;
+
+                    // Buat elemen untuk opsi cascade update
+                    const cascadeOptionDiv = document.createElement('div');
+                    cascadeOptionDiv.className = 'cascade-update-option';
+                    cascadeOptionDiv.innerHTML = `
+                        <label>
+                            <input type="checkbox" id="cascade-update-checkbox"> Update tanggal jadwal berikutnya secara berurutan?
+                        </label>
+                    `;
+                    cell.innerHTML = input; // Masukkan input dulu
+                    cell.appendChild(cascadeOptionDiv); // Baru tambahkan opsi di bawahnya
                 } else {
                     input = `<input type="text" value="${currentValue}">`;
+                    cell.innerHTML = input;
                 }
-                cell.innerHTML = input;
             } else {
                 // Mode batal: kembalikan nilai asli
                 cell.innerHTML = cell.dataset.originalValue;
+            }
+
+            // Tampilkan opsi cascade hanya saat input tanggal di-fokus
+            const dateInput = row.querySelector('input[type="datetime-local"]');
+            if (dateInput) {
+                dateInput.addEventListener('focus', () => row.querySelector('.cascade-update-option').style.display = 'block');
             }
         });
 
@@ -227,6 +244,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (hasError) return;
 
+        const cascadeCheckbox = row.querySelector('#cascade-update-checkbox');
+
+        // --- LOGIKA CASCADE UPDATE ---
+        if (cascadeCheckbox && cascadeCheckbox.checked) {
+            const originalSchedule = allSchedules.find(s => s.id === scheduleId);
+            if (!originalSchedule) {
+                alert('Error: Jadwal asli tidak ditemukan untuk melakukan update berurutan.');
+                return;
+            }
+
+            const originalDate = originalSchedule.dateObject;
+            const newDate = updatedData.Tanggal;
+
+            // Hitung selisih hari (mengabaikan jam/menit untuk menghindari masalah timezone)
+            const startOriginal = new Date(Date.UTC(originalDate.getFullYear(), originalDate.getMonth(), originalDate.getDate()));
+            const startNew = new Date(Date.UTC(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()));
+            const dayDiff = (startNew.getTime() - startOriginal.getTime()) / (1000 * 3600 * 24);
+
+            if (dayDiff !== 0) {
+                const schedulesToCascade = allSchedules.filter(s =>
+                    s.id !== scheduleId &&
+                    s.Institusi === originalSchedule.Institusi &&
+                    s.Mata_Pelajaran === originalSchedule.Mata_Pelajaran &&
+                    s.dateObject > originalSchedule.dateObject
+                );
+
+                if (schedulesToCascade.length > 0) {
+                    if (!confirm(`Anda akan mengubah tanggal untuk ${schedulesToCascade.length + 1} jadwal (${originalSchedule.Mata_Pelajaran} - ${originalSchedule.Institusi}) secara berurutan. Lanjutkan?`)) {
+                        row.querySelector('.btn-save').disabled = false;
+                        row.querySelector('.btn-save').textContent = 'Save';
+                        return; // Batalkan jika pengguna menekan "Cancel"
+                    }
+                }
+
+                try {
+                    const batch = writeBatch(db);
+                    // 1. Update dokumen utama
+                    batch.update(doc(db, 'schedules', scheduleId), updatedData);
+                    // 2. Update dokumen berikutnya
+                    schedulesToCascade.forEach(schedule => {
+                        const newSubsequentDate = new Date(schedule.dateObject.getTime());
+                        newSubsequentDate.setDate(newSubsequentDate.getDate() + dayDiff);
+                        batch.update(doc(db, 'schedules', schedule.id), { Tanggal: newSubsequentDate });
+                    });
+
+                    await batch.commit();
+                    alert('Jadwal berhasil diperbarui secara berurutan! Halaman akan dimuat ulang.');
+                    window.location.reload();
+                    return; // Hentikan eksekusi setelah berhasil
+
+                } catch (error) {
+                    alert(`Gagal memperbarui jadwal secara berurutan: ${error.message}`);
+                    row.querySelector('.btn-save').disabled = false;
+                    row.querySelector('.btn-save').textContent = 'Save';
+                    return;
+                }
+            }
+        }
+
+        // --- LOGIKA UPDATE TUNGGAL (JIKA CASCADE TIDAK DIPILIH) ---
         try {
             await updateSchedule(scheduleId, updatedData);
 
