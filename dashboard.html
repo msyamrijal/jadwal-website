@@ -19,12 +19,16 @@
         .edit-form button[type="button"]:hover { background-color: #ccc; }
         .logout-button { background: none; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 8px 18px; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
         .logout-button:hover { background-color: var(--accent-color); color: var(--text-light); }
-        .filters { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; padding: 15px; background-color: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow-sm); }
-        .filters select, .filters input { padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; flex-grow: 1; }
-        .participant-search-wrapper { position: relative; flex-grow: 1; }
-        .search-results-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 0 0 6px 6px; z-index: 1000; max-height: 200px; overflow-y: auto; box-shadow: var(--shadow); }
-        .search-result-item { padding: 10px; cursor: pointer; }
-        .search-result-item:hover { background-color: #f0f0f0; }
+        /* Style untuk Kalender dan Daftar Jadwal */
+        #participant-details-container { margin-top: 20px; }
+        #calendar-container { background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: var(--shadow); }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .calendar-day, .calendar-day-name { padding: 10px 5px; }
+        .calendar-day-name { font-weight: bold; font-size: 0.9em; color: #888; }
+        .calendar-day.has-schedule { background-color: var(--accent-color); color: white; border-radius: 50%; font-weight: bold; cursor: help; }
+        #participant-schedule-list { list-style: none; padding: 0; margin-top: 25px; }
+        #participant-schedule-list li { background-color: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
     </style>
 </head>
 <body>
@@ -39,11 +43,6 @@
 
     <main class="dashboard-container">
         <h2 class="welcome-message">Selamat Datang, <span id="user-name"></span>!</h2>
-        <p>Di sini Anda dapat melihat, memfilter, mengedit, dan menambahkan jadwal.</p>
-
-        <div class="actions-bar" style="margin: 20px 0;">
-            <button id="add-schedule-button" class="edit-form button">Tambah Jadwal Baru</button>
-        </div>
 
         <!-- Form untuk memperbarui profil, tersembunyi secara default -->
         <div id="update-profile-container" class="schedule-item-edit" style="display: none;">
@@ -57,48 +56,11 @@
             </form>
         </div>
 
-        <!-- Form untuk membuat jadwal baru, tersembunyi secara default -->
-        <div id="create-schedule-container" class="schedule-item-edit" style="display: none;">
-            <h4>Tambah Jadwal Baru</h4>
-            <form id="create-schedule-form" class="edit-form">
-                <label for="new-subject">Mata Pelajaran:</label>
-                <input type="text" id="new-subject" required>
-
-                <label for="new-institution">Institusi:</label>
-                <input type="text" id="new-institution" required>
-
-                <label for="new-date">Tanggal & Waktu:</label>
-                <input type="datetime-local" id="new-date" required>
-
-                <label for="new-material">Materi Diskusi:</label>
-                <textarea id="new-material" rows="3"></textarea>
-
-                <fieldset style="border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; margin-top: 15px;">
-                    <legend>Peserta</legend>
-                    <div id="participant-inputs">
-                        <!-- Input untuk peserta akan dibuat oleh JavaScript -->
-                    </div>
-                </fieldset>
-
-                <button type="submit">Simpan Jadwal</button>
-                <button type="button" id="cancel-create-button">Batal</button>
-            </form>
-        </div>
-
-        <!-- Kontrol Filter Baru -->
-        <div class="filters">
-            <select id="filter-institusi" title="Filter berdasarkan institusi"></select>
-            <select id="filter-mapel" title="Filter berdasarkan mata pelajaran"></select>
-            <div class="participant-search-wrapper">
-                <input type="text" id="filter-peserta" placeholder="Cari nama peserta...">
-                <div id="jadwal-search-results" class="search-results-list">
-                    <!-- Hasil pencarian peserta akan muncul di sini -->
-                </div>
-            </div>
-        </div>
-
-        <div id="my-schedules-list">
-            <!-- Jadwal pengguna akan dimuat di sini oleh JavaScript -->
+        <!-- Kontainer untuk menampilkan detail jadwal pengguna -->
+        <div id="participant-details-container" style="display: none;">
+            <div id="calendar-container"></div>
+            <h3 style="margin-top: 25px;">Daftar Jadwal Anda: <span id="schedule-count" class="schedule-count-badge"></span></h3>
+            <ul id="participant-schedule-list"></ul>
         </div>
 
         <div id="loading-indicator" style="display: none;">Memuat jadwal Anda...</div>
