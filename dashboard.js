@@ -11,12 +11,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNGSI UTAMA ---
 
     // 1. Gunakan onAuthStateChanged sebagai satu-satunya sumber kebenaran untuk status login
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
+            let currentUser = user;
+
+            // SOLUSI: Jika displayName tidak ada setelah login/redirect, coba muat ulang data profil.
+            // Ini mengatasi race condition setelah pendaftaran.
+            if (!currentUser.displayName) {
+                console.log('DisplayName kosong, mencoba memuat ulang profil pengguna...');
+                try {
+                    await currentUser.reload();
+                    currentUser = auth.currentUser; // Ambil objek pengguna yang sudah diperbarui
+                    console.log('Profil berhasil dimuat ulang. Nama baru:', currentUser.displayName);
+                } catch (reloadError) {
+                    console.error('Gagal memuat ulang profil pengguna:', reloadError);
+                }
+            }
+
             // Pengguna sudah login
-            console.log('Pengguna terautentikasi:', user.displayName);
-            userNameEl.textContent = user.displayName || 'Peserta';
-            fetchUserSchedules(user.displayName);
+            console.log('Pengguna terautentikasi:', currentUser.displayName);
+            userNameEl.textContent = currentUser.displayName || 'Peserta';
+            fetchUserSchedules(currentUser.displayName);
         } else {
             // Pengguna tidak login, paksa kembali ke halaman login
             console.log('Pengguna tidak terautentikasi, mengarahkan ke login...');
