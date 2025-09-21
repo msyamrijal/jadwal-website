@@ -33,6 +33,18 @@
         <h2 class="welcome-message">Selamat Datang, <span id="user-name"></span>!</h2>
         <p>Di sini Anda dapat melihat dan mengedit detail jadwal Anda.</p>
 
+        <!-- Form untuk memperbarui profil, tersembunyi secara default -->
+        <div id="update-profile-container" class="schedule-item-edit" style="display: none;">
+            <h4>Perbarui Profil Anda</h4>
+            <p>Nama Anda tidak terdaftar di profil. Silakan masukkan nama lengkap Anda sesuai yang tertera di jadwal agar kami bisa menampilkan jadwal Anda.</p>
+            <form id="update-profile-form" class="edit-form">
+                <label for="new-displayName">Nama Lengkap (Sesuai di Jadwal):</label>
+                <input type="text" id="new-displayName" required>
+                <button type="submit">Simpan Nama & Tampilkan Jadwal</button>
+                <div id="update-profile-error" style="color: red; font-size: 0.9em; margin-top: 10px;"></div>
+            </form>
+        </div>
+
         <div id="my-schedules-list">
             <!-- Jadwal pengguna akan dimuat di sini oleh JavaScript -->
         </div>
@@ -41,6 +53,7 @@
     </main>
 
     <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="db.js"></script> <!-- Pastikan db.js dimuat -->
     <script type="module" src="dashboard.js"></script>
 </body>
 </html>

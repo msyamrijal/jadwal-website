@@ -1,5 +1,5 @@
 import { auth, db } from './firebase-config.js';
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { fetchSchedulesByParticipant, updateSchedule } from './db.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const schedulesListEl = document.getElementById('my-schedules-list');
     const loadingIndicator = document.getElementById('loading-indicator');
     const logoutButton = document.getElementById('logout-button');
+    const updateProfileContainer = document.getElementById('update-profile-container');
+    const updateProfileForm = document.getElementById('update-profile-form');
 
     // --- FUNGSI UTAMA ---
 
@@ -28,10 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Pengguna sudah login
-            console.log('Pengguna terautentikasi:', currentUser.displayName);
-            userNameEl.textContent = currentUser.displayName || 'Peserta';
-            fetchUserSchedules(currentUser.displayName);
+            if (currentUser.displayName) {
+                // KASUS NORMAL: Pengguna punya nama, tampilkan jadwal.
+                updateProfileContainer.style.display = 'none';
+                userNameEl.textContent = currentUser.displayName;
+                fetchUserSchedules(currentUser.displayName);
+            } else {
+                // KASUS PERBAIKAN: Pengguna tidak punya nama, tampilkan form update.
+                userNameEl.textContent = 'Peserta';
+                updateProfileContainer.style.display = 'block';
+            }
         } else {
             // Pengguna tidak login, paksa kembali ke halaman login
             console.log('Pengguna tidak terautentikasi, mengarahkan ke login...');
@@ -127,6 +135,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // 5. Tangani submit form untuk memperbarui profil
+    if (updateProfileForm) {
+        updateProfileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('new-displayName').value.trim();
+            const button = updateProfileForm.querySelector('button');
+            const errorMessageEl = document.getElementById('update-profile-error');
+
+            if (!newName) {
+                errorMessageEl.textContent = 'Nama tidak boleh kosong.';
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = 'Menyimpan...';
+            errorMessageEl.textContent = '';
+
+            try {
+                await updateProfile(auth.currentUser, { displayName: newName });
+                // Setelah berhasil, muat ulang seluruh halaman untuk mendapatkan state terbaru.
+                // Ini adalah cara paling sederhana dan andal.
+                window.location.reload();
+            } catch (error) {
+                console.error('Gagal memperbarui profil:', error);
+                errorMessageEl.textContent = 'Gagal menyimpan nama. Silakan coba lagi.';
+                button.disabled = false;
+                button.textContent = 'Simpan Nama & Tampilkan Jadwal';
+            }
+        });
+    }
     
     // 5. Fungsi Logout
     logoutButton.addEventListener('click', async () => {
