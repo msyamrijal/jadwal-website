@@ -19,6 +19,22 @@
             font-family: 'Playfair Display', serif;
             color: var(--primary-color);
         }
+        .bulk-replace-container {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .bulk-replace-container h4 { margin: 0; font-size: 1rem; color: var(--primary-color); }
+        .bulk-replace-container input, .bulk-replace-container select { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; }
+        .bulk-replace-container button { background-color: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
+        .bulk-replace-container button:hover { background-color: #c95a4a; }
+
         .table-wrapper {
             overflow-x: auto; /* Ini kunci untuk membuat tabel bisa di-scroll horizontal */
             border: 1px solid var(--border-color);
@@ -50,6 +66,14 @@
             border-radius: 4px;
             font-size: 0.8rem;
         }
+        #admin-table thead th button.sort-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+        }
         .action-cell button {
             margin-right: 5px;
             padding: 5px 10px;
@@ -77,6 +101,13 @@
     </header>
     <main class="admin-container">
         <h2 id="admin-title">Memuat data...</h2>
+        <div class="bulk-replace-container">
+            <h4>Ganti Data Massal:</h4>
+            <select id="replace-column-select" title="Pilih kolom"></select>
+            <input type="text" id="find-text" placeholder="Cari teks ini...">
+            <input type="text" id="replace-text" placeholder="Ganti dengan teks ini...">
+            <button id="replace-all-btn">Ganti Semua</button>
+        </div>
         <div id="table-wrapper" class="table-wrapper"></div>
     </main>
     <script type="module" src="admin.js"></script>

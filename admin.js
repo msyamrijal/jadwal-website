@@ -1,5 +1,7 @@
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { db } from './firebase-config.js';
+import { doc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { fetchScheduleData, updateSchedule, deleteSchedule } from './db.js';
 import { isAdmin } from './auth-admin.js';
 
@@ -8,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableWrapper = document.getElementById('table-wrapper');
 
     let allSchedules = []; // Store all schedules for filtering
+    let dateSortDirection = 'desc'; // Default sort: newest first
 
     onAuthStateChanged(auth, (user) => {
         if (user && isAdmin(user)) {
@@ -28,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadAdminData() {
         try {
             allSchedules = await fetchScheduleData();
-            renderAdminTable(allSchedules); // Cukup render tabel sekali
+            renderAdminTableShell(); // Render kerangka tabel sekali
+            updateTableView(); // Terapkan filter dan sort awal
+            setupBulkReplace();
         } catch (error) {
             tableWrapper.innerHTML = `<p style="color: red;">Gagal memuat data: ${error.message}</p>`;
         }
@@ -36,13 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderAdminTable(schedules) {
         if (schedules.length === 0) {
-            tableWrapper.innerHTML = '<p>Tidak ada data jadwal untuk ditampilkan.</p>';
-            return;
+            tableWrapper.innerHTML = '<p>Tidak ada data jadwal untuk ditampilkan.</p>'; return;
         }
-
-        const table = document.createElement('table');
-        table.id = 'admin-table';
-
         // Buat Header Tabel
         const headers = ['Actions', 'ID', 'Tanggal', 'Mata_Pelajaran', 'Institusi', 'Materi Diskusi', ...Array.from({ length: 12 }, (_, i) => `Peserta ${i + 1}`)];
         const thead = document.createElement('thead');
@@ -57,13 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Tambahkan input filter untuk kolom yang relevan
             // Kolom 'Actions' dan 'ID' tidak perlu filter
-            if (!['Actions', 'ID'].includes(headerText)) {
+            if (headerText === 'Tanggal') {
+                const sortButton = document.createElement('button');
+                sortButton.id = 'sort-date-btn';
+                sortButton.className = 'sort-btn';
+                sortButton.innerHTML = 'Urutkan <span>▼</span>'; // Panah ke bawah untuk descending
+                sortButton.addEventListener('click', toggleDateSort);
+                th.appendChild(sortButton);
+            } else if (!['Actions', 'ID'].includes(headerText)) {
                 const filterInput = document.createElement('input');
                 filterInput.type = 'text';
                 filterInput.placeholder = `Filter...`;
                 filterInput.dataset.filterKey = headerText; // Tandai input ini sebagai filter
                 th.appendChild(filterInput);
             }
+        });
+
+        function renderAdminTableShell() {
 
             headerRow.appendChild(th);
         });
@@ -71,6 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
         table.appendChild(thead);
 
         // Buat Body Tabel
+        const tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+
+        tableWrapper.innerHTML = ''; // Kosongkan wrapper
+        tableWrapper.appendChild(table);
+
+        // Tambahkan event listener untuk filter di header
+        thead.addEventListener('input', updateTableView);
+    }
+
+    function renderTableBody(schedules) {
         const tbody = document.createElement('tbody');
         schedules.forEach(schedule => {
             const row = document.createElement('tr');
@@ -104,17 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             tbody.appendChild(row);
         });
-        table.appendChild(tbody);
-        tableWrapper.innerHTML = ''; // Kosongkan wrapper
-        tableWrapper.appendChild(table);
 
         // Tambahkan event listener ke seluruh tabel untuk delegasi event
         table.addEventListener('click', handleTableClick);
 
-        // Tambahkan event listener untuk filter di header
-        thead.addEventListener('input', applyFilters);
-
         // Tambahkan event listener untuk edit/hapus/simpan
+        if (!tbody) return;
         tbody.addEventListener('click', handleTableClick);
     }
 
@@ -231,7 +247,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FILTER FUNCTIONS ---
 
-    function applyFilters() {
+    function toggleDateSort() {
+        const sortButton = document.getElementById('sort-date-btn');
+        const arrow = sortButton.querySelector('span');
+        if (dateSortDirection === 'desc') {
+            dateSortDirection = 'asc';
+            arrow.innerHTML = ' ▲'; // Panah ke atas
+        } else if (dateSortDirection === 'asc') {
+            dateSortDirection = 'none';
+            arrow.innerHTML = ' ↕'; // Panah dua arah
+        } else {
+            dateSortDirection = 'desc';
+            arrow.innerHTML = ' ▼'; // Panah ke bawah
+        }
+        updateTableView();
+    }
+
+    function updateTableView() {
         const filterInputs = document.querySelectorAll('#admin-table thead input[data-filter-key]');
         const filters = {};
         filterInputs.forEach(input => {
@@ -240,25 +272,91 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        const tableBody = document.querySelector('#admin-table tbody');
-        if (!tableBody) return;
-        const rows = tableBody.querySelectorAll('tr');
-
-        rows.forEach(row => {
-            let isVisible = true;
+        // 1. Filter data
+        let filteredData = allSchedules.filter(row => {
             for (const key in filters) {
                 const filterValue = filters[key];
-                const cell = row.querySelector(`td[data-key="${key}"]`);
-                
-                if (cell) {
-                    const cellValue = cell.textContent.toLowerCase();
-                    if (!cellValue.includes(filterValue)) {
-                        isVisible = false;
-                        break; // Jika satu filter tidak cocok, tidak perlu cek filter lain
-                    }
+                const rowValue = (row[key] || '').toString().toLowerCase();
+                if (!rowValue.includes(filterValue)) {
+                    return false;
                 }
             }
-            row.style.display = isVisible ? '' : 'none';
+            return true;
         });
+
+        // 2. Sort data
+        if (dateSortDirection === 'asc') {
+            filteredData.sort((a, b) => a.dateObject - b.dateObject);
+        } else if (dateSortDirection === 'desc') {
+            filteredData.sort((a, b) => b.dateObject - a.dateObject);
+        }
+
+        // 3. Render ulang body tabel
+        renderTableBody(filteredData);
+    }
+
+    // --- BULK REPLACE FUNCTIONS ---
+
+    function setupBulkReplace() {
+        const select = document.getElementById('replace-column-select');
+        const btn = document.getElementById('replace-all-btn');
+
+        // Isi dropdown dengan nama kolom yang relevan
+        const relevantHeaders = ['Mata_Pelajaran', 'Institusi', ...Array.from({ length: 12 }, (_, i) => `Peserta ${i + 1}`)];
+        select.innerHTML = relevantHeaders.map(h => `<option value="${h}">${h.replace('_', ' ')}</option>`).join('');
+
+        btn.addEventListener('click', handleBulkReplace);
+    }
+
+    async function handleBulkReplace() {
+        const column = document.getElementById('replace-column-select').value;
+        const findText = document.getElementById('find-text').value;
+        const replaceText = document.getElementById('replace-text').value;
+
+        if (!column || findText === '') {
+            alert('Kolom, dan teks yang dicari tidak boleh kosong.');
+            return;
+        }
+
+        const schedulesToUpdate = allSchedules.filter(s => s[column] === findText);
+
+        if (schedulesToUpdate.length === 0) {
+            alert('Tidak ada data yang cocok dengan teks yang dicari.');
+            return;
+        }
+
+        if (!confirm(`Anda akan mengubah "${findText}" menjadi "${replaceText}" di kolom "${column}" pada ${schedulesToUpdate.length} jadwal. Lanjutkan?`)) {
+            return;
+        }
+
+        const button = document.getElementById('replace-all-btn');
+        button.disabled = true;
+        button.textContent = 'Memproses...';
+
+        try {
+            // Firestore batch writes dibatasi 500 operasi per batch
+            const batchPromises = [];
+            for (let i = 0; i < schedulesToUpdate.length; i += 500) {
+                const batch = writeBatch(db);
+                const chunk = schedulesToUpdate.slice(i, i + 500);
+                chunk.forEach(schedule => {
+                    const docRef = doc(db, 'schedules', schedule.id);
+                    const updatePayload = { [column]: replaceText };
+                    batch.update(docRef, updatePayload);
+                });
+                batchPromises.push(batch.commit());
+            }
+
+            await Promise.all(batchPromises);
+
+            alert(`${schedulesToUpdate.length} data berhasil diperbarui! Halaman akan dimuat ulang.`);
+            window.location.reload();
+
+        } catch (error) {
+            alert(`Gagal melakukan pembaruan massal: ${error.message}`);
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Ganti Semua';
+        }
     }
 });
