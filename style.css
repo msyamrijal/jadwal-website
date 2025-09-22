@@ -74,6 +74,21 @@ header nav a {
 }
 header nav a:hover { background-color: var(--primary-color); color: var(--text-light); border-color: var(--primary-color); }
 
+.header-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+}
+
+.header-icon-link svg {
+  width: 20px;
+  height: 20px;
+}
+
 main { 
  max-width: 1200px; 
  margin: 40px auto; /* Lebih banyak ruang dari header */ 
