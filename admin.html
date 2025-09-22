@@ -16,20 +16,21 @@
             margin: 20px auto;
         }
         .admin-container h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Inter', sans-serif;
             color: var(--primary-color);
         }
         .action-button {
-            background-color: var(--accent-color); color: var(--text-light); border: none;
+            background-color: var(--primary-color); color: var(--text-light); border: none;
             padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;
             font-size: 0.9rem;
         }
+        .action-button:hover { background-color: var(--accent-color); }
         .bulk-replace-container {
             background-color: var(--card-bg);
             padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
             display: flex;
             gap: 10px;
             align-items: center;
@@ -37,15 +38,15 @@
         }
         .bulk-replace-container h4 { margin: 0; font-size: 1rem; color: var(--primary-color); }
         .bulk-replace-container input, .bulk-replace-container select { padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; }
-        .bulk-replace-container button { background-color: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
-        .bulk-replace-container button:hover { background-color: #c95a4a; }
+        .bulk-replace-container button { background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
+        .bulk-replace-container button:hover { background-color: var(--accent-color); }
 
         .schedule-form-container { background-color: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 20px; padding: 20px; }
         .schedule-form-container h4 { margin-top: 0; color: var(--primary-color); }
         .edit-form label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.9em; }
         .edit-form input, .edit-form textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; }
-        .edit-form button { background-color: var(--accent-color); color: var(--text-light); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: background-color 0.3s; }
-        .edit-form button:hover { background-color: #c95a4a; }
+        .edit-form button { background-color: var(--primary-color); color: var(--text-light); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: background-color 0.3s; }
+        .edit-form button:hover { background-color: var(--accent-color); }
         .edit-form button[type="button"] { background-color: var(--border-color); color: var(--text-dark); }
         .edit-form button[type="button"]:hover { background-color: #ccc; }
         .form-feedback { display: none; margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 0.9em; }
@@ -68,7 +69,7 @@
             font-size: 0.85rem;
         }
         #admin-table thead th {
-            background-color: var(--primary-color);
+            background-color: #f8f9fa; /* Abu-abu sangat terang */
             color: var(--text-light);
             position: sticky;
             top: 0; /* Membuat header tabel "mengapung" saat scroll vertikal */
@@ -86,7 +87,7 @@
             width: 100%;
             background: none;
             border: none;
-            color: white;
+            color: var(--primary-color);
             text-align: left;
             cursor: pointer;
         }
@@ -94,8 +95,8 @@
             display: none; /* Sembunyikan secara default */
             margin-top: 10px;
             padding: 8px;
-            background-color: #eef7ff;
-            border: 1px solid #bde0fe;
+            background-color: #f1f3f5;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 0.8rem;
         }
@@ -112,10 +113,10 @@
             transition: opacity 0.2s;
         }
         .action-cell button:hover { opacity: 0.8; }
-        .btn-edit { background-color: #3498db; color: white; }
-        .btn-save { background-color: #2ecc71; color: white; }
-        .btn-cancel { background-color: #f1c40f; color: #333; }
-        .btn-delete { background-color: #e74c3c; color: white; }
+        .btn-edit { background-color: #6c757d; color: white; } /* Abu-abu */
+        .btn-save { background-color: #198754; color: white; } /* Hijau */
+        .btn-cancel { background-color: #ffc107; color: #333; } /* Kuning */
+        .btn-delete { background-color: var(--danger-color); color: white; } /* Merah dari variabel */
         #admin-table td input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;
         }
     </style>

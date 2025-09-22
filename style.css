@@ -5,19 +5,20 @@
 } 
 
 :root { 
- /* Palet Warna Baru */ 
- --primary-color: #0b435c; /* Biru Tua Elegan */ 
- --accent-color: #e26d5b;  /* Oranye Kemerahan sebagai Aksen */ 
- --bg-color: #f9f9f9;      /* Latar belakang sedikit off-white */ 
- --card-bg: #ffffff;      /* Kartu/Konten tetap putih bersih */ 
- --text-color: #333333;   /* Teks lebih gelap untuk kontras */ 
- --text-light: #fdfdfd;   /* Teks terang di atas background gelap */ 
- --border-color: #e0e0e0; /* Warna border yang lembut */ 
- --shadow: 0 5px 20px rgba(0, 0, 0, 0.07); /* Bayangan lebih halus */ 
+ /* Palet Warna Minimalis & Elegan */
+ --primary-color: #212529; /* Abu-abu sangat gelap (hampir hitam) */
+ --accent-color: #495057;  /* Abu-abu sekunder */
+ --bg-color: #ffffff;      /* Latar belakang putih bersih */
+ --card-bg: #ffffff;      /* Kartu/Konten tetap putih */
+ --text-color: #212529;   /* Teks utama */
+ --text-light: #f8f9fa;   /* Teks terang di atas background gelap */
+ --border-color: #dee2e6; /* Warna border yang sangat lembut */
+ --shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Bayangan sangat halus */
+ --danger-color: #dc3545;  /* Warna untuk aksi hapus/berbahaya */
 } 
 
 body { 
- font-family: 'Montserrat', sans-serif; 
+ font-family: 'Inter', sans-serif; 
  margin: 0; 
  font-weight: 300; /* Menggunakan font yang lebih ringan untuk teks utama */ 
  padding: 0; 
@@ -27,20 +28,19 @@ body {
 } 
 
 header { 
- background-color: var(--primary-color); 
- color: var(--text-light); 
+ background-color: var(--card-bg); 
+ color: var(--text-color); 
  padding: 0.8em 0; /* Header lebih ramping */ 
  text-align: center; 
- box-shadow: var(--shadow); 
- border-bottom: 3px solid var(--accent-color); /* Aksen di bawah header */ 
+ border-bottom: 1px solid var(--border-color); /* Garis bawah tipis */
 } 
 
 header h1 { 
- font-family: 'Playfair Display', serif; /* Font judul yang elegan */ 
+ font-family: 'Inter', sans-serif; /* Menggunakan font yang sama untuk konsistensi */
  margin: 0; 
  font-size: 1.7rem; /* Ukuran judul diperkecil lagi */ 
- font-weight: 700; /* Bold untuk Playfair Display */ 
- color: var(--accent-color); 
+ font-weight: 600; /* Sedikit lebih tebal dari body */
+ color: var(--primary-color); 
 } 
 
 .header-content { 
@@ -53,27 +53,26 @@ header h1 {
 } 
 
 .install-button { 
-   background-color: var(--accent-color); 
+   background-color: var(--primary-color); 
    color: var(--text-light); 
    border: none; 
    padding: 8px 18px; /* Padding lebih seimbang */ 
    border-radius: 6px; /* Sudut lebih lembut */ 
    transition: all 0.3s; 
-   font-family: 'Montserrat', sans-serif; 
+   font-family: 'Inter', sans-serif; 
    font-size: 0.8em; /* Font lebih kecil */ 
    cursor: pointer; 
    margin-right: 15px; 
 } 
 
 .install-button:hover { 
-   background-color: #c95a4a; /* Warna aksen sedikit lebih gelap saat hover */ 
-   border-color: #c95a4a; 
+   background-color: var(--accent-color); /* Warna aksen saat hover */
 } 
 
-header nav a { 
- color: var(--text-light); text-decoration: none; border: 1px solid var(--text-light); padding: 7px 18px; border-radius: 6px; transition: all 0.3s; font-size: 0.8em; 
-} 
-header nav a:hover { background-color: var(--text-light); color: var(--primary-color); } 
+header nav a {
+ color: var(--primary-color); text-decoration: none; border: 1px solid var(--border-color); padding: 7px 18px; border-radius: 6px; transition: all 0.3s; font-size: 0.8em;
+}
+header nav a:hover { background-color: var(--primary-color); color: var(--text-light); border-color: var(--primary-color); }
 
 main { 
  max-width: 1200px; 
@@ -97,15 +96,15 @@ main {
  border: 1px solid var(--border-color); 
  border-radius: 8px; 
  flex-grow: 1; 
- font-family: 'Montserrat', sans-serif; 
+ font-family: 'Inter', sans-serif; 
  font-size: 0.9rem; 
  transition: border-color 0.3s, box-shadow 0.3s; 
 } 
 
 .filter-container input:focus, .filter-container select:focus { 
  outline: none; 
- border-color: var(--accent-color); 
- box-shadow: 0 0 0 3px rgba(226, 109, 91, 0.25); 
+ border-color: var(--primary-color); 
+ box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.15); 
 } 
 
 .participant-search-wrapper { 
@@ -137,13 +136,13 @@ main {
 } 
 
 #jadwal-table th { 
- background-color: var(--primary-color); 
- color: var(--text-light); 
+ background-color: #f8f9fa; /* Abu-abu sangat terang */
+ color: var(--primary-color); 
  font-weight: 600; 
 } 
 
 #jadwal-table tbody tr:hover { 
- background-color: #fdf0ed; /* Warna hover sangat lembut dari aksen */ 
+ background-color: #f8f9fa; /* Warna hover abu-abu terang */
 } 
 
 #loading-indicator { 
@@ -151,7 +150,7 @@ main {
  padding: 20px; 
  font-size: 1.2em; 
  font-weight: 400; 
- color: var(--accent-color); 
+ color: var(--primary-color); 
 } 
 
 /* --- Style untuk Baris yang Bisa Diekspansi --- */ 
@@ -161,7 +160,7 @@ main {
 } 
 
 .summary-row:hover { 
- background-color: #fdf0ed; /* Warna hover yang sudah ada */ 
+ background-color: #f8f9fa; /* Warna hover yang sudah ada */
 } 
 
 .detail-row { 
@@ -193,7 +192,7 @@ main {
 .summary-row td:last-child::after { 
  content: '▼'; position: absolute; right: 20px; top: 50%; 
  transform: translateY(-50%) rotate(0deg); transition: transform 0.3s ease; 
- font-size: 0.8em; color: var(--accent-color); 
+ font-size: 0.8em; color: var(--primary-color); 
 } 
 .summary-row.expanded td:last-child::after { transform: translateY(-50%) rotate(180deg); } 
 
@@ -235,7 +234,7 @@ main {
  padding: 14px; 
  border: 1px solid var(--border-color); 
  border-radius: 8px; 
- font-family: 'Montserrat', sans-serif; 
+ font-family: 'Inter', sans-serif; 
  transition: border-color 0.3s, box-shadow 0.3s; 
  font-size: 0.9rem; 
  box-shadow: var(--shadow); 
@@ -243,8 +242,8 @@ main {
 
 .rekap-search-container input:focus { 
  outline: none; 
- border-color: var(--accent-color); 
- box-shadow: 0 0 0 3px rgba(226, 109, 91, 0.25); 
+ border-color: var(--primary-color); 
+ box-shadow: 0 0 0 3px rgba(33, 37, 41, 0.15); 
 } 
 
 .search-results-list { 
@@ -267,7 +266,7 @@ main {
 } 
 
 .search-result-item:hover { 
- background-color: #fdf0ed; 
+ background-color: #f8f9fa; 
 } 
 
 .search-result-item:not(:last-child) { 
@@ -283,16 +282,16 @@ main {
 } 
 
 #participant-name-heading { 
- font-family: 'Playfair Display', serif; 
+ font-family: 'Inter', sans-serif; 
  color: var(--primary-color); 
- border-bottom: 2px solid var(--accent-color); 
+ border-bottom: 2px solid var(--primary-color); 
  padding-bottom: 10px; 
  font-size: 1.5rem; /* Ukuran judul diperkecil lagi */ 
  font-weight: 600; 
 } 
 
 .schedule-count-badge { 
-  font-family: 'Montserrat', sans-serif; 
+  font-family: 'Inter', sans-serif; 
   font-weight: 400; 
   font-size: 0.9rem; 
   color: #777; 
@@ -300,7 +299,7 @@ main {
 } 
 
 #participant-details-container h3 { 
- font-family: 'Playfair Display', serif; 
+ font-family: 'Inter', sans-serif; 
  font-size: 1.2rem; /* Ukuran sub-judul diperkecil lagi */ 
  color: var(--primary-color); 
 } 
@@ -321,15 +320,15 @@ main {
 
 #participant-schedule-list li.highlighted { 
   transition: background-color 0.5s ease; 
-  background-color: #fffbe6; /* Warna sorotan kuning lembut */ 
-  box-shadow: 0 4px 10px rgba(226, 109, 91, 0.2); /* Bayangan aksen */ 
+  background-color: #f1f3f5; /* Warna sorotan abu-abu lembut */
+  box-shadow: 0 4px 10px rgba(33, 37, 41, 0.1); /* Bayangan aksen */
 } 
 
 .schedule-summary { 
  padding: 15px; 
  cursor: pointer; 
  position: relative; 
- border-left: 4px solid var(--accent-color); 
+ border-left: 4px solid var(--primary-color); 
  transition: background-color 0.2s; 
 } 
 
@@ -345,7 +344,7 @@ main {
  transform: translateY(-50%) rotate(0deg); 
  transition: transform 0.3s ease; 
  font-size: 0.8em; 
- color: var(--accent-color); 
+ color: var(--primary-color); 
 } 
 
 .schedule-summary.expanded::after { 
@@ -373,21 +372,21 @@ main {
 } 
 
 .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; } 
-.calendar-header h3 { margin: 0; color: var(--primary-color); font-size: 1.3rem; font-family: 'Playfair Display', serif; } /* Ukuran judul kalender diperkecil lagi */ 
+.calendar-header h3 { margin: 0; color: var(--primary-color); font-size: 1.3rem; font-family: 'Inter', sans-serif; } /* Ukuran judul kalender diperkecil lagi */
 .calendar-nav { border: none; background: var(--primary-color); color: white; padding: 5px 12px; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; } 
-.calendar-nav:hover { background-color: #083344; } /* Sedikit lebih gelap saat hover */ 
+.calendar-nav:hover { background-color: var(--accent-color); } /* Sedikit lebih gelap saat hover */
 
 .calendar-grid { width: 100%; border-collapse: collapse; text-align: center; } 
-.calendar-grid th { padding: 10px; font-weight: 600; color: var(--accent-color); } 
+.calendar-grid th { padding: 10px; font-weight: 600; color: var(--primary-color); } 
 .calendar-grid td { 
  padding: 12px 5px; border: 1px solid var(--border-color); vertical-align: middle; color: #aaa; /* Warna angka lebih pudar */ 
 } 
 .calendar-grid .other-month { color: #ccc; } 
 .calendar-grid .today { 
- font-weight: bold; background-color: #fdf0ed; color: var(--text-color); /* Pastikan tanggal hari ini tetap jelas */ 
+ font-weight: bold; background-color: #f1f3f5; color: var(--text-color); /* Pastikan tanggal hari ini tetap jelas */
 } 
 .calendar-grid .has-schedule { 
- color: var(--accent-color); 
+ color: var(--primary-color); 
  cursor: pointer; 
  font-weight: 700; /* Bold font for highlight */ 
  transition: transform 0.2s; 
