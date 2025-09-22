@@ -8,16 +8,20 @@ export async function fetchScheduleData() {
     const schedules = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      // Konversi Firestore Timestamp kembali ke objek Date JavaScript
-      // dan tambahkan ke dalam data agar bisa digunakan oleh fungsi lain.
-      const scheduleWithDate = {
-        id: doc.id, // <-- Tambahkan ID dokumen Firestore
-        ...data,
-        // Firestore menyimpan 'Tanggal' sebagai Timestamp, kita ubah jadi JS Date
-        // Fungsi lain seperti parseDateFromString tidak diperlukan lagi
-        dateObject: data.Tanggal.toDate()
-      };
-      schedules.push(scheduleWithDate);
+
+      // --- PERBAIKAN: Pemeriksaan Defensif ---
+      // Cek apakah field 'Tanggal' ada dan merupakan Timestamp yang valid sebelum diproses.
+      if (data.Tanggal && typeof data.Tanggal.toDate === 'function') {
+        const scheduleWithDate = {
+          id: doc.id,
+          ...data,
+          dateObject: data.Tanggal.toDate()
+        };
+        schedules.push(scheduleWithDate);
+      } else {
+        // Jika ada data yang tidak valid, catat di console dan lewati agar tidak merusak aplikasi.
+        console.warn(`[PERINGATAN] Dokumen dengan ID: ${doc.id} dilewati karena field 'Tanggal' tidak valid atau tidak ada.`, data);
+      }
     });
     console.log("Data berhasil diambil dari Firestore.");
     return schedules;
