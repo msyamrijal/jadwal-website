@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Buat Body Tabel
         const tbody = document.createElement('tbody');
+        tbody.id = 'admin-table-body'; // Tambahkan ID ke tbody
         table.appendChild(tbody);
 
         tableWrapper.innerHTML = ''; // Kosongkan wrapper
@@ -106,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {Array} schedules Data jadwal yang akan ditampilkan.
      */
     function renderTableBody(schedules) {
-        const tbody = document.querySelector('#admin-table tbody');
+        const tbody = document.getElementById('admin-table-body'); // Gunakan getElementById untuk performa lebih baik
         if (!tbody) return;
 
         tbody.innerHTML = ''; // Kosongkan body tabel sebelum mengisi ulang
