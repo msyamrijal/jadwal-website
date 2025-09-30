@@ -154,14 +154,15 @@
         </div>
 
         <!-- Form untuk unggah CSV -->
-        <div id="csv-upload-container" class="schedule-form-container">
+        <div id="csv-upload-container" class="schedule-form-container" style="display: none;">
             <h4>Unggah Jadwal dari CSV</h4>
             <p>Unggah file CSV untuk menambahkan beberapa jadwal sekaligus. Pastikan format kolom sesuai dengan template: <strong>Tanggal, Mata_Pelajaran, Institusi, Materi Diskusi, Peserta 1, ..., Peserta 12</strong>.</p>
             <p>Format tanggal yang diharapkan dalam CSV adalah <code>MM/DD/YYYY HH:mm:ss</code>.</p>
             <div class="edit-form">
                 <label for="csv-file-input">Pilih File CSV:</label>
                 <input type="file" id="csv-file-input" accept=".csv" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; width: 100%;">
-                <button id="upload-csv-btn" style="margin-top: 15px;">Unggah dan Proses CSV</button>
+                <button id="upload-csv-btn" style="margin-top: 15px;">Unggah dan Proses</button>
+                <button type="button" id="cancel-csv-upload-btn">Batal</button>
                 <div id="csv-feedback" class="form-feedback"></div>
             </div>
         </div>
@@ -173,7 +174,10 @@
             <input type="text" id="replace-text" placeholder="Ganti dengan teks ini...">
             <button id="replace-all-btn">Ganti Semua</button>
         </div>
-        <button id="add-schedule-btn" class="action-button" style="margin-bottom: 20px;">Tambah Jadwal Baru</button>
+        <div class="action-buttons-container" style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <button id="add-schedule-btn" class="action-button">Tambah Jadwal Baru</button>
+            <button id="show-csv-upload-btn" class="action-button">Unggah dari CSV</button>
+        </div>
         <div id="table-wrapper" class="table-wrapper"></div>
     </main>
     <script type="module" src="admin.js"></script>

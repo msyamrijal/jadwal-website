@@ -524,9 +524,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CSV UPLOAD FUNCTIONS ---
 
     function setupCsvUpload() {
+        const showCsvBtn = document.getElementById('show-csv-upload-btn');
+        const csvContainer = document.getElementById('csv-upload-container');
+        const cancelCsvBtn = document.getElementById('cancel-csv-upload-btn');
         const uploadBtn = document.getElementById('upload-csv-btn');
         const fileInput = document.getElementById('csv-file-input');
         const feedbackEl = document.getElementById('csv-feedback');
+
+        showCsvBtn.addEventListener('click', () => {
+            csvContainer.style.display = 'block';
+            showCsvBtn.style.display = 'none'; // Sembunyikan tombol pemicu
+            document.getElementById('add-schedule-btn').style.display = 'none'; // Sembunyikan juga tombol tambah
+            csvContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        cancelCsvBtn.addEventListener('click', () => {
+            csvContainer.style.display = 'none';
+            showCsvBtn.style.display = 'inline-block'; // Tampilkan kembali
+            document.getElementById('add-schedule-btn').style.display = 'inline-block';
+            fileInput.value = ''; // Reset input file
+            feedbackEl.style.display = 'none'; // Sembunyikan feedback
+        });
+
 
         uploadBtn.addEventListener('click', async () => {
             const file = fileInput.files[0];
@@ -564,7 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 feedbackEl.style.display = 'block';
             } finally {
                 uploadBtn.disabled = false;
-                uploadBtn.textContent = 'Unggah dan Proses CSV';
+                uploadBtn.textContent = 'Unggah dan Proses';
                 fileInput.value = ''; // Reset input file
             }
         });
