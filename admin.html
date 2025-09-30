@@ -153,6 +153,19 @@
             </form>
         </div>
 
+        <!-- Form untuk unggah CSV -->
+        <div id="csv-upload-container" class="schedule-form-container">
+            <h4>Unggah Jadwal dari CSV</h4>
+            <p>Unggah file CSV untuk menambahkan beberapa jadwal sekaligus. Pastikan format kolom sesuai dengan template: <strong>Tanggal, Mata_Pelajaran, Institusi, Materi Diskusi, Peserta 1, ..., Peserta 12</strong>.</p>
+            <p>Format tanggal yang diharapkan dalam CSV adalah <code>MM/DD/YYYY HH:mm:ss</code>.</p>
+            <div class="edit-form">
+                <label for="csv-file-input">Pilih File CSV:</label>
+                <input type="file" id="csv-file-input" accept=".csv" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; width: 100%;">
+                <button id="upload-csv-btn" style="margin-top: 15px;">Unggah dan Proses CSV</button>
+                <div id="csv-feedback" class="form-feedback"></div>
+            </div>
+        </div>
+
         <div class="bulk-replace-container">
             <h4>Ganti Data Massal:</h4>
             <select id="replace-column-select" title="Pilih kolom"></select>

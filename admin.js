@@ -1,6 +1,6 @@
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { db } from './firebase-config.js';
+import { db, admin } from './firebase-config.js'; // Impor 'admin' untuk Timestamp
 import { doc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { fetchScheduleData, updateSchedule, deleteSchedule, createSchedule } from './db.js';
 import { isAdmin } from './auth-admin.js';
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTableView(); // Terapkan filter dan sort awal
             setupBulkReplace();
             setupAddSchedule();
+            setupCsvUpload(); // Panggil fungsi setup untuk CSV
         } catch (error) {
             tableWrapper.innerHTML = `<p style="color: red;">Gagal memuat data: ${error.message}</p>`;
         }
@@ -518,5 +519,122 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
             button.textContent = 'Simpan Jadwal';
         }
+    }
+
+    // --- CSV UPLOAD FUNCTIONS ---
+
+    function setupCsvUpload() {
+        const uploadBtn = document.getElementById('upload-csv-btn');
+        const fileInput = document.getElementById('csv-file-input');
+        const feedbackEl = document.getElementById('csv-feedback');
+
+        uploadBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Silakan pilih file CSV terlebih dahulu.');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Memproses...';
+            feedbackEl.style.display = 'none';
+
+            try {
+                const text = await file.text();
+                const data = parseCSV(text);
+                
+                if (data.length === 0) {
+                    throw new Error("File CSV kosong atau formatnya tidak benar.");
+                }
+
+                feedbackEl.textContent = `Mempersiapkan ${data.length} data untuk diunggah...`;
+                feedbackEl.style.backgroundColor = '#e2e3e5';
+                feedbackEl.style.color = '#383d41';
+                feedbackEl.style.display = 'block';
+
+                await uploadDataBatch(data);
+
+                alert(`Berhasil! ${data.length} jadwal baru telah ditambahkan. Halaman akan dimuat ulang.`);
+                window.location.reload();
+
+            } catch (error) {
+                feedbackEl.textContent = `Gagal memproses CSV: ${error.message}`;
+                feedbackEl.style.backgroundColor = '#f8d7da';
+                feedbackEl.style.color = '#721c24';
+                feedbackEl.style.display = 'block';
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Unggah dan Proses CSV';
+                fileInput.value = ''; // Reset input file
+            }
+        });
+    }
+
+    /**
+     * Mengurai teks CSV menjadi array objek.
+     * @param {string} text Teks dari file CSV.
+     * @returns {Array<Object>}
+     */
+    function parseCSV(text) {
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        const data = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',');
+            const row = {};
+            for (let j = 0; j < headers.length; j++) {
+                row[headers[j]] = values[j] ? values[j].trim() : '';
+            }
+            data.push(row);
+        }
+        return data;
+    }
+
+    /**
+     * Mengunggah data jadwal secara massal menggunakan batch.
+     * @param {Array<Object>} schedules Data jadwal dari CSV.
+     */
+    async function uploadDataBatch(schedules) {
+        const batch = writeBatch(db);
+
+        schedules.forEach((row, index) => {
+            // Validasi dan transformasi data, mirip dengan migration-script.js
+            if (!row.Tanggal || typeof row.Tanggal !== 'string') {
+                throw new Error(`Baris ${index + 2} dilewati: Kolom 'Tanggal' tidak ditemukan atau kosong.`);
+            }
+
+            const dateParts = row.Tanggal.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2})/);
+            if (!dateParts) {
+                throw new Error(`Baris ${index + 2} dilewati: Format tanggal tidak valid. Gunakan MM/DD/YYYY HH:mm:ss.`);
+            }
+            const jsDate = new Date(dateParts[3], dateParts[1] - 1, dateParts[2], dateParts[4], dateParts[5], dateParts[6]);
+
+            const scheduleData = {
+                Tanggal: admin.firestore.Timestamp.fromDate(jsDate),
+                Mata_Pelajaran: row.Mata_Pelajaran || '',
+                Institusi: row.Institusi || '',
+                'Materi Diskusi': row['Materi Diskusi'] || '',
+                searchable_participants: [],
+            };
+
+            // Tambahkan semua kolom peserta dan isi `searchable_participants`
+            for (let i = 1; i <= 12; i++) {
+                const participantKey = `Peserta ${i}`;
+                const participantName = row[participantKey] || '';
+                scheduleData[participantKey] = participantName;
+
+                if (participantName.trim() !== '') {
+                    scheduleData.searchable_participants.push(participantName.trim().toLowerCase());
+                }
+            }
+
+            // Tambahkan operasi 'create' ke batch
+            const newDocRef = doc(collection(db, 'schedules')); // Buat referensi dokumen baru
+            batch.set(newDocRef, scheduleData);
+        });
+
+        // Commit batch ke Firestore
+        await batch.commit();
     }
 });
