@@ -1,7 +1,7 @@
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { db, admin } from './firebase-config.js'; // Impor 'admin' untuk Timestamp
-import { doc, writeBatch } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { db } from './firebase-config.js';
+import { doc, writeBatch, collection, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { fetchScheduleData, updateSchedule, deleteSchedule, createSchedule } from './db.js';
 import { isAdmin } from './auth-admin.js';
 
@@ -631,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const jsDate = new Date(dateParts[3], dateParts[1] - 1, dateParts[2], dateParts[4], dateParts[5], dateParts[6]);
 
             const scheduleData = {
-                Tanggal: admin.firestore.Timestamp.fromDate(jsDate),
+                Tanggal: Timestamp.fromDate(jsDate),
                 Mata_Pelajaran: row.Mata_Pelajaran || '',
                 Institusi: row.Institusi || '',
                 'Materi Diskusi': row['Materi Diskusi'] || '',
