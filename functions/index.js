@@ -29,12 +29,12 @@ webpush.setVapidDetails(
 );
 
 // --- PERUBAHAN SINTAKS KE V2 ---
-// Fungsi yang dijadwalkan berjalan setiap hari jam 13:50 siang (WIB/GMT+7) untuk pengujian
+// Fungsi yang dijadwalkan berjalan setiap hari jam 14:00 siang (WIB/GMT+7) untuk pengujian
 exports.sendDailyScheduleNotifications = onSchedule({
-    schedule: "50 13 * * *", // Diubah ke jam 13:50
+    schedule: "0 14 * * *", // Diubah ke jam 14:00
     timeZone: "Asia/Jakarta",
 }, async (event) => {
-    console.log("Menjalankan fungsi notifikasi ringkasan harian (Tes jam 13:50)...");
+    console.log("Menjalankan fungsi notifikasi ringkasan harian (Tes jam 14:00)...");
 
         const today = new Date();
         const tomorrow = new Date();
