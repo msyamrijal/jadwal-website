@@ -122,3 +122,55 @@ self.addEventListener('activate', event => {
     }));
   }));
 });
+
+// Event: Push
+// Menangani notifikasi push yang diterima dari server.
+self.addEventListener('push', event => {
+  console.log('[Service Worker] Push Diterima.');
+
+  // Default data jika tidak ada payload
+  let notificationData = {
+    title: 'Jadwal Hari Ini',
+    body: 'Anda memiliki jadwal baru hari ini. Buka aplikasi untuk melihat detail.',
+    icon: 'icons/icon-192x192.png',
+    data: {
+      url: '/dashboard.html' // URL default jika tidak ada data spesifik
+    }
+  };
+
+  // Coba parse data dari push event
+  if (event.data) {
+    try {
+      const data = event.data.json();
+      notificationData = { ...notificationData, ...data };
+    } catch (e) {
+      console.error('Gagal mem-parse data push:', e);
+    }
+  }
+
+  const options = {
+    body: notificationData.body,
+    icon: notificationData.icon,
+    badge: 'icons/icon-192x192.png', // Ikon kecil di status bar
+    data: {
+      url: notificationData.data.url // URL untuk dibuka saat notifikasi diklik
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(notificationData.title, options)
+  );
+});
+
+// Event: Notification Click
+// Menangani aksi saat pengguna mengklik notifikasi.
+self.addEventListener('notificationclick', event => {
+  console.log('[Service Worker] Notifikasi diklik.');
+
+  event.notification.close(); // Tutup notifikasi
+
+  // Buka URL yang ada di data notifikasi, atau halaman utama jika tidak ada.
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url || '/')
+  );
+});
