@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logout-button');
     const notificationButton = document.getElementById('enable-notifications-btn'); // 2. Dapatkan elemen tombol
 
+    // Elemen Pop-up Notifikasi
+    const popupOverlay = document.getElementById('notification-popup-overlay');
+    const popupActivateBtn = document.getElementById('popup-activate-btn');
+    const popupLaterBtn = document.getElementById('popup-later-btn');
+
     // Elemen untuk form update profil
     const updateProfileContainer = document.getElementById('update-profile-container');
     const updateProfileForm = document.getElementById('update-profile-form');
@@ -52,7 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (isPushSupported) {
                         // Tampilkan tombol jika izin belum diberikan
-                        if (Notification.permission !== 'granted') {
+                        if (Notification.permission === 'default') {
+                            // Tampilkan pop-up setelah 3 detik
+                            setTimeout(() => {
+                                if (popupOverlay) popupOverlay.style.display = 'flex';
+                            }, 3000);
+                        } else if (Notification.permission !== 'granted') {
+                            // Jika izin diblokir, tampilkan tombol manual
                             notificationButton.style.display = 'block';
                         }
                     } else {
@@ -76,6 +87,30 @@ document.addEventListener('DOMContentLoaded', () => {
                                 notificationButton.disabled = false; // Aktifkan kembali tombol
                                 notificationButton.textContent = 'Aktifkan Notifikasi Jadwal';
                             });
+                    });
+                }
+
+                // Logika untuk tombol di dalam pop-up
+                if (popupActivateBtn) {
+                    popupActivateBtn.addEventListener('click', () => {
+                        popupActivateBtn.textContent = 'Memproses...';
+                        popupActivateBtn.disabled = true;
+                        popupLaterBtn.disabled = true;
+
+                        subscribeUserToPush(currentUser.uid)
+                            .then(() => {
+                                if (popupOverlay) popupOverlay.style.display = 'none';
+                            })
+                            .catch(err => {
+                                console.error('Gagal aktivasi dari pop-up:', err);
+                                if (popupOverlay) popupOverlay.style.display = 'none'; // Sembunyikan pop-up jika gagal
+                            });
+                    });
+                }
+
+                if (popupLaterBtn) {
+                    popupLaterBtn.addEventListener('click', () => {
+                        if (popupOverlay) popupOverlay.style.display = 'none';
                     });
                 }
             } else {
