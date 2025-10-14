@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const {onSchedule} = require("firebase-functions/v2/scheduler"); // Impor sintaks v2
 const webpush = require("web-push");
 
 admin.initializeApp();
@@ -21,12 +22,13 @@ webpush.setVapidDetails(
     vapidKeys.privateKey,
 );
 
+// --- PERUBAHAN SINTAKS KE V2 ---
 // Fungsi yang dijadwalkan berjalan setiap hari jam 10 pagi (WIB/GMT+7)
-exports.sendDailyScheduleNotifications = functions.pubsub
-    .schedule("0 10 * * *") // Format cron: menit jam hari bulan hari_minggu
-    .timeZone("Asia/Jakarta")
-    .onRun(async (context) => {
-        console.log("Menjalankan fungsi notifikasi jadwal harian (Tes jam 10:00)...");
+exports.sendDailyScheduleNotifications = onSchedule({
+    schedule: "0 10 * * *", // Format cron: menit jam hari bulan hari_minggu
+    timeZone: "Asia/Jakarta",
+}, async (event) => {
+    console.log("Menjalankan fungsi notifikasi jadwal harian (Tes jam 10:00)...");
 
         const today = new Date();
         const tomorrow = new Date();
