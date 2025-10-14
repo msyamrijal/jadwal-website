@@ -47,21 +47,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 3. Logika untuk menampilkan tombol notifikasi
                 if (notificationButton) {
-                    // Cek apakah notifikasi didukung dan belum diizinkan
-                    if ('Notification' in window && 'serviceWorker' in navigator && Notification.permission !== 'granted') {
+                    // Cek apakah notifikasi didukung
+                    const isPushSupported = 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+
+                    if (isPushSupported) {
+                        // Tampilkan tombol jika izin belum diberikan
+                        if (Notification.permission !== 'granted') {
+                            notificationButton.style.display = 'block';
+                        }
+                    } else {
+                        // Jika tidak didukung, sembunyikan tombol dan jangan lakukan apa-apa
                         notificationButton.style.display = 'block';
+                        notificationButton.textContent = 'Notifikasi Tidak Didukung';
+                        notificationButton.disabled = true;
                     }
 
                     notificationButton.addEventListener('click', () => {
                         notificationButton.disabled = true;
                         notificationButton.textContent = 'Memproses...';
+
                         subscribeUserToPush(currentUser.uid)
                             .then(() => {
                                 notificationButton.textContent = 'Notifikasi Sudah Aktif';
                                 // Tombol tetap disabled karena sudah berhasil
                             })
                             .catch(err => {
-                                console.error('Gagal mengaktifkan notifikasi:', err);
+                                console.error('Gagal mengaktifkan notifikasi di dashboard:', err);
                                 notificationButton.disabled = false; // Aktifkan kembali tombol
                                 notificationButton.textContent = 'Aktifkan Notifikasi Jadwal';
                             });

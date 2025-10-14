@@ -22,6 +22,17 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 /**
+ * Fungsi helper untuk menunggu Service Worker siap dengan timeout.
+ * @param {number} timeoutMs - Waktu timeout dalam milidetik.
+ */
+function getReadyServiceWorker(timeoutMs = 10000) {
+    return Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Service Worker tidak siap dalam waktu yang ditentukan.')), timeoutMs))
+    ]);
+}
+
+/**
  * Meminta izin notifikasi dan mendaftarkan push subscription.
  * @param {string} userId - ID pengguna yang sedang login.
  */
@@ -32,7 +43,8 @@ export async function subscribeUserToPush(userId) {
     }
 
     try {
-        const registration = await navigator.serviceWorker.ready;
+        // Gunakan fungsi dengan timeout
+        const registration = await getReadyServiceWorker();
         const existingSubscription = await registration.pushManager.getSubscription();
 
         if (existingSubscription) {
