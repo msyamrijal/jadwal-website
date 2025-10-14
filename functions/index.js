@@ -11,19 +11,13 @@ const db = admin.firestore();
 // Jalankan perintah ini di terminal Anda (ganti dengan kunci Anda):
 // firebase functions:config:set vapid.public_key="YOUR_PUBLIC_KEY"
 // firebase functions:config:set vapid.private_key="YOUR_PRIVATE_KEY"
-const vapidConfig = functions.config().vapid;
 
-// --- LOG DEBUGGING SEMENTARA ---
-console.log("Membaca functions.config().vapid:", JSON.stringify(vapidConfig || 'undefined'));
-
-if (!vapidConfig || !vapidConfig.public_key || !vapidConfig.private_key) {
-  throw new Error("VAPID keys are not set in the functions config. " +
-    "Run 'firebase functions:config:set vapid.public_key=...' and 'vapid.private_key=...'");
-}
+// --- PERUBAHAN SEMENTARA UNTUK DEBUGGING ---
+// Kita akan hardcode kunci untuk sementara waktu untuk melewati masalah konfigurasi.
 
 const vapidKeys = {
-    publicKey: vapidConfig.public_key,
-    privateKey: vapidConfig.private_key,
+    publicKey: "BKKvmTWHsEOCJlR0GwsVOU8EGLAZ73zf3YZKm846emf36nWQD6kZ-RD5jexJXTKBJPcaRnr39JQbcI1kkBVf3E8",
+    privateKey: "1ePLaeYlcvjmPgYtjABXx3YbStiz-GipNZRHGRELjEE",
 };
 
 webpush.setVapidDetails(
@@ -33,12 +27,12 @@ webpush.setVapidDetails(
 );
 
 // --- PERUBAHAN SINTAKS KE V2 ---
-// Fungsi yang dijadwalkan berjalan setiap hari jam 14:10 siang (WIB/GMT+7) untuk pengujian
+// Fungsi yang dijadwalkan berjalan setiap hari jam 15:00 siang (WIB/GMT+7) untuk pengujian
 exports.sendDailyScheduleNotifications = onSchedule({
-    schedule: "10 14 * * *", // Diubah ke jam 14:10
+    schedule: "00 15 * * *", // Diubah ke jam 15:00
     timeZone: "Asia/Jakarta",
 }, async (event) => {
-    console.log("Menjalankan fungsi notifikasi ringkasan harian (Tes jam 14:10)...");
+    console.log("Menjalankan fungsi notifikasi ringkasan harian (Tes jam 15:00)...");
 
         const today = new Date();
         const tomorrow = new Date();
