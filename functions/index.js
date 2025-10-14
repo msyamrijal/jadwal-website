@@ -34,7 +34,7 @@ exports.sendDailyScheduleNotifications = onSchedule({
     schedule: "0 12 * * *", // Diubah ke jam 12
     timeZone: "Asia/Jakarta",
 }, async (event) => {
-    console.log("Menjalankan fungsi notifikasi jadwal harian (Tes jam 12:00)...");
+    console.log("Menjalankan fungsi notifikasi ringkasan harian...");
 
         const today = new Date();
         const tomorrow = new Date();
@@ -53,53 +53,58 @@ exports.sendDailyScheduleNotifications = onSchedule({
             return null;
         }
 
-        const notificationsToSend = [];
+        // --- LOGIKA BARU: BUAT RINGKASAN ---
+        let notificationBody = "Jadwal hari ini:\n";
+        const allParticipantsToday = new Set();
 
-        // 2. Proses setiap jadwal
+        // 1. Kumpulkan semua jadwal dan peserta unik
         for (const doc of schedulesSnapshot.docs) {
             const schedule = doc.data();
             const scheduleTime = schedule.Tanggal.toDate().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+            notificationBody += `\n• ${schedule.Mata_Pelajaran} (${scheduleTime}): `;
 
-            // Ambil semua nama peserta dari jadwal
-            const participantNames = [];
+            const participantsInSchedule = [];
             for (let i = 1; i <= 12; i++) {
                 if (schedule[`Peserta ${i}`]) {
-                    participantNames.push(schedule[`Peserta ${i}`].trim());
+                    const name = schedule[`Peserta ${i}`].trim();
+                    participantsInSchedule.push(name);
+                    allParticipantsToday.add(name);
                 }
             }
-
-            if (participantNames.length === 0) continue;
-
-            // 3. Cari pengguna yang cocok dengan nama peserta
-            const usersSnapshot = await db.collection("users")
-                .where("displayName", "in", participantNames)
-                .get();
-
-            usersSnapshot.forEach((userDoc) => {
-                const user = userDoc.data();
-                // Cek apakah pengguna punya token notifikasi
-                if (user.pushTokens && user.pushTokens.length > 0) {
-                    const notificationPayload = {
-                        title: `Jadwal Anda Hari Ini (${scheduleTime} WIB)`,
-                        body: `Mata Kuliah: ${schedule.Mata_Pelajaran}`,
-                        data: {
-                            url: "/dashboard.html", // Arahkan ke dashboard saat notifikasi diklik
-                        },
-                    };
-
-                    // Tambahkan semua token pengguna ke daftar pengiriman
-                    user.pushTokens.forEach((token) => {
-                        notificationsToSend.push(
-                            webpush.sendNotification(token, JSON.stringify(notificationPayload)),
-                        );
-                    });
-                }
-            });
+            notificationBody += participantsInSchedule.join(", ") || "Belum ada peserta.";
         }
 
-        // 4. Kirim semua notifikasi secara paralel
+        // 2. Siapkan payload notifikasi
+        const notificationPayload = {
+            title: `Ringkasan Jadwal Hari Ini (${schedulesSnapshot.size} Sesi)`,
+            body: notificationBody,
+            data: {
+                url: "/jadwal.html", // Arahkan ke halaman jadwal umum
+            },
+        };
+
+        // 3. Cari semua pengguna yang merupakan peserta hari ini
+        if (allParticipantsToday.size === 0) {
+            console.log("Tidak ada peserta yang terdaftar untuk jadwal hari ini. Fungsi selesai.");
+            return null;
+        }
+
+        const participantNamesArray = Array.from(allParticipantsToday);
+        const usersSnapshot = await db.collection("users").where("displayName", "in", participantNamesArray).get();
+
+        const notificationsToSend = [];
+        usersSnapshot.forEach(userDoc => {
+            const user = userDoc.data();
+            if (user.pushTokens && user.pushTokens.length > 0) {
+                user.pushTokens.forEach(token => {
+                    notificationsToSend.push(webpush.sendNotification(token, JSON.stringify(notificationPayload)));
+                });
+            }
+        });
+
+        // 4. Kirim semua notifikasi ke peserta secara paralel
         await Promise.allSettled(notificationsToSend);
-        console.log(`${notificationsToSend.length} notifikasi telah diproses.`);
+        console.log(`${notificationsToSend.length} notifikasi ringkasan telah dikirim ke peserta.`);
 
         return null;
     });
