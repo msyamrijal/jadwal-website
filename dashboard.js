@@ -2,11 +2,13 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { fetchScheduleData } from './db.js';
 import { isAdmin } from './auth-admin.js';
+import { subscribeUserToPush } from './notifications.js'; // 1. Impor fungsi notifikasi
 
 document.addEventListener('DOMContentLoaded', () => {
     const userNameEl = document.getElementById('user-name');
     const loadingIndicator = document.getElementById('loading-indicator');
     const logoutButton = document.getElementById('logout-button');
+    const notificationButton = document.getElementById('enable-notifications-btn'); // 2. Dapatkan elemen tombol
 
     // Elemen untuk form update profil
     const updateProfileContainer = document.getElementById('update-profile-container');
@@ -41,6 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isAdmin(currentUser)) {
                     const adminLink = document.getElementById('admin-panel-link');
                     if (adminLink) adminLink.style.display = 'inline-block';
+                }
+
+                // 3. Logika untuk menampilkan tombol notifikasi
+                if (notificationButton) {
+                    // Cek apakah notifikasi didukung dan belum diizinkan
+                    if ('Notification' in window && 'serviceWorker' in navigator && Notification.permission !== 'granted') {
+                        notificationButton.style.display = 'block';
+                    }
+
+                    notificationButton.addEventListener('click', () => {
+                        notificationButton.disabled = true;
+                        notificationButton.textContent = 'Memproses...';
+                        subscribeUserToPush(currentUser.uid)
+                            .then(() => {
+                                notificationButton.textContent = 'Notifikasi Aktif';
+                            });
+                    });
                 }
             } else {
                 userNameEl.textContent = 'Peserta';
