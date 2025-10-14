@@ -11,9 +11,15 @@ const db = admin.firestore();
 // Jalankan perintah ini di terminal Anda (ganti dengan kunci Anda):
 // firebase functions:config:set vapid.public_key="YOUR_PUBLIC_KEY"
 // firebase functions:config:set vapid.private_key="YOUR_PRIVATE_KEY"
+const vapidConfig = functions.config().vapid;
+if (!vapidConfig || !vapidConfig.public_key || !vapidConfig.private_key) {
+  throw new Error("VAPID keys are not set in the functions config. " +
+    "Run 'firebase functions:config:set vapid.public_key=...' and 'vapid.private_key=...'");
+}
+
 const vapidKeys = {
-    publicKey: functions.config().vapid.public_key,
-    privateKey: functions.config().vapid.private_key,
+    publicKey: vapidConfig.public_key,
+    privateKey: vapidConfig.private_key,
 };
 
 webpush.setVapidDetails(
