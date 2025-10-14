@@ -57,7 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         notificationButton.textContent = 'Memproses...';
                         subscribeUserToPush(currentUser.uid)
                             .then(() => {
-                                notificationButton.textContent = 'Notifikasi Aktif';
+                                notificationButton.textContent = 'Notifikasi Sudah Aktif';
+                                // Tombol tetap disabled karena sudah berhasil
+                            })
+                            .catch(err => {
+                                console.error('Gagal mengaktifkan notifikasi:', err);
+                                notificationButton.disabled = false; // Aktifkan kembali tombol
+                                notificationButton.textContent = 'Aktifkan Notifikasi Jadwal';
                             });
                     });
                 }

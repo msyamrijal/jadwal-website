@@ -28,7 +28,7 @@ function urlBase64ToUint8Array(base64String) {
 export async function subscribeUserToPush(userId) {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         console.warn('Push messaging tidak didukung oleh browser ini.');
-        return;
+        throw new Error('Push messaging tidak didukung oleh browser ini.');
     }
 
     try {
@@ -59,6 +59,7 @@ export async function subscribeUserToPush(userId) {
         if (Notification.permission === 'denied') {
             alert('Anda telah memblokir notifikasi. Harap aktifkan secara manual di pengaturan browser jika ingin menerima pengingat jadwal.');
         }
+        throw error; // Lemparkan error agar bisa ditangkap oleh pemanggil
     }
 }
 
