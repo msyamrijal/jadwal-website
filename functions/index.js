@@ -12,6 +12,10 @@ const db = admin.firestore();
 // firebase functions:config:set vapid.public_key="YOUR_PUBLIC_KEY"
 // firebase functions:config:set vapid.private_key="YOUR_PRIVATE_KEY"
 const vapidConfig = functions.config().vapid;
+
+// --- LOG DEBUGGING SEMENTARA ---
+console.log("Membaca functions.config().vapid:", JSON.stringify(vapidConfig || 'undefined'));
+
 if (!vapidConfig || !vapidConfig.public_key || !vapidConfig.private_key) {
   throw new Error("VAPID keys are not set in the functions config. " +
     "Run 'firebase functions:config:set vapid.public_key=...' and 'vapid.private_key=...'");
