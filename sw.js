@@ -127,39 +127,42 @@ self.addEventListener('activate', event => {
 // Menangani notifikasi push yang diterima dari server.
 self.addEventListener('push', event => {
   console.log('[Service Worker] Push Diterima.');
-
-  // Default data jika tidak ada payload
-  let notificationData = {
-    title: 'Jadwal Hari Ini',
-    body: 'Anda memiliki jadwal baru hari ini. Buka aplikasi untuk melihat detail.',
-    icon: 'icons/icon-192x192.png',
-    data: {
-      url: '/dashboard.html' // URL default jika tidak ada data spesifik
-    }
-  };
-
-  // Coba parse data dari push event
-  if (event.data) {
-    try {
-      const data = event.data.json();
-      notificationData = { ...notificationData, ...data };
-    } catch (e) {
-      console.error('Gagal mem-parse data push:', e);
-    }
+  
+  // Coba parse data dari push event, jika gagal, gunakan data default.
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    console.error('Gagal mem-parse data push, menggunakan default:', e);
   }
 
+  const title = data.title || 'Jadwaluna';
   const options = {
-    body: notificationData.body,
-    icon: notificationData.icon,
-    badge: 'icons/icon-192x192.png', // Ikon kecil di status bar
+    body: data.body || 'Ada pembaruan jadwal baru untuk Anda.',
+    // --- PENTING UNTUK ANDROID ---
+    // 'icon' adalah ikon besar yang muncul di notifikasi.
+    // 'badge' adalah ikon kecil monokrom yang muncul di status bar.
+    icon: 'icons/icon-192x192.png', // Harus ada
+    badge: 'icons/icon-192x192.png', // Sebaiknya ada, akan di-render monokrom oleh Android
+    
+    // Opsi tambahan untuk pengalaman pengguna yang lebih baik
+    vibrate: [100, 50, 100], // Getar, jeda, getar
+    tag: 'jadwal-update', // Menggantikan notifikasi lama dengan tag yang sama
+    renotify: true, // Bergetar/bersuara lagi meskipun tag sama
+
+    // Data yang akan digunakan saat notifikasi diklik
     data: {
-      url: notificationData.data.url // URL untuk dibuka saat notifikasi diklik
+      url: data.data ? data.data.url : '/dashboard.html'
     }
   };
 
-  event.waitUntil(
-    self.registration.showNotification(notificationData.title, options)
-  );
+  // Fungsi untuk menampilkan notifikasi
+  const showNotification = () => {
+    return self.registration.showNotification(title, options);
+  };
+
+  // Jaga service worker tetap aktif sampai notifikasi ditampilkan
+  event.waitUntil(showNotification());
 });
 
 // Event: Notification Click

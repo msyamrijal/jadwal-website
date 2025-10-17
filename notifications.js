@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { doc, setDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 /**
  * Mengonversi VAPID public key dari URL-safe base64 ke Uint8Array.
@@ -44,7 +44,8 @@ export async function subscribeUserToPush(userId) {
 
     if (Notification.permission === 'denied') {
         console.warn('Izin notifikasi telah diblokir oleh pengguna.');
-        throw new Error('Izin notifikasi telah diblokir.');
+        alert('Izin notifikasi telah Anda blokir. Untuk mengaktifkannya, buka Pengaturan Browser > Notifikasi dan izinkan untuk situs ini.');
+        throw new Error('Izin notifikasi telah diblokir oleh pengguna.');
     }
 
     try {
@@ -88,10 +89,11 @@ export async function subscribeUserToPush(userId) {
 async function saveSubscription(userId, subscription) {
     if (!userId) return;
     const userDocRef = doc(db, 'users', userId);
-    // Menggunakan arrayUnion untuk menambahkan token baru tanpa duplikasi
-    await updateDoc(userDocRef, {
+    // Menggunakan setDoc dengan { merge: true } lebih aman.
+    // Ini akan membuat dokumen jika belum ada, atau menggabungkan data jika sudah ada.
+    await setDoc(userDocRef, {
         pushTokens: arrayUnion(JSON.parse(JSON.stringify(subscription)))
-    });
+    }, { merge: true });
     console.log('Subscription token berhasil disimpan ke Firestore.');
 }
 
