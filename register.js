@@ -1,5 +1,6 @@
 import { auth } from './firebase-config.js';
 import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { signInWithGoogle } from './auth-helpers.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,9 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 2. Perbarui profil pengguna dengan nama lengkap
                 // Ini langkah krusial agar jadwal bisa ditemukan
-                await updateProfile(userCredential.user, {
+                const user = userCredential.user;
+                await updateProfile(user, {
                     displayName: displayName
                 });
+
+                // 3. Simpan nama lowercase ke Firestore untuk pencarian notifikasi
+                const userDocRef = doc(db, 'users', user.uid);
+                await setDoc(userDocRef, {
+                    displayName_lowercase: displayName.toLowerCase()
+                }, { merge: true });
 
                 console.log('Pendaftaran berhasil untuk:', userCredential.user.email);
                 

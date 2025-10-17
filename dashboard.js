@@ -1,5 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { fetchScheduleData } from './db.js';
 import { isAdmin } from './auth-admin.js';
 import { subscribeUserToPush } from './notifications.js'; // 1. Impor fungsi notifikasi
@@ -294,7 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
             button.textContent = 'Menyimpan...';
             errorMessageEl.textContent = '';
             try {
-                await updateProfile(auth.currentUser, { displayName: newName });
+                const user = auth.currentUser;
+                await updateProfile(user, { displayName: newName });
+
+                // Simpan juga nama lowercase ke Firestore
+                const userDocRef = doc(db, 'users', user.uid);
+                await setDoc(userDocRef, {
+                    displayName_lowercase: newName.toLowerCase()
+                }, { merge: true });
                 window.location.reload();
             } catch (error) {
                 console.error('Gagal memperbarui profil:', error);

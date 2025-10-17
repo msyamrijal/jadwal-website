@@ -87,8 +87,9 @@ exports.sendDailyScheduleNotifications = onSchedule({
             return null;
         }
 
-        const participantNamesArray = Array.from(allParticipantsToday);
-        const usersSnapshot = await db.collection("users").where("displayName", "in", participantNamesArray).get();
+        // --- PERUBAHAN LOGIKA: KIRIM KE SEMUA ---
+        // Ambil semua pengguna yang memiliki setidaknya satu token notifikasi.
+        const usersSnapshot = await db.collection("users").where("pushTokens", "!=", []).get();
 
         const notificationsToSend = [];
         usersSnapshot.forEach(userDoc => {
@@ -100,9 +101,11 @@ exports.sendDailyScheduleNotifications = onSchedule({
             }
         });
 
+        console.log(`Ditemukan ${usersSnapshot.size} pengguna yang berlangganan notifikasi.`);
+
         // 4. Kirim semua notifikasi ke peserta secara paralel
         await Promise.allSettled(notificationsToSend);
-        console.log(`${notificationsToSend.length} notifikasi ringkasan telah dikirim ke peserta.`);
+        console.log(`${notificationsToSend.length} notifikasi ringkasan telah dikirim ke semua pengguna.`);
 
         return null;
     });
