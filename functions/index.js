@@ -46,6 +46,8 @@ exports.sendDailyScheduleNotifications = onSchedule({
             .where("Tanggal", "<", admin.firestore.Timestamp.fromDate(tomorrow))
             .get();
 
+        console.log(`Ditemukan ${schedulesSnapshot.size} jadwal untuk hari ini.`);
+
         if (schedulesSnapshot.empty) {
             console.log("Tidak ada jadwal untuk hari ini. Fungsi selesai.");
             return null;
@@ -91,6 +93,8 @@ exports.sendDailyScheduleNotifications = onSchedule({
         // Ambil semua pengguna yang memiliki setidaknya satu token notifikasi.
         const usersSnapshot = await db.collection("users").where("pushTokens", "!=", []).get();
 
+        console.log(`Ditemukan ${usersSnapshot.size} pengguna yang berlangganan notifikasi.`);
+
         const notificationsToSend = [];
         usersSnapshot.forEach(userDoc => {
             const user = userDoc.data();
@@ -101,11 +105,9 @@ exports.sendDailyScheduleNotifications = onSchedule({
             }
         });
 
-        console.log(`Ditemukan ${usersSnapshot.size} pengguna yang berlangganan notifikasi.`);
-
         // 4. Kirim semua notifikasi ke peserta secara paralel
         await Promise.allSettled(notificationsToSend);
-        console.log(`${notificationsToSend.length} notifikasi ringkasan telah dikirim ke semua pengguna.`);
+        console.log(`Proses pengiriman selesai. ${notificationsToSend.length} notifikasi telah dikirim.`);
 
         return null;
     });
