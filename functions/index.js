@@ -58,7 +58,7 @@ exports.sendDailyScheduleNotifications = onSchedule({
         // 1. Kumpulkan semua jadwal dan peserta unik
         for (const doc of schedulesSnapshot.docs) {
             const schedule = doc.data();
-            const scheduleTime = schedule.Tanggal.toDate().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+            const scheduleTime = schedule.Tanggal.toDate().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"});
             notificationBody += `\n• ${schedule.Mata_Pelajaran} (${scheduleTime}): `;
 
             const participantsInSchedule = [];
