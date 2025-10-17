@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Logika untuk tombol di dalam pop-up
                 if (popupActivateBtn) {
                     popupActivateBtn.addEventListener('click', () => {
+                        console.log('Tombol Aktifkan di pop-up ditekan.'); // Tambahkan log
                         popupActivateBtn.textContent = 'Memproses...';
                         popupActivateBtn.disabled = true;
                         popupLaterBtn.disabled = true;
@@ -100,11 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         subscribeUserToPush(currentUser.uid)
                             .then(() => {
                                 if (popupOverlay) popupOverlay.style.display = 'none';
+                                console.log('Pendaftaran notifikasi berhasil dari pop-up.'); // Tambahkan log
                             })
                             .catch(err => {
                                 console.error('Gagal aktivasi dari pop-up:', err);
                                 if (popupOverlay) popupOverlay.style.display = 'none'; // Sembunyikan pop-up jika gagal
                             });
+                        console.log('Memulai proses pendaftaran notifikasi...'); // Tambahkan log
                     });
                 }
 

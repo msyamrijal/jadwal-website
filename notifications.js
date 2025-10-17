@@ -42,6 +42,11 @@ export async function subscribeUserToPush(userId) {
         throw new Error('Push messaging tidak didukung oleh browser ini.');
     }
 
+    if (Notification.permission === 'denied') {
+        console.warn('Izin notifikasi telah diblokir oleh pengguna.');
+        throw new Error('Izin notifikasi telah diblokir.');
+    }
+
     try {
         // Gunakan fungsi dengan timeout
         const registration = await getReadyServiceWorker();
