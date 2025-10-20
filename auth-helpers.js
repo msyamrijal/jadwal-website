@@ -1,5 +1,6 @@
-import { auth } from './firebase-config.js';
+import { auth, db } from './firebase-config.js'; // 1. Impor 'db'
 import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; // 2. Impor fungsi Firestore
 
 /**
  * Handles the Google Sign-In process using a popup.
@@ -10,7 +11,18 @@ export async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
     try {
         const result = await signInWithPopup(auth, provider);
-        console.log('Pendaftaran/Login dengan Google berhasil untuk:', result.user.email);
+        const user = result.user;
+        console.log('Pendaftaran/Login dengan Google berhasil untuk:', user.email);
+
+        // --- PERBAIKAN KRUSIAL ---
+        // 3. Buat atau perbarui dokumen pengguna di Firestore setiap kali login dengan Google.
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+            displayName: user.displayName,
+            email: user.email,
+            displayName_lowercase: user.displayName.toLowerCase()
+        }, { merge: true }); // { merge: true } memastikan kita tidak menimpa data yang sudah ada seperti pushTokens.
+
         // After any successful sign-in, always go to the dashboard.
         window.location.replace('/dashboard.html');
     } catch (error) {
