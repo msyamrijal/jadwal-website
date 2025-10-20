@@ -3,7 +3,7 @@ import { onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { fetchScheduleData } from './db.js';
 import { isAdmin } from './auth-admin.js';
-import { subscribeUserToPush } from './notifications.js'; // 1. Impor fungsi notifikasi
+import { requestNotificationPermission, subscribeUserToPush } from './notifications.js'; // Impor fungsi baru
 
 document.addEventListener('DOMContentLoaded', () => {
     const userNameEl = document.getElementById('user-name');
@@ -94,27 +94,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Logika untuk tombol di dalam pop-up
                 if (popupActivateBtn) {
-                    popupActivateBtn.addEventListener('click', () => {
+                    popupActivateBtn.addEventListener('click', async () => {
                         console.log('Tombol Aktifkan di pop-up ditekan.'); // Tambahkan log
                         popupActivateBtn.textContent = 'Memproses...';
                         popupActivateBtn.disabled = true;
                         popupLaterBtn.disabled = true;
 
-                        subscribeUserToPush(currentUser.uid)
-                            .then(() => {
+                        try {
+                            // Langkah 1: Minta izin terlebih dahulu. Ini akan memicu prompt browser.
+                            const permission = await requestNotificationPermission();
+
+                            if (permission === 'granted') {
+                                console.log('Izin diberikan! Melanjutkan pendaftaran...');
+                                // Langkah 2: Jika izin diberikan, lanjutkan dengan mendaftarkan push subscription.
+                                await subscribeUserToPush(currentUser.uid);
+                                console.log('Pendaftaran notifikasi berhasil dari pop-up.');
                                 if (popupOverlay) popupOverlay.style.display = 'none';
-                                console.log('Pendaftaran notifikasi berhasil dari pop-up.'); // Tambahkan log
-                            })
-                            .catch(err => {
-                                console.error('Gagal aktivasi dari pop-up:', err);
-                                if (popupOverlay) popupOverlay.style.display = 'none'; // Sembunyikan pop-up jika gagal
-                                // Tampilkan pesan error kepada pengguna
-                                alert(
-                                    'Gagal mengaktifkan notifikasi. Pastikan Anda mengizinkan notifikasi di browser dan coba lagi. ' +
-                                    'Jika masalah berlanjut, coba reset izin situs di pengaturan browser.'
-                                );
-                            });
-                        console.log('Memulai proses pendaftaran notifikasi...'); // Tambahkan log
+                            } else {
+                                // Pengguna menolak izin atau menutup prompt.
+                                console.warn('Izin notifikasi tidak diberikan:', permission);
+                                alert('Anda tidak memberikan izin untuk notifikasi. Anda bisa mengaktifkannya nanti di pengaturan browser.');
+                                if (popupOverlay) popupOverlay.style.display = 'none';
+                            }
+                        } catch (err) {
+                            console.error('Gagal total saat aktivasi dari pop-up:', err);
+                            alert('Gagal mengaktifkan notifikasi: ' + err.message);
+                            if (popupOverlay) popupOverlay.style.display = 'none';
+                        }
                     });
                 }
 

@@ -33,6 +33,26 @@ function getReadyServiceWorker(timeoutMs = 10000) {
 }
 
 /**
+ * Meminta izin notifikasi dari pengguna. Ini harus dipanggil dalam event klik.
+ * @returns {Promise<string>} Mengembalikan status izin ('granted', 'denied', 'default').
+ */
+export async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        throw new Error('Browser ini tidak mendukung Notifikasi.');
+    }
+
+    // Jika izin sudah diberikan atau ditolak, langsung kembalikan statusnya.
+    if (Notification.permission !== 'default') {
+        return Notification.permission;
+    }
+
+    // Ini adalah bagian yang memicu prompt asli dari browser.
+    const permission = await Notification.requestPermission();
+    console.log('Hasil permintaan izin:', permission);
+    return permission;
+}
+
+/**
  * Meminta izin notifikasi dan mendaftarkan push subscription.
  * @param {string} userId - ID pengguna yang sedang login.
  */
@@ -41,12 +61,7 @@ export async function subscribeUserToPush(userId) {
         console.warn('Push messaging tidak didukung oleh browser ini.');
         throw new Error('Push messaging tidak didukung oleh browser ini.');
     }
-
-    if (Notification.permission === 'denied') {
-        console.warn('Izin notifikasi telah diblokir oleh pengguna.');
-        alert('Izin notifikasi telah Anda blokir. Untuk mengaktifkannya, buka Pengaturan Browser > Notifikasi dan izinkan untuk situs ini.');
-        throw new Error('Izin notifikasi telah diblokir oleh pengguna.');
-    }
+    // Pemeriksaan izin 'denied' akan ditangani oleh pemanggil fungsi ini.
 
     try {
         // Gunakan fungsi dengan timeout
