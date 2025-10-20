@@ -65,7 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             }, 3000);
                         } else if (Notification.permission !== 'granted') {
                             // Jika izin diblokir, tampilkan tombol manual
-                            notificationButton.style.display = 'block';
+                            // Juga tampilkan jika pengguna menutup pop-up (permission 'default')
+                            notificationButton.style.display = 'inline-block';
                         }
                     } else {
                         // Jika tidak didukung, sembunyikan tombol dan jangan lakukan apa-apa

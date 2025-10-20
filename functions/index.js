@@ -21,7 +21,7 @@ const vapidKeys = {
 };
 
 webpush.setVapidDetails(
-    "mailto:admin@jadwaluna.web.app", // Ganti dengan email kontak Anda
+    "mailto:admin@jadwalkumi.my.id", // Sesuaikan dengan domain baru Anda
     vapidKeys.publicKey,
     vapidKeys.privateKey,
 );
