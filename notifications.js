@@ -61,7 +61,7 @@ export async function subscribeUserToPush(userId) {
         }
 
         // Ganti dengan VAPID Public Key dari Firebase Cloud Messaging Anda
-        const VAPID_PUBLIC_KEY = 'BKKvmTWHsEOCJlR0GwsVOU8EGLAZ73zf3YZKm846emf36nWQD6kZ-RD5jexJXTKBJPcaRnr39JQbcI1kkBVf3E8';
+        const VAPID_PUBLIC_KEY = 'BNhzQWFHQpHiNhYkPLcn_osfhwaivyNmNKwowg86PWN35vHzv18yKFcEnSzD7fUmq0KbECIuA26-0PAN2u2ZV1Y';
         const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
 
         const subscription = await registration.pushManager.subscribe({

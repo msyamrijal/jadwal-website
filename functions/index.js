@@ -16,8 +16,8 @@ const db = admin.firestore();
 // Kita akan hardcode kunci untuk sementara waktu untuk melewati masalah konfigurasi.
 
 const vapidKeys = {
-    publicKey: "BKKvmTWHsEOCJlR0GwsVOU8EGLAZ73zf3YZKm846emf36nWQD6kZ-RD5jexJXTKBJPcaRnr39JQbcI1kkBVf3E8",
-    privateKey: "1ePLaeYlcvjmPgYtjABXx3YbStiz-GipNZRHGRELjEE",
+    publicKey: "BNhzQWFHQpHiNhYkPLcn_osfhwaivyNmNKwowg86PWN35vHzv18yKFcEnSzD7fUmq0KbECIuA26-0PAN2u2ZV1Y",
+    privateKey: "nHik68vQ_5hvcPHYb-7ybXun-OQV5U3wycyAIR1-BQA",
 };
 
 webpush.setVapidDetails(
