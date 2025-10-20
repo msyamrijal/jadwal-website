@@ -108,6 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             .catch(err => {
                                 console.error('Gagal aktivasi dari pop-up:', err);
                                 if (popupOverlay) popupOverlay.style.display = 'none'; // Sembunyikan pop-up jika gagal
+                                // Tampilkan pesan error kepada pengguna
+                                alert(
+                                    'Gagal mengaktifkan notifikasi. Pastikan Anda mengizinkan notifikasi di browser dan coba lagi. ' +
+                                    'Jika masalah berlanjut, coba reset izin situs di pengaturan browser.'
+                                );
                             });
                         console.log('Memulai proses pendaftaran notifikasi...'); // Tambahkan log
                     });
