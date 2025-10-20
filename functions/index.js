@@ -90,18 +90,16 @@ exports.sendDailyScheduleNotifications = onSchedule({
         }
 
         // --- PERUBAHAN LOGIKA: KIRIM KE SEMUA ---
-        // Ambil semua pengguna yang memiliki setidaknya satu token notifikasi.
-        const usersSnapshot = await db.collection("users").where("pushTokens", "!=", []).get();
+        // Ambil semua dokumen dari koleksi 'subscriptions'.
+        const subscriptionsSnapshot = await db.collection("subscriptions").get();
 
-        console.log(`Ditemukan ${usersSnapshot.size} pengguna yang berlangganan notifikasi.`);
+        console.log(`Ditemukan ${subscriptionsSnapshot.size} pengunjung yang berlangganan notifikasi.`);
 
         const notificationsToSend = [];
-        usersSnapshot.forEach(userDoc => {
-            const user = userDoc.data();
-            if (user.pushTokens && user.pushTokens.length > 0) {
-                user.pushTokens.forEach(token => {
-                    notificationsToSend.push(webpush.sendNotification(token, JSON.stringify(notificationPayload)));
-                });
+        subscriptionsSnapshot.forEach(doc => {
+            const subData = doc.data();
+            if (subData.subscription) {
+                notificationsToSend.push(webpush.sendNotification(subData.subscription, JSON.stringify(notificationPayload)));
             }
         });
 

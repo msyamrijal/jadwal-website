@@ -54,9 +54,8 @@ export async function requestNotificationPermission() {
 
 /**
  * Meminta izin notifikasi dan mendaftarkan push subscription.
- * @param {string} userId - ID pengguna yang sedang login.
  */
-export async function subscribeUserToPush(userId) {
+export async function subscribeToPush() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         console.warn('Push messaging tidak didukung oleh browser ini.');
         throw new Error('Push messaging tidak didukung oleh browser ini.');
@@ -71,7 +70,7 @@ export async function subscribeUserToPush(userId) {
         if (existingSubscription) {
             console.log('Pengguna sudah terdaftar untuk notifikasi.');
             // Opsional: Anda bisa memperbarui token di server di sini jika perlu
-            await saveSubscription(userId, existingSubscription);
+            await saveSubscription(existingSubscription);
             return;
         }
 
@@ -85,7 +84,7 @@ export async function subscribeUserToPush(userId) {
         });
 
         console.log('Berhasil mendaftar untuk notifikasi:', subscription);
-        await saveSubscription(userId, subscription);
+        await saveSubscription(subscription);
 
     } catch (error) {
         console.error('Gagal mendaftar untuk notifikasi:', error);
@@ -98,17 +97,14 @@ export async function subscribeUserToPush(userId) {
 
 /**
  * Menyimpan subscription token ke profil pengguna di Firestore.
- * @param {string} userId
  * @param {PushSubscription} subscription
  */
-async function saveSubscription(userId, subscription) {
-    if (!userId) return;
-    const userDocRef = doc(db, 'users', userId);
-    // Menggunakan setDoc dengan { merge: true } lebih aman.
-    // Ini akan membuat dokumen jika belum ada, atau menggabungkan data jika sudah ada.
-    await setDoc(userDocRef, {
-        pushTokens: arrayUnion(JSON.parse(JSON.stringify(subscription)))
-    }, { merge: true });
+async function saveSubscription(subscription) {
+    // Buat dokumen baru di koleksi 'subscriptions'.
+    // ID dokumen akan dibuat otomatis oleh Firestore.
+    const subscriptionData = JSON.parse(JSON.stringify(subscription));
+    const newSubscriptionRef = doc(collection(db, "subscriptions"));
+    await setDoc(newSubscriptionRef, { subscription: subscriptionData });
     console.log('Subscription token berhasil disimpan ke Firestore.');
 }
 
