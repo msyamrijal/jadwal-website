@@ -19,8 +19,9 @@
             <h1>Jadwalku</h1>
             <nav>
                 <button id="install-button" class="install-button" hidden>Install Aplikasi</button>
-                <button id="notification-button" class="action-button" style="margin-right: 10px; background-color: #28a745; display: none;">
-                    Aktifkan Notifikasi
+                <!-- Tombol notifikasi diubah menjadi ikon lonceng -->
+                <button id="notification-bell-btn" class="header-icon-link" title="Aktifkan Notifikasi" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 </button>
                 <a href="jadwal.html" style="margin-right: 10px;">Semua Jadwal</a>
                 <a href="dashboard.html" class="header-icon-link" title="Login Peserta">
@@ -65,5 +66,17 @@
     <!-- Skrip non-module -->
     <script src="idb.js"></script> 
     <script src="app.js"></script>
+
+    <!-- Elemen Pop-up Notifikasi untuk Halaman Publik -->
+    <div id="public-notification-popup-overlay" class="notification-popup-overlay">
+        <div class="notification-popup">
+            <h3>Jangan Ketinggalan Jadwal!</h3>
+            <p>Aktifkan notifikasi untuk mendapatkan ringkasan jadwal setiap pagi.</p>
+            <div class="popup-actions">
+                <button id="public-popup-later-btn">Nanti Saja</button>
+                <button id="public-popup-activate-btn">Aktifkan</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
