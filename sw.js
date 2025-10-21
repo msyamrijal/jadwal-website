@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v19-cache-fix'; // Naikkan versi cache
+const CACHE_NAME = 'jadwal-presentasi-v20-final-cache'; // Naikkan versi cache
 const urlsToCache = [
   '/',
   'index.html',
@@ -12,14 +12,14 @@ const urlsToCache = [
   'idb.js',
   'app.js',
   // Skrip Modul
+  'script.js',
+  'rekap.js',
   'firebase-config.js',
   'login.js',
   'register.js',
   'auth-helpers.js',
   'auth-admin.js',
   'db.js',
-  'rekap.js',
-  'script.js',
   'dashboard.js',
   'manage.js',
   'admin.js',
