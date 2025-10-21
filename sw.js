@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jadwal-presentasi-v18-public-notif'; // Naikkan versi cache
+const CACHE_NAME = 'jadwal-presentasi-v19-cache-fix'; // Naikkan versi cache
 const urlsToCache = [
   '/',
   'index.html',
@@ -13,10 +13,13 @@ const urlsToCache = [
   'app.js',
   // Skrip Modul
   'firebase-config.js',
+  'login.js',
+  'register.js',
   'auth-helpers.js',
   'auth-admin.js',
   'db.js',
   'rekap.js',
+  'script.js',
   'dashboard.js',
   'manage.js',
   'admin.js',
