@@ -1,25 +1,28 @@
-const CACHE_NAME = 'jadwal-presentasi-v17-admin'; // Versi baru dengan halaman admin
+const CACHE_NAME = 'jadwal-presentasi-v18-public-notif'; // Naikkan versi cache
 const urlsToCache = [
   '/',
   'index.html',
-  'jadwal.html', // Menambahkan jadwal.html
+  'jadwal.html',
   'login.html',
   'register.html',
   'dashboard.html',
   'manage.html',
   'admin.html',
   'style.css',
-  'script.js',
-  'idb.js', // File library IDB lokal
-  'firebase-config.js', // File konfigurasi Firebase
-  'login.js',
+  'idb.js',
+  'app.js',
+  // Skrip Modul
+  'firebase-config.js',
+  'auth-helpers.js',
+  'auth-admin.js',
+  'db.js',
+  'rekap.js',
   'dashboard.js',
-  'db.js', // File database baru
   'manage.js',
   'admin.js',
-  'auth-admin.js',
-  'app.js', // File baru
-  'rekap.js',
+  'notifications.js',
+  'public-notifications.js',
+  // Aset PWA
   'site.webmanifest',
   'apple-touch-icon.png',
   'favicon-32x32.png',
