@@ -1,37 +1,41 @@
-const CACHE_NAME = 'jadwal-presentasi-v20-final-cache'; // Naikkan versi cache
+const CACHE_NAME = 'jadwal-presentasi-v21-cache-cleanup'; // Versi cache baru yang bersih
 const urlsToCache = [
+  // Halaman Utama & Aset Dasar
   '/',
   'index.html',
   'jadwal.html',
+  'style.css',
+  'app.js', // Skrip PWA non-module
+  'idb.js', // Library IndexedDB
+
+  // Halaman Otentikasi & Dashboard
   'login.html',
   'register.html',
   'dashboard.html',
   'manage.html',
   'admin.html',
-  'style.css',
-  'idb.js',
-  'app.js',
-  // Skrip Modul
-  'script.js',
-  'rekap.js',
+
+  // Skrip Modul (ESM)
   'firebase-config.js',
-  'login.js',
-  'register.js',
+  'db.js',
   'auth-helpers.js',
   'auth-admin.js',
-  'db.js',
+  'login.js',
+  'register.js',
   'dashboard.js',
   'manage.js',
   'admin.js',
+  'script.js',
+  'rekap.js',
   'notifications.js',
   'public-notifications.js',
+
   // Aset PWA
   'site.webmanifest',
   'apple-touch-icon.png',
   'favicon-32x32.png',
   'favicon-16x16.png',
-  'favicon.ico',
-  // Ikon dari manifest yang sudah dikonsolidasi
+  'favicon.ico', // Meskipun tidak ada di daftar, sering diminta browser
   'icons/icon-192x192.png',
   'icons/icon-512x512.png'
 ];
